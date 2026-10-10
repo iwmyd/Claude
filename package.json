@@ -1,0 +1,21 @@
+{
+  "name": "naver-blog-draft-factory",
+  "version": "0.1.0",
+  "private": true,
+  "description": "사진 + 소재 + 메모 → Claude Code가 쓴 초안 → 승인 후 네이버 블로그 임시저장(발행은 사람이)",
+  "scripts": {
+    "login": "node scripts/naver_login.js",
+    "draft": "node scripts/naver_draft.js",
+    "check": "node scripts/check_draft.js",
+    "probe": "node scripts/probe_selectors.js",
+    "mosaic": "node scripts/mosaic.js",
+    "test": "node test/run-mock.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "playwright": "^1.52.0",
+    "sharp": "^0.33.5"
+  }
+}

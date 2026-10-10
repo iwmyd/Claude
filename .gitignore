@@ -1,0 +1,13 @@
+# 로그인 세션 — 절대 외부 공유·커밋 금지
+naver-profile/
+
+node_modules/
+
+# 개인 사진·영상·초안 산출물 (개인정보 포함 가능)
+input/photos/*
+!input/photos/.gitkeep
+input/videos/*
+!input/videos/.gitkeep
+drafts/*
+!drafts/.gitkeep
+!drafts/example.json

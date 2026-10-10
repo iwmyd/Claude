@@ -1,0 +1,45 @@
+<!doctype html>
+<!-- 모의 스마트에디터: 실제 네이버 DOM 이 아니다. naver_draft.js 의 흐름(캐럿·순서·가드·검증) 회귀 테스트용. 실제 셀렉터 확인은 probe_selectors.js 로. -->
+<html><head><meta charset="utf-8"></head><body>
+<div class="toolbar">
+<button class="se-image-toolbar-button">사진</button>
+<button class="se-insert-quotation-default-toolbar-button">인용</button>
+<button class="se-insert-horizontal-line-default-toolbar-button">선</button>
+<button class="se-text-format-toolbar-button"><span>본문</span></button>
+<button class="se-font-size-code-toolbar-button"><span>15</span></button>
+<button class="publish_btn__abc">발행</button>
+<button class="save_btn__xyz">저장</button>
+</div>
+<div id="fmt" style="display:none"><button class="opt">본문</button><button class="opt">소제목</button></div>
+<div id="fs" style="display:none"><button class="se-toolbar-option-font-size-code-fs15-button">15</button><button class="se-toolbar-option-font-size-code-fs19-button">19</button></div>
+<div id="panel" style="display:none"><div class="tagbox"><span id="chips"></span><input id="tag-input"></div><button data-testid="seOnePublishBtn" onclick="window.PUBLISHED=1">발행</button></div>
+<input type="file" id="file" style="display:none">
+<div class="se-components-wrap" contenteditable="true">
+ <div class="se-component se-documentTitle"><div class="se-title-text"><p class="se-text-paragraph"><br></p></div></div>
+ <div class="se-component se-text"><div class="se-section-text"><p class="se-text-paragraph"><br></p></div></div>
+</div>
+<script>
+const wrap=document.querySelector('.se-components-wrap'); let lastSel=null;
+document.addEventListener('selectionchange',()=>{const s=getSelection(); if(s.rangeCount&&wrap.contains(s.anchorNode)) lastSel=s.getRangeAt(0).cloneRange();});
+document.querySelectorAll('.toolbar button').forEach(b=>b.addEventListener('mousedown',e=>e.preventDefault()));
+function curComp(){const n=lastSel&&lastSel.startContainer; const el=n&&(n.nodeType===1?n:n.parentElement); return el&&el.closest('.se-component');}
+function caretTo(p){const r=document.createRange(); r.selectNodeContents(p); r.collapse(false); const s=getSelection(); s.removeAllRanges(); s.addRange(r);}
+function newText(after){const c=document.createElement('div'); c.className='se-component se-text'; c.innerHTML='<div class="se-section-text"><p class="se-text-paragraph"><br></p></div>'; after.after(c); return c;}
+function insertComp(cls,html){const cur=curComp()||wrap.lastElementChild; const c=document.createElement('div'); c.className='se-component '+cls; c.innerHTML=html;
+ if(cur.classList.contains('se-text')){ const n=lastSel.startContainer; const p=(n.nodeType===1?n:n.parentElement).closest('p'); const ps=[...cur.querySelectorAll('p')]; const rest=ps.slice(ps.indexOf(p)+1);
+   cur.after(c); if(rest.length){const t=newText(c); const sec=t.querySelector('.se-section-text'); sec.innerHTML=''; rest.forEach(x=>sec.appendChild(x));} }
+ else cur.after(c); return c;}
+document.querySelector('.se-image-toolbar-button').onclick=()=>document.getElementById('file').click();
+document.getElementById('file').onchange=()=>{const c=insertComp('se-image','<div class="se-section-image"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"><div class="se-module-text se-caption"><p class="se-text-paragraph"><br></p></div></div>'); document.getElementById('file').value='';};
+document.querySelector('.se-insert-quotation-default-toolbar-button').onclick=()=>{const c=insertComp('se-quotation','<blockquote><p class="se-text-paragraph"><br></p></blockquote>'); caretTo(c.querySelector('p'));};
+document.querySelector('.se-insert-horizontal-line-default-toolbar-button').onclick=()=>{insertComp('se-horizontalLine','<hr>');};
+// 비텍스트 컴포넌트 클릭 후 Enter → 뒤에 새 텍스트 (전략 2 모사)
+wrap.addEventListener('keydown',e=>{const c=curComp(); if(e.key==='Enter'&&c&&(c.classList.contains('se-image')||c.classList.contains('se-horizontalLine')||(c.classList.contains('se-quotation')&&!getSelection().anchorNode.textContent))){e.preventDefault(); const t=newText(c); caretTo(t.querySelector('p'));}});
+const fmtBtn=document.querySelector('.se-text-format-toolbar-button'), fsBtn=document.querySelector('.se-font-size-code-toolbar-button');
+fmtBtn.onclick=()=>{fmt.style.display='block'}; fsBtn.onclick=()=>{fs.style.display='block'};
+fmt.querySelectorAll('button').forEach(b=>{b.addEventListener('mousedown',e=>e.preventDefault()); b.onclick=()=>{fmtBtn.querySelector('span').textContent=b.textContent; fmt.style.display='none';}});
+fs.querySelectorAll('button').forEach(b=>{b.addEventListener('mousedown',e=>e.preventDefault()); b.onclick=()=>{fsBtn.querySelector('span').textContent=b.textContent; fs.style.display='none';}});
+document.querySelector('.publish_btn__abc').onclick=()=>{panel.style.display='block'};
+document.getElementById('tag-input').addEventListener('keydown',e=>{if(e.key==='Enter'){chips.textContent+='#'+e.target.value+' '; e.target.value='';} if(e.key==='Escape') panel.style.display='none';});
+document.querySelector('.save_btn__xyz').onclick=()=>{window.SAVED=1};
+</script></body></html>
