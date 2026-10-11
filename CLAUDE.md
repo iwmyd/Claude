@@ -10,7 +10,7 @@
 - 화자: **친절한 해설가** (존댓말, 원문을 끝까지 읽어주는 일반 독자. 관련 경력 없음) — `data/blogger-profile.md` 가 단일 기준
 - CTA: 이웃추가·알림 유도 (연락처 없음)
 - 블로그: "에이팜의 이야기 보따리" / 닉네임: 에이팜
-- 미확정(TODO): 정리한 글 수, 블로그 주소 → 필요할 때 질문하고 `data/profile.md` 에 기록
+- 블로그 주소: https://blog.naver.com/iwmyd99 / 글 수·운영 기간 등 미확정 항목은 `data/profile.md` 기준
 
 ## 1. 절대 규칙
 1. **API 키 사용 금지** — 모든 AI 작업은 이 Claude Code 세션 안에서(구독 토큰). 스크립트에 AI API 호출을 넣지 않는다. `claude -p` 사용 가능.
@@ -136,6 +136,10 @@
 - 한글은 `keyboard.insertText()` 만 (type 은 IME 꼬임). 이모지는 별도 호출로 분리.
 - 인용구 `.se-insert-quotation-default-toolbar-button` / 구분선 `.se-insert-horizontal-line-default-toolbar-button`.
 - **소제목은 볼드 토글 금지** → 문단 서식 드롭다운(`.se-text-format-toolbar-button` → "소제목"). 크기 30 → 19(fs19). 순서: **서식 → 크기 → 텍스트**. 입력 후 다음 문단은 "본문"으로 명시 복귀하고 드롭다운 라벨을 다시 읽어 검증.
+  - 옵션은 `button[data-name="text-format"][data-value="sectionTitle"|"text"|"quotation"]` 로 고른다. 옵션 innerText 가 "소제목 소제목"(라벨+툴팁)이라 텍스트 정확 일치는 실패. 적용되면 컴포넌트가 `se-sectionTitle` 로 바뀌고, 소제목에서 Enter 치면 자동으로 본문/15 복귀.
+- **사진 캡션**: `.se-caption` 은 사진을 클릭(선택)해야 보인다 → `img` 클릭 → `.se-caption p.se-text-paragraph` 클릭 → 입력. 안 보일 때 DOM 으로 캐럿을 놓으면(placeCaret) 에디터가 무시하고 사진 아래 문단에 입력된다(금지). 캡션 입력 중에도 DOM selection 은 캡션 밖이라 `caretInside` 로 판정 불가 → 캡션 안 `__se-toolbar-slot` 의 display 가 none 이 아닌지로 판정(슬롯은 크기 0 이라 isVisible 은 항상 false).
+- 로그인: `/setup-login` 때 **"로그인 상태 유지" 체크 필수** — 안 하면 세션 쿠키라 브라우저를 닫는 순간 사라진다(재실행 시 다시 로그인 화면).
+- 첫 글엔 태그 영역에 네이버가 `#첫글` 을 붙여 태그 수가 1개 더 잡힌다.
 - text 블록이 연달아 오면 붙어 렌더링 → 다음 블록도 text 일 때만 Enter 한 번 더.
 - 태그: 우상단 발행 버튼으로 패널 열기 → `input#tag-input` 에 태그마다 insertText+Enter(앞 # 제거, 최대 30) → Escape 로 패널만 닫기 → 임시저장. 검증은 태그 영역 텍스트를 # 로 쪼개 센다(칩 클래스 해시 의존 금지).
 - 지도: 툴바 → 장소 검색 → 공백 제거 정확 일치 > 부분 포함 > 첫 결과. "추가" 버튼은 hover 전 not visible → hover 후 클릭(폴백 DOM click). "추가" 전 확인 버튼 disabled. **장소 팝업은 Escape 로 안 닫힘** → 닫기 버튼. 안 닫으면 dim 잔류로 이후 모든 클릭이 "intercepts pointer events".
@@ -146,6 +150,8 @@
 
 ### 스크립트 설계 원칙 (모의 테스트로 확인 — 바꾸지 말 것)
 - **캐럿 불변식**: 블록 사이에서 캐럿은 항상 "문서 끝의 빈 문단"에 있다. 컴포넌트(사진·인용구·구분선·동영상·지도) 삽입 전 `prepareSlot`(Enter → ↑)으로 착지용 빈 문단을 미리 만든다. 컴포넌트 뒤로 캐럿을 빼내는 방식(`focusEnd` 의 전략들)은 폴백.
+- `prepareSlot` 은 Enter 후 **새 문단 생성을 확인한 다음** ↑, ↑ 후 캐럿이 마지막 텍스트 컴포넌트에 있는지 확인(아니면 복귀·재시도, 2회 실패 시 삽입 중단). 고정 대기(80ms)만 두면 간헐적으로 ↑ 가 먼저 처리돼 사진이 위 컴포넌트 앞에 들어간다.
+- 본문 대조는 텍스트 외에 **컴포넌트 순서(소제목·사진·인용구·구분선)** 도 초안과 비교한다("배치:" 줄). 디버깅 땐 `ND_DEBUG=1` 로 단계별 캐럿 위치·컴포넌트 순서를 찍는다.
 - 빈 문단에 캐럿을 DOM 으로 놓을 땐 **focus() 먼저, 그다음 selection** — 순서가 바뀌면 캐럿이 문서 처음으로 튀어 제목이 본문 첫 줄로 들어간다.
 - 제목·캡션은 입력 전 `caretInside` 로 캐럿 위치를 확인. 그래도 제목이 본문에 들어가면(오염) **재시도하지 않고** 중단 — 재시도할수록 본문이 더 망가진다.
 - 제목/본문 단계가 실패하면 임시저장을 **생략**한다 ("저장 글"에 실패본이 쌓이지 않게).
@@ -156,7 +162,8 @@
 - 지도 툴바 버튼 후보: `button.se-map-toolbar-button`, `button.se-place-toolbar-button` / 장소 검색 입력란·결과 li 구조
 - 발행 패널 열기 버튼 후보: `button[class*="publish_btn"]`, 폴백 "발행" 텍스트(진짜 발행 버튼 제외)
 - 사진·인용구·구분선 삽입 후 캐럿을 문서 끝 새 문단으로 옮기는 방법 (`focusEnd` 의 3가지 전략 중 어떤 게 통하는지 — 로그 "캐럿 복귀: after-image#N" 확인)
-- 사진 캡션 입력란 `.se-caption`, 소제목 서식 적용 시 컴포넌트 클래스 변화 여부
+- (확정됨 → 위 목록으로 이동) 사진·인용구·구분선 뒤 캐럿 복귀는 실제로 "last-text" 경로(착지 문단)로 동작 확인
+- (해결 2026-10-11) 소제목 직후 사진이 소제목 위로 들어가던 간헐 레이스 → §8 참고
 
 ## 8. 트러블슈팅 기록 (해결할 때마다 추가 — 다음 세션의 기억)
 | 날짜 | 증상 | 원인(실측 근거) | 해결 | .working.js 백업 |
@@ -166,6 +173,11 @@
 | 2026-10-10 | (모의) 제목이 본문 첫 줄에 3번 들어감 | DOM 캐럿 배치 후 focus() 호출 → 캐럿이 문서 처음으로 이동 | focus 먼저 → selection, 입력 전 caretInside 확인, 오염 감지 시 재시도 중단·저장 생략 | — |
 | 2026-10-10 | (모의) 캡션이 다음 문단으로 새는데 대조는 통과 | 대조가 본문 전체에서만 찾음 | 캡션은 [image] 컴포넌트 안에서만 인정 | — |
 | 2026-10-10 | (제작) mosaic EXIF | orientation 6 사진에서 rotate() 후 좌표 적용 → 보이는 화면 기준으로 정확히 가려짐 확인 | 축소/확대 2단계 파이프라인 | — |
+| 2026-10-11 | (실제) 재실행 시 "로그인이 필요합니다" | 두 번째 /setup-login 도 로그인 화면 → 세션 쿠키만 저장된 상태 | "로그인 상태 유지" 체크 후 재로그인 | — |
+| 2026-10-11 | (실제) 소제목 서식 "소제목 옵션을 못 찾음" | 진단 덤프: 옵션 innerText "소제목 소제목", `data-value="sectionTitle"` | data-value 로 선택, 텍스트 폴백은 `.se-toolbar-option-label` | naver_draft.working.js |
+| 2026-10-11 | (실제) 캡션이 사진 아래 문단 앞에 붙음 | 캡션 칸은 사진 선택 전 숨김 → click 실패 → placeCaret 폴백(DOM 캐럿)은 에디터가 무시. caretInside 는 DOM 캐럿 때문에 거짓 통과 | img 클릭 → 캡션 클릭, 활성 판정은 캡션 툴바 슬롯 display, placeCaret 폴백 제거. 모의 에디터도 실측 구조로 갱신 | naver_draft.working.js |
+| 2026-10-11 | (실제) 사진이 바로 앞 소제목 **위**로 들어감, 텍스트 대조는 통과 | 같은 초안 재실행(ND_DEBUG) 시 정상 → 간헐 레이스. prepareSlot 의 Enter(80ms)→↑ 에서 Enter 반영 전 ↑ 처리 시 캐럿이 소제목으로 올라감(추정, 재현 1회) | Enter 후 문단 수 증가 대기 → ↑ → 캐럿 위치 확인·재시도. 대조에 컴포넌트 순서 검사 추가. 모의 에디터에 sectionTitle 분리 동작 반영 | naver_draft.working.js |
+| 2026-10-11 | (실제) 블록 25/28 에서 "Frame was detached" | 원인 미확인(1회, 셀렉터 무관 — 에디터 프레임 재로드 추정). 저장 생략 설계대로 실패본 안 남음 | 그대로 재실행 → 정상 저장. 반복되면 probe·로그로 원인 추적 | — |
 
 ## 9. 사용자 안내 (설치·운영)
 - 설치: `npm install` → `npx playwright install chromium` → `/setup-login`.

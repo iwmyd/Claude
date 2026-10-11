@@ -10,7 +10,8 @@
 <button class="publish_btn__abc">발행</button>
 <button class="save_btn__xyz">저장</button>
 </div>
-<div id="fmt" style="display:none"><button class="opt">본문</button><button class="opt">소제목</button></div>
+<!-- [실측 2026-10-11] 옵션 innerText = 라벨+툴팁 ("소제목 소제목"), data-value 로 구분 -->
+<div id="fmt" style="display:none"><button data-name="text-format" data-value="text" data-label="본문"><span class="se-toolbar-option-label">본문</span><span class="se-toolbar-tooltip">본문</span></button><button data-name="text-format" data-value="sectionTitle" data-label="소제목"><span class="se-toolbar-option-label">소제목</span><span class="se-toolbar-tooltip">소제목</span></button></div>
 <div id="fs" style="display:none"><button class="se-toolbar-option-font-size-code-fs15-button">15</button><button class="se-toolbar-option-font-size-code-fs19-button">19</button></div>
 <div id="panel" style="display:none"><div class="tagbox"><span id="chips"></span><input id="tag-input"></div><button data-testid="seOnePublishBtn" onclick="window.PUBLISHED=1">발행</button></div>
 <input type="file" id="file" style="display:none">
@@ -30,14 +31,26 @@ function insertComp(cls,html){const cur=curComp()||wrap.lastElementChild; const 
    cur.after(c); if(rest.length){const t=newText(c); const sec=t.querySelector('.se-section-text'); sec.innerHTML=''; rest.forEach(x=>sec.appendChild(x));} }
  else cur.after(c); return c;}
 document.querySelector('.se-image-toolbar-button').onclick=()=>document.getElementById('file').click();
-document.getElementById('file').onchange=()=>{const c=insertComp('se-image','<div class="se-section-image"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"><div class="se-module-text se-caption"><p class="se-text-paragraph"><br></p></div></div>'); document.getElementById('file').value='';};
+// [실측 2026-10-11] 캡션 칸은 사진을 클릭(선택)해야 보이고, 캡션이 활성화되면 캡션 툴바(__se-toolbar-slot)가 나타난다
+document.getElementById('file').onchange=()=>{const c=insertComp('se-image','<div class="se-section-image"><img style="width:40px;height:20px" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"><div class="se-module-text se-caption" style="display:none"><p class="se-text-paragraph"><br></p><div class="__se-toolbar-slot" contenteditable="false" style="display:none"><button>가운데 정렬</button></div></div></div>');
+ const cap=c.querySelector('.se-caption'); c.querySelector('img').addEventListener('click',()=>{cap.style.display='block';});
+ cap.querySelector('p').addEventListener('click',()=>{cap.querySelector('.__se-toolbar-slot').style.display='block';});
+ document.getElementById('file').value='';};
 document.querySelector('.se-insert-quotation-default-toolbar-button').onclick=()=>{const c=insertComp('se-quotation','<blockquote><p class="se-text-paragraph"><br></p></blockquote>'); caretTo(c.querySelector('p'));};
 document.querySelector('.se-insert-horizontal-line-default-toolbar-button').onclick=()=>{insertComp('se-horizontalLine','<hr>');};
 // 비텍스트 컴포넌트 클릭 후 Enter → 뒤에 새 텍스트 (전략 2 모사)
 wrap.addEventListener('keydown',e=>{const c=curComp(); if(e.key==='Enter'&&c&&(c.classList.contains('se-image')||c.classList.contains('se-horizontalLine')||(c.classList.contains('se-quotation')&&!getSelection().anchorNode.textContent))){e.preventDefault(); const t=newText(c); caretTo(t.querySelector('p'));}});
 const fmtBtn=document.querySelector('.se-text-format-toolbar-button'), fsBtn=document.querySelector('.se-font-size-code-toolbar-button');
 fmtBtn.onclick=()=>{fmt.style.display='block'}; fsBtn.onclick=()=>{fs.style.display='block'};
-fmt.querySelectorAll('button').forEach(b=>{b.addEventListener('mousedown',e=>e.preventDefault()); b.onclick=()=>{fmtBtn.querySelector('span').textContent=b.textContent; fmt.style.display='none';}});
+fmt.querySelectorAll('button').forEach(b=>{b.addEventListener('mousedown',e=>e.preventDefault()); b.onclick=()=>{fmtBtn.querySelector('span').textContent=b.dataset.label; fmt.style.display='none'; applyFormat(b.dataset.value);}});
+// [실측 2026-10-11] 소제목 적용 → 그 문단이 se-sectionTitle 컴포넌트로 분리, 소제목에서 Enter → 아래에 새 본문 컴포넌트
+function applyFormat(v){const c=curComp(); if(!c) return; const n=lastSel.startContainer; const p=(n.nodeType===1?n:n.parentElement).closest('p'); if(!p) return;
+ if(v==='sectionTitle'&&c.classList.contains('se-text')){const ps=[...c.querySelectorAll('p')]; const i=ps.indexOf(p); const rest=ps.slice(i+1);
+   const st=document.createElement('div'); st.className='se-component se-sectionTitle'; st.innerHTML='<div class="se-section-sectionTitle"></div>'; st.firstChild.appendChild(p); c.after(st);
+   if(rest.length){const t=newText(st); const sec=t.querySelector('.se-section-text'); sec.innerHTML=''; rest.forEach(x=>sec.appendChild(x));}
+   if(!c.querySelector('p')) c.remove(); caretTo(p);}
+ else if(v==='text'&&c.classList.contains('se-sectionTitle')){c.className='se-component se-text'; c.firstChild.className='se-section-text'; caretTo(p);}}
+wrap.addEventListener('keydown',e=>{const c=curComp(); if(e.key==='Enter'&&c&&c.classList.contains('se-sectionTitle')){e.preventDefault(); const t=newText(c); caretTo(t.querySelector('p')); fmtBtn.querySelector('span').textContent='본문';}},true);
 fs.querySelectorAll('button').forEach(b=>{b.addEventListener('mousedown',e=>e.preventDefault()); b.onclick=()=>{fsBtn.querySelector('span').textContent=b.textContent; fs.style.display='none';}});
 document.querySelector('.publish_btn__abc').onclick=()=>{panel.style.display='block'};
 document.getElementById('tag-input').addEventListener('keydown',e=>{if(e.key==='Enter'){chips.textContent+='#'+e.target.value+' '; e.target.value='';} if(e.key==='Escape') panel.style.display='none';});

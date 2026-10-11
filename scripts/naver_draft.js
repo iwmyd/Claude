@@ -268,12 +268,38 @@ async function focusEnd(ed, page) {
  * Enter 로 빈 문단을 하나 더 만들고 ↑ 로 올라가 그 자리에 삽입하면, 아래 빈 문단이 삽입 후 착지점으로 남는다.
  * (컴포넌트 뒤로 캐럿을 빼내는 것보다 훨씬 안정적. focusEnd 는 폴백)
  */
+/** ND_DEBUG=1 일 때만: 캐럿이 있는 컴포넌트 + 전체 컴포넌트 순서 (캐럿 문제 실측용) */
+async function dbg(ed, label) {
+  if (!process.env.ND_DEBUG) return;
+  const s = await ed.evaluate(() => ({ caret: window.__nd.caretSnapshot(), comps: window.__nd.summary().join(',') })).catch((e) => ({ err: String(e) }));
+  console.log(`  [dbg] ${label}: caret=${s.caret} | ${s.comps || s.err}`);
+}
+
 async function prepareSlot(ed, page) {
-  await focusCaretBack(ed, page);
-  await page.keyboard.press('Enter');
-  await sleep(page, 80);
-  await page.keyboard.press('ArrowUp');
-  await sleep(page, 80);
+  await dbg(ed, 'prepareSlot 시작');
+  // [실측 2026-10-11] Enter 반영 전에 ↑ 가 먼저 처리되면 캐럿이 위 컴포넌트(소제목 등)로 올라가
+  // 사진이 소제목 "앞"에 들어간다(간헐적 레이스). → 새 문단 생성을 확인한 뒤 ↑, ↑ 후 위치도 확인.
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    await focusCaretBack(ed, page);
+    await dbg(ed, 'prepareSlot focusCaretBack 후');
+    const paras = () => ed.evaluate(() => window.__nd.bodyComps().reduce((n, c) => n + c.querySelectorAll('p').length, 0));
+    const before = await paras();
+    await page.keyboard.press('Enter');
+    const deadline = Date.now() + 2000;
+    while ((await paras()) <= before && Date.now() < deadline) await sleep(page, 80);
+    await sleep(page, 80);
+    await page.keyboard.press('ArrowUp');
+    await sleep(page, 120);
+    await dbg(ed, 'prepareSlot Enter↑ 후');
+    if (await ed.evaluate(() => window.__nd.caretInLastText())) return;
+    log(`착지 문단 준비: ↑ 후 캐럿이 마지막 텍스트를 벗어남(${await ed.evaluate(() => window.__nd.caretSnapshot())}) → 재시도 ${attempt}`);
+    // 위로 올라간 경우 만들어 둔 빈 문단 쪽으로 복귀 (focusEnd 가 마지막 문단으로 옮김)
+    await focusEnd(ed, page);
+    await page.keyboard.press('ArrowUp');
+    await sleep(page, 120);
+    if (await ed.evaluate(() => window.__nd.caretInLastText())) return;
+  }
+  throw new Error('착지 문단 준비 실패 — 캐럿이 마지막 텍스트 컴포넌트에 없음 (삽입하면 순서가 틀어짐)');
 }
 
 async function waitCount(ed, page, cls, before, timeout) {
@@ -290,10 +316,16 @@ async function readFormatLabel(ed) {
   return (await ed.locator(SEL.formatBtn).first().innerText().catch(() => '')).replace(/\s+/g, ' ').trim();
 }
 
+// [실측 2026-10-11] 옵션 버튼 innerText 가 "소제목 소제목"(라벨+툴팁)이라 텍스트 정확 일치로는 못 찾는다 → data-value 로 고른다.
+const FORMAT_VALUE = { 본문: 'text', 소제목: 'sectionTitle', 인용구: 'quotation' };
+
 async function setParagraphFormat(ed, page, label) {
   await ed.locator(SEL.formatBtn).first().click();
   await sleep(page, 250);
-  const opt = await markByText(ed, { texts: [label], tags: 'button, li, [role="option"]', exclude: SEL.formatBtn, pick: 'last' });
+  let opt = ed.locator(`button[data-name="text-format"][data-value="${FORMAT_VALUE[label]}"]`).filter({ visible: true }).first();
+  if (!(await opt.isVisible().catch(() => false))) {
+    opt = await markByText(ed, { texts: [label], tags: '.se-toolbar-option-label, button, li, [role="option"]', exclude: SEL.formatBtn, pick: 'last' });
+  }
   if (!opt) { await page.keyboard.press('Escape'); throw new Error(`문단 서식 옵션 "${label}" 을 못 찾음`); }
   await opt.click();
   await sleep(page, 200);
@@ -344,7 +376,9 @@ async function insertSubtitle(ed, page, text, bodySize) {
     log(`본문 복귀 실패: ${e.message}`);
     formatted = false;
   }
+  await dbg(ed, '소제목 본문 복귀 후');
   await focusCaretBack(ed, page);
+  await dbg(ed, '소제목 focusCaretBack 후');
   return formatted;
 }
 
@@ -371,11 +405,27 @@ async function insertImage(ed, page, block) {
   }, null, { timeout: 90000 }).catch(() => log(`사진 로드 대기 시간 초과(계속 진행): ${block.path}`));
   await sleep(page, 400);
   if (block.caption && block.caption.trim()) {
-    const cap = ed.locator('.se-component.se-image').last().locator('.se-caption p.se-text-paragraph, .se-caption').first();
+    // [실측 2026-10-11] 캡션 칸은 사진을 선택해야 보인다. 안 보일 때 DOM 으로 캐럿을 놓으면(placeCaret) 에디터가 무시하고
+    // 사진 아래 문단에 입력된다 → placeCaret 폴백 금지. 또 캡션 입력 중에도 DOM selection 은 캡션 밖이라 caretInside 로는
+    // 판정 불가 → 캡션이 활성화되면 나타나는 캡션 툴바(__se-toolbar-slot)로 판정한다.
+    const comp = ed.locator('.se-component.se-image').last();
+    const capWrap = comp.locator('.se-caption').first();
+    const cap = comp.locator('.se-caption p.se-text-paragraph').first();
     try {
-      try { await cap.click({ timeout: 5000 }); } catch (_) { await placeCaret(cap); }
-      if (!(await caretInside(ed, '.se-caption'))) throw new Error('캐럿이 캡션 안에 없음 — 입력 생략');
+      await comp.locator('img').first().click({ timeout: 5000 });
+      await cap.waitFor({ state: 'visible', timeout: 5000 });
+      await cap.click({ timeout: 5000 });
+      await sleep(page, 300);
+      // 슬롯 자체는 크기 0(툴바가 떠 있는 구조)이라 isVisible 은 항상 false → display 로 판정
+      const capActive = await capWrap.evaluate((el) => {
+        const slot = [...el.children].find((c) => c.classList.contains('__se-toolbar-slot'));
+        return !!(slot && getComputedStyle(slot).display !== 'none');
+      }).catch(() => false);
+      if (!capActive) throw new Error('캡션 활성화 확인 실패(캡션 툴바 표시 안 됨) — 입력 생략');
       await typeText(page, block.caption.trim());
+      await sleep(page, 200);
+      const got = norm(await cap.innerText().catch(() => ''));
+      if (!got.includes(norm(block.caption.trim()))) log(`캡션 입력 후 확인 실패(${block.path}): 캡션 칸 내용 "${got.slice(0, 30)}"`);
     } catch (e) {
       log(`캡션 입력 실패(${block.path}): ${e.message.split('\n')[0]}`);
     }
@@ -671,7 +721,18 @@ async function dumpAndVerify(ed, page) {
   if (have('horizontalLine') < want('divider')) countIssues.push(`구분선 ${have('horizontalLine')}/${want('divider')}`);
   if (draft.video && R.video.status === 'ok' && have('video') < 1) countIssues.push('동영상 0/1');
   R.verify.countIssues = countIssues;
-  R.verify.ok = R.verify.titleOk && !R.verify.titleInBody && !R.verify.missing.length && !R.verify.outOfOrder.length && !countIssues.length;
+  // 컴포넌트 순서 대조 — 텍스트 대조만으론 "사진이 소제목 앞으로 감" 같은 배치 오류를 못 잡는다(2026-10-11 실측)
+  const TYPE = { image: 'image', quote: 'quotation', divider: 'horizontalLine' };
+  if (!R.subtitle.failed.length) TYPE.subtitle = 'sectionTitle';
+  const watched = new Set(Object.values(TYPE));
+  const wantSeq = draft.blocks.map((b) => TYPE[b.type]).filter(Boolean);
+  const haveSeq = dump.comps.filter((c) => watched.has(c));
+  R.verify.orderIssue = null;
+  if (!countIssues.length && wantSeq.join(',') !== haveSeq.join(',')) {
+    const i = wantSeq.findIndex((t, k) => t !== haveSeq[k]);
+    R.verify.orderIssue = `컴포넌트 ${i + 1}번째부터 다름 — 기대 ${wantSeq.slice(Math.max(0, i - 1), i + 2).join('→')}, 실제 ${haveSeq.slice(Math.max(0, i - 1), i + 2).join('→')}`;
+  }
+  R.verify.ok = R.verify.titleOk && !R.verify.titleInBody && !R.verify.missing.length && !R.verify.outOfOrder.length && !countIssues.length && !R.verify.orderIssue;
 }
 
 // ───────────────────────── 메인 ─────────────────────────
@@ -827,6 +888,7 @@ function printResult(fatal) {
     if (R.verify.titleInBody) L.push('              ❗ 제목 텍스트가 본문에 섞여 있음 (제목 오염 — 본문 첫 줄 확인)');
     R.verify.outOfOrder.slice(0, 5).forEach((m) => L.push(`              순서: ${m}`));
     (R.verify.countIssues || []).forEach((m) => L.push(`              개수: ${m}`));
+    if (R.verify.orderIssue) L.push(`              배치: ${R.verify.orderIssue}`);
   }
   L.push(`산출물      : 덤프 ${rel(OUT.dump)} · 스크린샷 ${rel(OUT.shot)} · 수동원고 ${rel(OUT.manual)}`);
   L.push('==========================');
