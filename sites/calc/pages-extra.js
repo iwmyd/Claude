@@ -1,5 +1,5 @@
 // 추가 계산기 페이지 (할부·군적금·날짜·나이·평수). 사실·수치는 출처 있는 것만 — 각 basis 에 근거 표기.
-const field = (id, label, attrs, help = '') => `<label class="f"><span>${label}</span><input id="${id}" ${attrs}>${help ? `<small>${help}</small>` : ''}</label>`;
+const field = (id, label, attrs, help = '') => `<label class="f"><span>${label}</span><input id="${id}" ${attrs} ${/data-money/.test(attrs) ? 'inputmode="numeric"' : /type="number"/.test(attrs) ? 'inputmode="decimal"' : ''}>${help ? `<small>${help}</small>` : ''}</label>`;
 const select = (id, label, opts) => `<label class="f"><span>${label}</span><select id="${id}">${opts.map(([v, t]) => `<option value="${v}">${t}</option>`).join('')}</select></label>`;
 
 module.exports = [
@@ -11,7 +11,7 @@ module.exports = [
     intro: '카드 할부는 매달 <b>원금은 똑같이</b> 나눠 내고, 수수료는 <b>남은 원금</b>에 붙습니다. 그래서 첫 달이 가장 많이 나가고 점점 줄어듭니다. 무이자 할부가 아니라면 결제 전에 총 수수료를 확인해 보세요.',
     body: `<section class="card calc" data-calc="installment">
 <div class="form">
-${field('amount', '할부 원금(원)', 'type="text" inputmode="numeric" value="1,200,000" data-money')}
+${field('amount', '할부 원금(원)', 'type="text" value="1,200,000" data-money')}
 ${field('feeRate', '연 할부 수수료율(%)', 'type="number" step="0.1" min="0" value="15"', '카드사 앱·이용약관의 할부 수수료율')}
 ${field('months', '할부 개월', 'type="number" step="1" min="2" max="36" value="12"')}
 </div><div class="out" id="out"></div></section>`,
@@ -34,7 +34,7 @@ ${field('months', '할부 개월', 'type="number" step="1" min="2" max="36" valu
 <div class="form">
 ${select('branch', '복무 구분', [['18', '육군·해병대·상근예비역 (최대 18개월)'], ['20', '해군 (최대 20개월)'], ['21', '공군·사회복무요원 (최대 21개월)'], ['24', '대체복무요원 (최대 24개월)']])}
 ${field('months', '가입 개월', 'type="number" step="1" min="1" max="24" value="18"', '잔여 복무기간 이내 (최소 1개월)')}
-${field('monthly', '월 납입액(원)', 'type="text" inputmode="numeric" value="550,000" data-money', '개인 최대 55만 원 (계좌당 30만, 2개 은행)')}
+${field('monthly', '월 납입액(원)', 'type="text" value="550,000" data-money', '개인 최대 55만 원 (계좌당 30만, 2개 은행)')}
 ${field('rate', '은행 금리(%)', 'type="number" step="0.1" min="0" value="5"', '국방부 안내 "5% 수준" · 은행별 금리는 은행연합회 참조')}
 </div><div class="out" id="out"></div></section>`,
     basis: [

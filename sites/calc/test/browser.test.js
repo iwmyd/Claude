@@ -22,6 +22,14 @@ const server = http.createServer((q, s) => {
       await page.goto(`http://localhost:8765/${slug ? slug + '/' : ''}`, { waitUntil: 'networkidle' });
       const scrollW = await page.evaluate(() => document.documentElement.scrollWidth);
       ok(`[${tag}] /${slug} 가로 스크롤 없음`, scrollW <= vw.width, `(${scrollW}px)`);
+      const a11y = await page.evaluate(() => {
+        const bad = [];
+        document.querySelectorAll("input").forEach((i) => { if (i.type !== "date" && !i.getAttribute("inputmode")) bad.push("키패드 미지정 #" + i.id); if (!i.closest("label")) bad.push("라벨 없음 #" + i.id); });
+        document.querySelectorAll(".top nav a, .f input, .f select").forEach((e) => { const r = e.getBoundingClientRect(); if (r.height < 44) bad.push("터치 영역 " + Math.round(r.height) + "px " + (e.id || e.textContent.trim())); });
+        if (!document.querySelector(".skip[href=\"#main\"]") || !document.getElementById("main")) bad.push("본문 바로가기 없음");
+        return bad;
+      });
+      ok(`[${tag}] /${slug} 접근성(키패드·라벨·터치44px·건너뛰기)`, a11y.length === 0, a11y.slice(0, 4).join(", "));
       await page.screenshot({ path: path.join(SHOT, `${tag}-${slug || 'home'}.png`), fullPage: slug === 'loan' || slug === '' });
     }
     // 동작 확인
@@ -54,6 +62,9 @@ const server = http.createServer((q, s) => {
     ok(`[${tag}] D-65`, (await page.locator(".kpi.main b").innerText()).includes("D-65"));
     await page.goto("http://localhost:8765/area/", { waitUntil: "networkidle" });
     ok(`[${tag}] 84㎡ = 25.41평`, (await page.inputValue("#py")) === "25.41");
+    await page.goto("http://localhost:8765/loan/", { waitUntil: "networkidle" });
+    await page.fill("#rate", "5"); await page.dispatchEvent("#rate", "input"); await page.waitForTimeout(800);
+    ok(`[${tag}] 화면낭독 결과 안내`, /월 상환액 .+원/.test(await page.locator("#sr-status").innerText()), await page.locator("#sr-status").innerText());
     ok(`[${tag}] 콘솔·스크립트 오류 없음`, errors.length === 0, errors.join(' | '));
     await page.close();
   }

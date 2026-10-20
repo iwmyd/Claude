@@ -45,3 +45,11 @@ summary { cursor:pointer; font-weight:700; color:var(--navy); }
 .foot { color:var(--gray); font-size:13px; padding:24px 0 40px; }
 @media (max-width: 560px) { h1 { font-size: 24px; } .top nav a { margin: 0 12px 0 0; } }
 h2.cat { font-size:18px; margin:22px 0 10px; padding-left:10px; border-left:5px solid var(--orange); }
+/* UX·접근성 (ui-ux-pro-max 점검 반영) */
+.skip { position:absolute; left:-9999px; top:0; background:var(--orange); color:var(--navy); padding:10px 14px; font-weight:800; z-index:10; border-radius:0 0 10px 0; }
+.skip:focus { left:0; }
+.sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+a:focus-visible, select:focus-visible, input:focus-visible, summary:focus-visible, .tile:focus-visible { outline:3px solid var(--orange); outline-offset:2px; }
+.top nav a { padding:12px 4px; min-height:44px; }
+.f input, .f select { min-height:44px; }
+summary { padding:6px 0; min-height:44px; display:flex; align-items:center; }

@@ -1,5 +1,5 @@
 // 페이지 정의 — 페이지마다 고유한 소개·계산 기준·FAQ (thin content 방지). 사실·수치는 출처 있는 것만.
-const field = (id, label, attrs, help = '') => `<label class="f"><span>${label}</span><input id="${id}" ${attrs} inputmode="decimal">${help ? `<small>${help}</small>` : ''}</label>`;
+const field = (id, label, attrs, help = '') => `<label class="f"><span>${label}</span><input id="${id}" ${attrs} ${/data-money/.test(attrs) ? 'inputmode="numeric"' : /type="number"/.test(attrs) ? 'inputmode="decimal"' : ''}>${help ? `<small>${help}</small>` : ''}</label>`;
 const select = (id, label, opts) => `<label class="f"><span>${label}</span><select id="${id}">${opts.map(([v, t]) => `<option value="${v}">${t}</option>`).join('')}</select></label>`;
 
 module.exports = [

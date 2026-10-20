@@ -96,7 +96,10 @@
   if ($('to') && !$('to').value) { const d = new Date(); d.setDate(d.getDate() + 100); $('to').value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
   const el = document.querySelector('[data-calc]');
   if (!el) return;
-  const go = run[el.dataset.calc];
+  const calc = run[el.dataset.calc];
+  let t = null;
+  const announce = () => { const k = document.querySelector('.kpi.main'), s = $('sr-status'); if (k && s) s.textContent = k.querySelector('span').textContent + ' ' + k.querySelector('b').textContent; };
+  const go = (e) => { calc(e); clearTimeout(t); t = setTimeout(announce, 600); };
   document.querySelectorAll('input,select').forEach((i) => i.addEventListener('input', go));
-  go();
+  calc();
 })();

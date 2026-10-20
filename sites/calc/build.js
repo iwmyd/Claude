@@ -45,8 +45,9 @@ const layout = (p, body) => `<!doctype html>
 ${PUB ? `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-${PUB}" crossorigin="anonymous"></script>` : ''}
 ${p.schema ? `<script type="application/ld+json">${JSON.stringify(p.schema(SITE))}</script>` : ''}
 </head><body>
+<a class="skip" href="#main">본문 바로가기</a>
 <header class="top"><div class="wrap"><a class="brand" href="/">${NAME}</a><nav>${nav()}</nav></div></header>
-<main class="wrap">
+<main class="wrap" id="main" tabindex="-1">
 ${p.slug ? `<nav class="crumb" aria-label="breadcrumb"><a href="/">홈</a> › <span>${esc(p.short)}</span></nav>` : ''}
 ${body}
 </main>
@@ -54,6 +55,7 @@ ${body}
 <p>${NAME} · 모든 계산은 참고용이며 금융상품 가입·투자 권유가 아닙니다. 최종 금액은 해당 금융기관에 확인하세요.</p>
 <p><a href="/about/">사이트 소개</a> · <a href="/privacy/">개인정보처리방침</a> · 최종 업데이트 ${UPDATED}</p>
 </div></footer>
+${p.calc ? `<p id="sr-status" class="sr-only" role="status" aria-live="polite"></p>` : ''}
 ${p.calc ? `<script src="/assets/calc.js"></script><script src="/assets/ui.js"></script>` : ''}
 </body></html>`;
 
