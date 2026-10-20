@@ -1,0 +1,46 @@
+/* 에이팜 생활경제 계산기 — 블로그 브랜딩 팔레트(data/blog-branding.md) */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+:root { --navy:#1d2a44; --orange:#e8a33d; --red:#c9562b; --beige:#f5f0e6; --ink:#2b3548; --gray:#5b6577; --line:#e3ddd0; --white:#fff; }
+* { box-sizing: border-box; }
+body { margin:0; font-family: Pretendard, 'Malgun Gothic', sans-serif; color:var(--ink); background:var(--beige); line-height:1.65; }
+a { color: var(--navy); }
+.wrap { max-width: 920px; margin: 0 auto; padding: 0 16px; }
+.top { background: var(--navy); color: #fff; }
+.top .wrap { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; padding-top:12px; padding-bottom:12px; }
+.brand { color:#fff; font-weight:800; text-decoration:none; font-size:18px; }
+.top nav a { color:#e9edf5; text-decoration:none; margin-left:14px; font-size:14px; white-space:nowrap; display:inline-block; }
+.top nav a:hover { color: var(--orange); }
+.crumb { font-size:13px; color:var(--gray); margin:16px 0 0; }
+h1 { font-size: 30px; color: var(--navy); margin: 18px 0 6px; letter-spacing:-.02em; }
+h2 { font-size: 20px; color: var(--navy); margin: 0 0 12px; }
+h3 { font-size: 16px; color: var(--navy); margin: 22px 0 8px; }
+.lead { font-size: 16px; margin: 0 0 18px; }
+.card { background:#fff; border:1px solid var(--line); border-radius:16px; padding:20px; margin:0 0 16px; }
+.form { display:grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap:12px; }
+.f { display:flex; flex-direction:column; gap:4px; font-size:14px; font-weight:700; color:var(--navy); }
+.f input, .f select { font: inherit; font-weight:600; padding:10px 12px; border:1.5px solid #cfd6e3; border-radius:10px; background:#fffdf7; color:var(--ink); min-width:0; }
+.f input:focus, .f select:focus { outline:none; border-color: var(--orange); }
+.f small { font-weight:400; color:var(--gray); font-size:12px; }
+.kpis { display:grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap:10px; margin-top:18px; }
+.kpi { background:var(--beige); border-radius:12px; padding:12px 14px; }
+.kpi span { display:block; font-size:13px; color:var(--gray); }
+.kpi b { font-size:20px; color:var(--navy); }
+.kpi.main { background:var(--navy); }
+.kpi.main span { color:#c8cfdb; } .kpi.main b { color:#fff; font-size:24px; }
+table { width:100%; border-collapse:collapse; font-size:14px; }
+th, td { padding:8px 10px; border-bottom:1px solid var(--line); text-align:right; white-space:nowrap; }
+th:first-child, td:first-child { text-align:left; }
+thead th { background:var(--navy); color:#fff; font-weight:700; }
+tr.now td, tr.now th { background:#fdf3e1; font-weight:800; }
+.out, .sched { overflow-x:auto; }
+.sched { max-height: 420px; overflow-y:auto; margin-top:12px; }
+.note { font-size:13px; color:var(--gray); }
+details { border-top:1px solid var(--line); padding:10px 0; } details:first-of-type { border-top:0; }
+summary { cursor:pointer; font-weight:700; color:var(--navy); }
+.grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap:14px; margin-bottom:16px; }
+.tile { display:block; background:#fff; border:1px solid var(--line); border-left:6px solid var(--orange); border-radius:14px; padding:18px; text-decoration:none; }
+.tile b { display:block; font-size:18px; color:var(--navy); } .tile span { color:var(--gray); font-size:14px; }
+.tile:hover { border-left-color: var(--red); }
+.links { padding-left:18px; margin:0; }
+.foot { color:var(--gray); font-size:13px; padding:24px 0 40px; }
+@media (max-width: 560px) { h1 { font-size: 24px; } .top nav a { margin: 0 12px 0 0; } }

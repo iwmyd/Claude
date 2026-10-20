@@ -11,3 +11,7 @@ input/videos/*
 drafts/*
 !drafts/.gitkeep
 !drafts/example.json
+
+# 계산기 사이트 빌드 산출물·테스트 스크린샷
+sites/calc/public/
+sites/calc/test/shots/
