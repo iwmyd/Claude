@@ -44,3 +44,4 @@ summary { cursor:pointer; font-weight:700; color:var(--navy); }
 .links { padding-left:18px; margin:0; }
 .foot { color:var(--gray); font-size:13px; padding:24px 0 40px; }
 @media (max-width: 560px) { h1 { font-size: 24px; } .top nav a { margin: 0 12px 0 0; } }
+h2.cat { font-size:18px; margin:22px 0 10px; padding-left:10px; border-left:5px solid var(--orange); }
