@@ -1,12 +1,11 @@
 # blog-branding.md — 블로그 꾸미기 기준 (배너·소개·카테고리)
 
-## 이미지 (assets/branding/)
-| 파일 | 용도 | 크기 |
-|---|---|---|
-| blog-title-966x300.png | PC 상단 타이틀(배너) | 966×300 (글 영역 넓게 기준, 세로 50~600 가변) |
-| blog-profile-800.png | 프로필 사진 | 800×800 정사각 |
-| blog-mobile-cover-1080x1300.png | 모바일 앱 블로그 홈 커버 | 1080×1300 |
-팔레트: 네이비 #1d2a44 · 오렌지 #e8a33d · 레드 #c9562b · 베이지 #f5f0e6 (카드 이미지와 동일). 마스코트: 보따리.
+## 이미지 — banner-design 스킬 방식(HTML/CSS → 캡처, 안전영역 중앙 70~80%, 글꼴 2종, 대비 4.5:1)
+시안 (assets/banners/blog-2026/): editorial(신문 마스트헤드) · geometric(네이비 그리드+상승 막대) · bold-type(주황 바탕 큰 글자)
+- 각 시안: PC 타이틀 966x300 / 모바일 앱 커버 1080x1300
+- v1(마스코트) 시안: assets/branding/ (blog-title-966x300, blog-mobile-cover-1080x1300)
+- 프로필 사진: 사용자가 현재 쓰는 것 유지 (생성본 삭제 2026-10-21)
+팔레트: 네이비 #1d2a44 · 오렌지 #e8a33d · 레드 #c9562b(작은 글씨는 #a3401c) · 베이지 #f5f0e6. 글꼴: Pretendard + Noto Serif KR.
 
 ## 소개글
 뉴스 제목 말고 정부 보도자료·공고문 원문을 끝까지 읽고 정리합니다.
