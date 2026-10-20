@@ -40,7 +40,9 @@ const layout = (p, body) => `<!doctype html>
 <meta name="description" content="${esc(p.desc)}">
 <link rel="canonical" href="${SITE}/${p.slug ? p.slug + '/' : ''}">
 <meta property="og:type" content="website"><meta property="og:title" content="${esc(p.title)}"><meta property="og:description" content="${esc(p.desc)}">
-<meta property="og:url" content="${SITE}/${p.slug ? p.slug + '/' : ''}"><meta property="og:locale" content="ko_KR">
+<meta property="og:url" content="${SITE}/${p.slug ? p.slug + '/' : ''}"><meta property="og:locale" content="ko_KR"><meta property="og:site_name" content="${NAME}">
+<meta property="og:image" content="${SITE}/assets/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/assets/icon.svg" type="image/svg+xml"><link rel="icon" href="/assets/icon-32.png" sizes="32x32"><link rel="apple-touch-icon" href="/assets/icon-180.png"><meta name="theme-color" content="#1d2a44">
 <link rel="stylesheet" href="/assets/style.css">
 ${PUB ? `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-${PUB}" crossorigin="anonymous"></script>` : ''}
 ${p.schema ? `<script type="application/ld+json">${JSON.stringify(p.schema(SITE))}</script>` : ''}
@@ -64,7 +66,7 @@ const faqSchema = (faq) => ({ '@type': 'FAQPage', mainEntity: faq.map(([q, a]) =
 
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(path.join(OUT, 'assets'), { recursive: true });
-for (const f of ['style.css', 'calc.js', 'ui.js']) fs.copyFileSync(path.join(ROOT, 'assets', f), path.join(OUT, 'assets', f));
+for (const f of fs.readdirSync(path.join(ROOT, 'assets'))) fs.copyFileSync(path.join(ROOT, 'assets', f), path.join(OUT, 'assets', f)); // css·js·og·아이콘
 
 for (const p of pages) {
   if (p.calc && p.faq) {
