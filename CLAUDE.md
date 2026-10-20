@@ -146,6 +146,9 @@
 - 동영상: 툴바 → `.se-popup-video-upload` → "동영상 추가" `button.nvu_btn_append.nvu_local`(파일선택창) → 제목 `.se-popup-video-upload input[placeholder*="제목"]`(필수, 40자) → 닫기 `button.nvu_btn_close`. 닫기 실패 시 DOM 강제 제거 폴백.
 - "작성 중인 글" 팝업 → `.se-popup-button-cancel`(새로 쓰기). 도움말 `.se-help-panel-close-button`. 사진 `button.se-image-toolbar-button`(파일선택창). 글자 크기 `.se-font-size-code-toolbar-button`. 임시저장 `button[class*="save_btn"]` + "저장" 텍스트 폴백.
 - 네이버 블로그 본문은 WebFetch 불가(도메인 차단)일 수 있다 → 재시도 말고 바로 사용자에게 본문 붙여넣기 요청.
+- (실측 2026-10-21) 발행 패널: 열기 `button[class*="publish_btn"]`(data-click-area=tpb.publish) / 진짜 발행 `confirm_btn` = `seOnePublishBtn`. 발행 시간 라디오 `#radio_time1`(현재)·`#radio_time2`(예약, testid preTimeRadioBtn) → 예약 시 날짜 `input[class*="input_date"]`(readonly, 달력), 시 `select[class*="hour_option"]`, 분 `select[class*="minute_option"]`(10분 단위). 공개 설정 `#open_public` 등.
+- (실측 2026-10-21) 저장 글 목록: `button[class*="save_count_btn"]` → 항목 `button[class*="article_button"]`(제목 `[class*="title__"]`). 바로 옆 `#post_delete_button` 은 삭제 → 절대 클릭 금지. `scripts/preview_draft.js` 가 이 경로로 저장 글을 띄운다(가드 유지).
+- 예약 발행 자동 설정은 하지 않는다: 가드를 "사람 확인 모드"로 완화하는 안은 보안 약화로 차단됨(2026-10-21). 예약은 사람이 평소 브라우저에서.
 - 셀렉터는 네이버가 수시로 바꾼다. 실패 → probe → 실측 수정, 3회 실패 → 수동 원고.
 
 ### 스크립트 설계 원칙 (모의 테스트로 확인 — 바꾸지 말 것)
