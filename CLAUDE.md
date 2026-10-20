@@ -149,6 +149,7 @@
 - (실측 2026-10-21) 발행 패널: 열기 `button[class*="publish_btn"]`(data-click-area=tpb.publish) / 진짜 발행 `confirm_btn` = `seOnePublishBtn`. 발행 시간 라디오 `#radio_time1`(현재)·`#radio_time2`(예약, testid preTimeRadioBtn) → 예약 시 날짜 `input[class*="input_date"]`(readonly, 달력), 시 `select[class*="hour_option"]`, 분 `select[class*="minute_option"]`(10분 단위). 공개 설정 `#open_public` 등.
 - (실측 2026-10-21) 저장 글 목록: `button[class*="save_count_btn"]` → 항목 `button[class*="article_button"]`(제목 `[class*="title__"]`). 바로 옆 `#post_delete_button` 은 삭제 → 절대 클릭 금지. `scripts/preview_draft.js` 가 이 경로로 저장 글을 띄운다(가드 유지).
 - 예약 발행 자동 설정은 하지 않는다: 가드를 "사람 확인 모드"로 완화하는 안은 보안 약화로 차단됨(2026-10-21). 예약은 사람이 평소 브라우저에서.
+- (실측 2026-10-21) 블로그 관리: 소개글 = /config/bloginfo → 프레임 AdminUserBasic `#frmIntroduce` → `input._btnConfirm`. 카테고리 = /config/blog → 프레임 AdminCategoryView, 항목 `#tree span._categoryName`, 추가 `img._addCategoryView`(새 항목 기본명 "게시판"), 이름 `#category_name`(insertText+Tab 으로 반영), 순서 `img._moveLast` 등, 저장 `#submit_button`. 타이틀 = Remocon.naver?…&SelectedMenu=title → `#title_tab2 a._registry`(직접등록) → `#titleInputFile` · 높이 `#title_height` · 글자 제목 `#chk_title_display` → `a.btn_submit._showConfirmLayer` → 확인 `a.button_next._submit`. 적용 스크립트: `scripts/apply_branding.js <intro|categories|title>`.
 - 셀렉터는 네이버가 수시로 바꾼다. 실패 → probe → 실측 수정, 3회 실패 → 수동 원고.
 
 ### 스크립트 설계 원칙 (모의 테스트로 확인 — 바꾸지 말 것)
@@ -181,6 +182,7 @@
 | 2026-10-11 | (실제) 캡션이 사진 아래 문단 앞에 붙음 | 캡션 칸은 사진 선택 전 숨김 → click 실패 → placeCaret 폴백(DOM 캐럿)은 에디터가 무시. caretInside 는 DOM 캐럿 때문에 거짓 통과 | img 클릭 → 캡션 클릭, 활성 판정은 캡션 툴바 슬롯 display, placeCaret 폴백 제거. 모의 에디터도 실측 구조로 갱신 | naver_draft.working.js |
 | 2026-10-11 | (실제) 사진이 바로 앞 소제목 **위**로 들어감, 텍스트 대조는 통과 | 같은 초안 재실행(ND_DEBUG) 시 정상 → 간헐 레이스. prepareSlot 의 Enter(80ms)→↑ 에서 Enter 반영 전 ↑ 처리 시 캐럿이 소제목으로 올라감(추정, 재현 1회) | Enter 후 문단 수 증가 대기 → ↑ → 캐럿 위치 확인·재시도. 대조에 컴포넌트 순서 검사 추가. 모의 에디터에 sectionTitle 분리 동작 반영 | naver_draft.working.js |
 | 2026-10-11 | (실제) 블록 25/28 에서 "Frame was detached" | 원인 미확인(1회, 셀렉터 무관 — 에디터 프레임 재로드 추정). 저장 생략 설계대로 실패본 안 남음 | 그대로 재실행 → 정상 저장. 반복되면 probe·로그로 원인 추적 | — |
+| 2026-10-21 | (실제) 카테고리 추가를 연달아 누르면 새 항목이 안 생기고 이름만 덮어씀 | 새(미저장) 항목이 선택된 상태에선 추가가 무시됨(실측 로그 1→2→2→2) | 추가 전에 기존 카테고리를 먼저 선택, 이름은 insertText+Tab 으로 반영 후 선택 항목 이름 검증 | — |
 
 ## 9. 사용자 안내 (설치·운영)
 - 설치: `npm install` → `npx playwright install chromium` → `/setup-login`.
