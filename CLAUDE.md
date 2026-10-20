@@ -115,6 +115,9 @@
 | `node scripts/naver_draft.js <json> --dry-run` | 저장 클릭만 생략. **셀렉터 수정 중엔 항상 이것부터** |
 | `node scripts/naver_draft.js <json>` | 입력 → 임시저장 → 덤프·스크린샷 대조 → "자동 처리 결과" |
 | `node scripts/mosaic.js <spec>` | 모자이크 |
+| `node scripts/make_cards.js <spec.json>` | 카드 이미지 생성 (hero/list/check/steps, 공통 팔레트). 스펙은 `drafts/cards/<이름>.cards.json` |
+| `node scripts/preview_draft.js` | 저장 글을 에디터에 띄워 미리보기 (가드 유지, 입력 안 함) |
+| `node scripts/apply_branding.js <intro|categories|title>` | 블로그 소개글·카테고리·타이틀 배너 적용 (data/blog-branding.md 기준) |
 | `node scripts/probe_selectors.js [--wait 60 --label map --match 추가]` | 읽기 전용 DOM 덤프 (클릭 안 함) |
 | `npm test` | 오프라인 회귀 테스트 — 모의 에디터(test/mock-editor.html)로 전체 흐름 실행, 발행 0회·전문 대조 확인. **스크립트 수정 후 실제 실행 전에 항상** |
 
