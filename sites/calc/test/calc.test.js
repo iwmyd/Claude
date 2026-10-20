@@ -68,5 +68,33 @@ check('생일 전 만 나이 35 / 연 나이 36 / 세는 나이 37', A.man === 3
 check('생일 당일 만 나이 36', C.age('1990-10-21', '2026-10-21').man === 36);
 check('84㎡ ≈ 25.41평 / 10평 ≈ 33.06㎡', near(C.toPyeong(84), 25.41, 0.01) && near(C.toM2(10), 33.06, 0.01));
 
+// 11) 복리: 1,000만 원 연 7% 10년 연복리, 적립 0 → 1,000만×1.07^10 = 19,671,514
+let K = C.compound(10000000, 0, 0.07, 10, 'yearly', 0);
+check('연복리 10년 19,671,514원', near(K.total, 10000000 * Math.pow(1.07, 10)), K.total);
+K = C.compound(0, 100000, 0.06, 1, 'monthly', 0);
+check('월복리 적립 월10만 6% 1년 = FV 공식', near(K.total, 100000 * (Math.pow(1.005, 12) - 1) / 0.005), K.total);
+check('72의 법칙 6% → 12년', near(C.compound(1, 0, 0.06, 1, 'monthly', 0).rule72, 12, 1e-9));
+K = C.compound(10000000, 0, 0.05, 1, 'monthly', 0.154);
+check('복리 세후 = 세전이자 − 15.4%', near(K.net, K.gross - Math.floor(K.gross * 0.154 / 10) * 10, 0.01), K);
+
+// 12) 수식 계산기
+const E = (x, a) => C.evaluate(x, a || 'deg');
+const cases = [['2+3×4', 14], ['(2+3)×4', 20], ['10÷4', 2.5], ['2^10', 1024], ['-3^2', -9], ['5!', 120], ['√16+1', 5], ['2π', 2 * Math.PI],
+  ['sin(30)', 0.5], ['cos(90)', 0], ['log(1000)', 3], ['ln(e)', 1], ['50+10%', 55], ['200−25%', 150], ['50×10%', 5], ['10%', 0.1], ['0.1+0.2', 0.3], ['3(4+1)', 15]];
+for (const [x, want] of cases) { let got; try { got = E(x); } catch (e) { got = e.message; } check(`수식 ${x} = ${+want.toPrecision(12)}`, typeof got === 'number' && near(got, want, 1e-9), got); }
+check('rad 모드 sin(π/2)=1', near(E('sin(π/2)', 'rad'), 1, 1e-12));
+for (const bad of ['1÷0', '(2+3', 'tan(90)', '2++']) { let msg = ''; try { E(bad); } catch (e) { msg = e.message; } check(`잘못된 수식 "${bad}" → 오류 메시지`, !!msg, msg); }
+
+// 13) 자동차: 할부 3,500만 − 선납 700만 = 2,800만, 5.9% 60개월 / 자동차세 1,998cc 1년차 = 399,600 + 교육세 119,880
+let Q = C.carLoan(35000000, 7000000, 0.059, 60);
+check('자동차 할부 원금 2,800만·월 납입 = 대출 계산과 동일', Q.principal === 28000000 && near(Q.monthly, C.loan(28000000, 0.059, 60, 'equal-payment').first), Q.monthly);
+let X = C.carTax(1998, 1, 'ice');
+check('자동차세 2,000cc급 1년차 399,600 + 교육세 119,880 = 519,480', X.tax === 399600 && X.edu === 119880 && X.total === 519480, X);
+check('1,000cc 이하 cc당 80원 (998cc → 79,840)', C.carTax(998, 1, 'ice').tax === 79840);
+check('1,600cc 이하 cc당 140원 (1,598cc → 223,720)', C.carTax(1598, 1, 'ice').tax === 223720);
+check('차령 3년차 5% 경감 (399,600×0.95=379,620)', C.carTax(1998, 3, 'ice').tax === 379620);
+check('차령 20년 → 12년으로 보고 50% 경감 (199,800)', C.carTax(1998, 20, 'ice').tax === 199800);
+check('전기차 10만 + 교육세 3만 = 13만', C.carTax(0, 5, 'ev').total === 130000);
+
 console.log(fail ? `\n❌ 실패 ${fail}건` : '\n✅ 전체 통과');
 process.exitCode = fail ? 1 : 0;

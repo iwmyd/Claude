@@ -111,7 +111,106 @@
   const PYEONG = 400 / 121;
   const toPyeong = (m2) => m2 / PYEONG, toM2 = (py) => py * PYEONG;
 
-  const api = { loan, deposit, savings, prepayFee, severance, rentConvert, dsr, installment, military, MILITARY, dday, addDays, age, toPyeong, toM2 };
+  /** 복리 성장: 초기 원금 + 매월 적립. freq 'monthly'(월복리) | 'yearly'(연복리 — 같은 연수익률의 월 환산율 사용).
+   *  taxRate 는 이자에 대한 세율(일반 15.4%, 비과세 0) — 매년 말 이자분에서 차감하지 않고 최종 이자에만 적용(단순화). */
+  function compound(initial, monthly, annualRate, years, freq, taxRate) {
+    const mr = freq === 'yearly' ? Math.pow(1 + annualRate, 1 / 12) - 1 : annualRate / 12;
+    let bal = initial, paid = initial;
+    const series = [{ year: 0, principal: initial, interest: 0, balance: initial }];
+    for (let m = 1; m <= Math.round(years * 12); m++) {
+      bal = bal * (1 + mr) + monthly; paid += monthly;
+      if (m % 12 === 0 || m === Math.round(years * 12)) series.push({ year: +(m / 12).toFixed(2), principal: paid, interest: bal - paid, balance: bal });
+    }
+    const gross = bal - paid, tax = Math.floor(gross * (taxRate || 0) / 10) * 10;
+    return { series, paid, gross, tax, net: gross - tax, total: bal - tax, rule72: annualRate > 0 ? 72 / (annualRate * 100) : Infinity };
+  }
+
+  /** 수식 계산기 (eval 사용 안 함 — 재귀 하강 파서). 지원: + − × ÷ ^ ( ) % ! √ π e, sin cos tan asin acos atan ln log sqrt abs, 암시적 곱(2π, 3(4))
+   *  % : a+b% / a−b% 는 a의 b% (휴대폰 계산기 방식), 그 외는 ÷100. angle: 'deg' | 'rad' */
+  function evaluate(src, angle) {
+    const s = String(src).replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-').replace(/π/g, 'pi').replace(/√/g, 'sqrt').replace(/\s+/g, '');
+    let i = 0;
+    const toRad = (x) => (angle === 'rad' ? x : (x * Math.PI) / 180), fromRad = (x) => (angle === 'rad' ? x : (x * 180) / Math.PI);
+    const round = (x) => (Math.abs(x) < 1e-12 ? 0 : x);
+    const F = {
+      sin: (x) => round(Math.sin(toRad(x))), cos: (x) => round(Math.cos(toRad(x))), tan: (x) => { const c = Math.cos(toRad(x)); if (Math.abs(c) < 1e-12) throw new Error('정의되지 않음'); return round(Math.tan(toRad(x))); },
+      asin: (x) => fromRad(Math.asin(x)), acos: (x) => fromRad(Math.acos(x)), atan: (x) => fromRad(Math.atan(x)),
+      ln: (x) => Math.log(x), log: (x) => Math.log10(x), sqrt: (x) => { if (x < 0) throw new Error('음수의 제곱근'); return Math.sqrt(x); }, abs: Math.abs,
+    };
+    const peek = () => s[i];
+    const fact = (n) => { if (n < 0 || !Number.isInteger(n) || n > 170) throw new Error('계승은 0~170 정수만'); let r = 1; for (let k = 2; k <= n; k++) r *= k; return r; };
+    function primary() {
+      if (peek() === '(') { i++; const v = expr(); if (peek() !== ')') throw new Error('괄호 짝이 맞지 않음'); i++; return v; }
+      const num = s.slice(i).match(/^(\d+\.?\d*|\.\d+)(e[+-]?\d+)?/i);
+      if (num) { i += num[0].length; return parseFloat(num[0]); }
+      const id = s.slice(i).match(/^[a-z]+/i);
+      if (id) {
+        const name = id[0].toLowerCase(); i += id[0].length;
+        if (name === 'pi') return Math.PI;
+        if (name === 'e') return Math.E;
+        if (F[name]) { if (peek() !== '(') { const arg = unary(); return F[name](arg); } i++; const v = expr(); if (peek() !== ')') throw new Error('괄호 짝이 맞지 않음'); i++; return F[name](v); }
+        throw new Error('알 수 없는 기호: ' + name);
+      }
+      throw new Error('수식이 올바르지 않음');
+    }
+    function postfix() {
+      let v = primary(), pct = false;
+      while (peek() === '!' || peek() === '%') { if (s[i++] === '!') v = fact(v); else pct = true; }
+      return pct ? { v, pct } : v;
+    }
+    const val = (x) => (typeof x === 'object' ? x.v / 100 : x);
+    function power() { const b = postfix(); if (peek() === '^') { i++; const e = unary(); return Math.pow(val(b), val(e)); } return b; }
+    function unary() { if (peek() === '-') { i++; const v = unary(); return typeof v === 'object' ? { v: -v.v, pct: true } : -v; } if (peek() === '+') { i++; return unary(); } return power(); }
+    function term() {
+      let v = val(unary());
+      for (;;) {
+        const c = peek();
+        if (c === '*' || c === '/') { i++; const r = val(unary()); if (c === '/' && r === 0) throw new Error('0으로 나눌 수 없음'); v = c === '*' ? v * r : v / r; }
+        else if (c && /[\d.(a-z]/i.test(c)) { v *= val(unary()); } // 암시적 곱
+        else return v;
+      }
+    }
+    function expr() {
+      let v = term();
+      for (;;) {
+        const c = peek();
+        if (c !== '+' && c !== '-') return v;
+        i++;
+        const save = i; let r = unary(); // a ± b% → a의 b%
+        if (typeof r === 'object' && (peek() === undefined || peek() === ')' || peek() === '+' || peek() === '-')) r = v * r.v / 100;
+        else { i = save; r = term(); }
+        v = c === '+' ? v + r : v - r;
+      }
+    }
+    if (!s) return 0;
+    const out = val(expr());
+    if (i < s.length) throw new Error('수식이 올바르지 않음');
+    if (!isFinite(out)) throw new Error('결과가 너무 큼');
+    return parseFloat(out.toPrecision(12));
+  }
+
+  /** 자동차 할부: 원금 = 차량가 − 선납금, 원리금균등 */
+  function carLoan(price, down, annualRate, months) {
+    const principal = Math.max(0, price - down);
+    if (!principal || !months) return { principal, monthly: 0, totalInterest: 0, total: down, rows: [] };
+    const r = loan(principal, annualRate, months, 'equal-payment');
+    return { principal, monthly: r.first, totalInterest: r.totalInterest, total: down + r.totalPayment, rows: r.rows };
+  }
+
+  /** 자동차세(비영업용 승용) — 지방세법 제127조. cc당: ≤1000cc 80원, ≤1600cc 140원, 초과 200원.
+   *  차령 n≥3: 연세액 × (1 − 0.05(n−2)), n>12 는 12. 전기·수소 등 그 밖의 승용 10만 원. 지방교육세 30%(제151조). */
+  function carTax(cc, ageYears, fuel) {
+    let base, perCc = 0;
+    if (fuel === 'ev') base = 100000;
+    else { perCc = cc <= 1000 ? 80 : cc <= 1600 ? 140 : 200; base = cc * perCc; }
+    const n = Math.min(Math.max(1, Math.floor(ageYears)), 12);
+    const cut = fuel === 'ev' || n < 3 ? 0 : 0.05 * (n - 2);
+    const tax = Math.floor(base * (1 - cut) / 10) * 10;
+    const edu = Math.floor(tax * 0.3 / 10) * 10;
+    return { perCc, base, cut, tax, edu, total: tax + edu, half: (tax + edu) / 2 };
+  }
+
+  const api = { loan, deposit, savings, prepayFee, severance, rentConvert, dsr, installment, military, MILITARY, dday, addDays, age, toPyeong, toM2, compound, evaluate, carLoan, carTax };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.Calc = api;
 })(this);
