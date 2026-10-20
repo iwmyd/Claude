@@ -1,0 +1,30 @@
+{
+  "outDir": "products/ogq/info-labels/png",
+  "mainSet": [0, 1, 4, 13], "tab": 0,
+  "stickers": [
+    { "text": "핵심 요약", "style": "pill", "accent": "navy" },
+    { "text": "결론부터!", "style": "bubble", "accent": "orange" },
+    { "text": "체크 포인트", "style": "tag", "accent": "orange" },
+    { "text": "꼭 확인", "style": "stamp", "accent": "red" },
+    { "text": "주의!", "style": "pill", "accent": "red" },
+    { "text": "알아두면 좋아요", "style": "note", "accent": "orange" },
+    { "text": "한 줄 정리", "style": "marker", "accent": "orange" },
+    { "text": "신청 방법", "style": "tag", "accent": "navy" },
+    { "text": "필요 서류", "style": "tag", "accent": "red" },
+    { "text": "마감 임박", "style": "stamp", "accent": "red", "sub": "서두르세요" },
+    { "text": "D-DAY", "style": "pill", "accent": "orange" },
+    { "text": "Q&A", "style": "bubble", "accent": "navy" },
+    { "text": "자주 묻는 질문", "style": "note", "accent": "navy" },
+    { "text": "출처 확인", "style": "stamp", "accent": "navy", "sub": "원문 체크" },
+    { "text": "업데이트", "style": "pill", "accent": "navy", "sub": "내용이 바뀌었어요" },
+    { "text": "비교해 보면", "style": "marker", "accent": "orange" },
+    { "text": "계산해 봤어요", "style": "bubble", "accent": "red" },
+    { "text": "장점", "style": "pill", "accent": "navy" },
+    { "text": "단점", "style": "pill", "accent": "red" },
+    { "text": "TIP", "style": "stamp", "accent": "orange" },
+    { "text": "다음 글 예고", "style": "note", "accent": "red" },
+    { "text": "이웃추가 환영", "style": "bubble", "accent": "orange" },
+    { "text": "공감은 힘이 돼요", "style": "marker", "accent": "red" },
+    { "text": "읽어주셔서 감사합니다", "style": "note", "accent": "navy" }
+  ]
+}
