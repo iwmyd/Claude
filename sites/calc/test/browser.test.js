@@ -72,7 +72,9 @@ const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment'
     await page.goto(U("charcount"), { waitUntil: "networkidle" }); await set("text", "안녕 하세요");
     ok(`[${tag}] 글자 수 공백포함 6`, (await main()) === "6자");
     await page.goto(U("wage"), { waitUntil: "networkidle" });
-    ok(`[${tag}] 최저임금 월 환산 2,156,880원`, (await main()).includes("2,156,880"));
+    ok(`[${tag}] 최저임금 월 환산 2,156,880원 · 실수령 1,927,700원`, (await page.locator("#out").innerText()).includes("2,156,880") && (await main()).includes("1,927,700"), await main());
+    await page.selectOption("#tax", "biz");
+    ok(`[${tag}] 3.3% 선택 → 실수령 2,085,710원 · 비교표 4행`, (await main()).includes("2,085,710") && (await page.locator("#tables tbody tr").count()) === 4, await main());
     await page.goto(U("vat"), { waitUntil: "networkidle" });
     ok(`[${tag}] 부가세 합계 1,100,000원`, (await main()).includes("1,100,000"));
     await page.goto(U("subscription"), { waitUntil: "networkidle" }); await set("home", 15); await set("dep", 6); await set("acc", 15);

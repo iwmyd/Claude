@@ -117,6 +117,21 @@ let G = C.wage(10320, 8, 5);
 check('주 40시간 → 주휴 8시간, 월 209시간, 월 2,156,880원 (2026 최저임금 월 환산)', G.holidayHours === 8 && G.monthHours === 209 && G.monthPay === 2156880, G);
 check('주 20시간 → 주휴 4시간', C.wage(10320, 4, 5).holidayHours === 4);
 check('주 14시간 → 주휴 없음', C.wage(10320, 7, 2).holidayHours === 0);
+const WO = (tax, e = {}) => Object.assign({ tax, pension: true, health: true, employ: true, family: 1, probation: false, absentDays: 0 }, e);
+let WG = C.wage(10320, 8, 5, WO('earned'));
+check('최저임금 4대보험: 연금 102,450·건보 77,540·요양 10,180·고용 19,410', WG.pension === 102450 && WG.health === 77540 && WG.care === 10180 && WG.employ === 19410, WG);
+check('회사 부담 = 연금·건보·요양 같은 금액 + 고용 1.15%', WG.boss.pension === WG.pension && WG.boss.health === WG.health && WG.boss.employ === 24800, WG.boss);
+WG = C.wage(10320, 8, 5, WO('biz'));
+check('3.3%: 소득세 64,700 + 지방 6,470, 4대보험 0', WG.incomeTax === 64700 && WG.localTax === 6470 && WG.pension + WG.health + WG.employ === 0 && WG.net === 2085710, WG);
+check('일용직 일당 8.3만 → 세금 0', C.wage(10320, 8, 5, WO('daily')).incomeTax === 0);
+WG = C.wage(25000, 8, 5, WO('daily', { pension: false, health: false, employ: false }));
+check('일용직 일당 20만 × 22일 → 소득세 29,700·지방 2,970', WG.incomeTax === 29700 && WG.localTax === 2970, WG);
+check('떼지 않음 → 실수령 = 세전', C.wage(10320, 8, 5, WO('none')).net === 2156880);
+WG = C.wage(10320, 8, 5, WO('none', { absentDays: 1 }));
+check('결근 1일 → 근무 82,560 + 주휴 82,560 차감', WG.gross === 2156880 - 165120, WG);
+WG = C.wage(10320, 8, 5, WO('none', { probation: true }));
+check('수습 90% → 시급 9,288, 최저임금 90% 이상이라 적법', WG.rate === 9288 && !WG.rateBelowMin, WG);
+check('수습 + 시급 1만 → 9,000원은 위반 경고', C.wage(10000, 8, 5, WO('none', { probation: true })).rateBelowMin);
 
 // 16) 글자 수·평단가
 let T2 = C.charCount('안녕 하세요\nabc');
