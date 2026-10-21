@@ -117,7 +117,7 @@
 | `node scripts/naver_draft.js <json>` | 입력 → 임시저장 → 덤프·스크린샷 대조 → "자동 처리 결과" |
 | `node scripts/mosaic.js <spec>` | 모자이크 |
 | `node sites/calc/serve.js` | 종합계산기 로컬 미리보기 (http://localhost:8080) |
-| `bash sites/calc/deploy.sh "변경 내용"` | (새 계산기를 추가했다면 배포 후 **구글 서치 콘솔 색인 생성 요청**까지 — 사용자 지시)  종합계산기 빌드→계산·브라우저 테스트 통과 시에만 GitHub Pages(iwmyd/aipomcalc → aipomcalc.com) 배포. `ADSENSE_PUB=pub-…` 있으면 광고 코드·ads.txt 포함 |
+| `bash sites/calc/deploy.sh "변경 내용"` | (새 계산기를 추가했다면 배포 후 **서치 콘솔 색인 생성 요청**까지 Claude 가 대신 — claude-in-chrome, 하루 약 10건)  종합계산기 빌드→계산·브라우저 테스트 통과 시에만 GitHub Pages(iwmyd/aipomcalc → aipomcalc.com) 배포. `ADSENSE_PUB=pub-…` 있으면 광고 코드·ads.txt 포함 |
 | `node scripts/make_cards.js <spec.json>` | 카드 이미지 생성 (hero/list/check/steps, 공통 팔레트). 스펙은 `drafts/cards/<이름>.cards.json` |
 | `node scripts/preview_draft.js` | 저장 글을 에디터에 띄워 미리보기 (가드 유지, 입력 안 함) |
 | `node scripts/apply_branding.js <intro|categories|title>` | 블로그 소개글·카테고리·타이틀 배너 적용 (data/blog-branding.md 기준) |
