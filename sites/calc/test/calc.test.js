@@ -263,6 +263,23 @@ check('단위: 1자 = 30.303cm, 1간 = 6자, 1평 = 3.3058㎡', near(cv('len', 1
 check('단위: 1ft = 304.8mm, 1in = 25.4mm, 1kgf = 9.80665N, 1tf = 1,000kgf', near(cv('len', 1, 'ft', 'mm'), 304.8, 1e-9) && near(cv('len', 1, 'in', 'mm'), 25.4, 1e-9) && cv('force', 1, 'kgf', 'N') === 9.80665 && near(cv('force', 1, 'tf', 'kgf'), 1000, 1e-9));
 check('단위: 왕복 환산하면 원래 값 (psi → MPa → psi)', near(cv('press', cv('press', 1000, 'psi', 'MPa'), 'MPa', 'psi'), 1000, 1e-9));
 
+// FC 온라인 이적시장 수수료 — 넥슨 공식 계산기 식, 손계산과 대조 (2026-10-22)
+const fc = (price, pc, top, coupon, cap, qty) => C.fcFee([{ price: BigInt(price), coupon, cap: BigInt(cap || 0), qty }], pc, top).receive;
+check('FC 1억 할인 없음 → 6,000만', fc(1e8, 0, 0) === 60000000n);
+check('FC 1억 PC방 → 7,200만 (4,000만×30% 할인)', fc(1e8, 1, 0) === 72000000n);
+check('FC 1억 PC방+TOP → 8,000만 (50%)', fc(1e8, 1, 1) === 80000000n);
+check('FC + 쿠폰 30% → 9,200만', fc(1e8, 1, 1, 30) === 92000000n);
+check('FC 쿠폰은 합쳐 100%까지 (60% → 50%) → 수수료 0', fc(1e8, 1, 1, 60) === 100000000n);
+check('FC 쿠폰 최대 할인 500만 → 6,500만', fc(1e8, 0, 0, 30, 5e6) === 65000000n);
+check('FC 수량 2, 한도 1,000만×2', fc(85e6, 0, 0, 30, 1e7, 2) === 122000000n);
+check('FC 버림: 12,345 TOP → 12,345 − (4,938 − 987)', fc(12345, 0, 1) === 12345n - (4938n - 987n));
+check('FC 여러 선수 합산 = 각자 합', C.fcFee([{ price: 3e8 }, { price: 85e6, coupon: 30, cap: 1e7, qty: 2 }], 0, 0).receive === 302000000n);
+let fcOk = true; for (const t of [1n, 999n, 60000000n, 123456789n, 10n ** 12n]) for (const [p, q] of [[0, 0], [1, 0], [1, 1]]) { const x = C.fcPriceFor(t, p, q, 0, 0); if (!(C.fcFee([{ price: x }], p, q).receive >= t && C.fcFee([{ price: x - 1n }], p, q).receive < t)) fcOk = false; }
+check('FC 목표 BP 역산: 최소 판매가 (그보다 1 BP 낮으면 모자람)', fcOk);
+check('FC 역산 10억 PC+TOP → 12억 5,000만', C.fcPriceFor(1000000000n, 1, 1, 0, 0) === 1250000000n);
+check('BP 읽기: 1억 2,000만 / 12.5억 / 3억 2.000만 / 3,500,000', C.parseBP('1억 2,000만') === 120000000n && C.parseBP('12.5억') === 1250000000n && C.parseBP('3억 2.000만') === 320000000n && C.parseBP('3,500,000') === 3500000n);
+check('BP 표기: 12억 3,456만 7,890', C.korBP(1234567890n) === '12억 3,456만 7,890');
+
 const PG = require('../pages.js');
 check('사이트맵 제외: 감사 페이지 noindex', PG.find((p) => p.slug === 'contact/thanks').noindex === true);
 check('모든 계산기 FAQ 3개 이상', PG.filter((p) => p.calc).every((p) => (p.faq || []).length >= 3));

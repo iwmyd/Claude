@@ -11,7 +11,7 @@ const server = http.createServer((q, s) => {
   s.writeHead(200, { 'Content-Type': types[path.extname(f)] || 'application/octet-stream' }); fs.createReadStream(f).pipe(s);
 }).listen(8765);
 const U = (p) => `http://localhost:8765/${p ? p + '/' : ''}`;
-const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment', 'savings', 'compound', 'military', 'car-loan', 'car-tax', 'severance', 'rent', 'area', 'dday', 'age', 'percent', 'charcount', 'refinance', 'goal', 'avgprice', 'car-acq', 'salary', 'wage', 'unemployment', 'vat', 'subscription', 'bmi', 'winrate', 'annual-leave', 'brokerage', 'freelance-tax', 'electricity', 'area-volume', 'materials', 'slope', 'stairs', 'earthwork', 'unit-convert', 'about', 'privacy', 'contact', 'contact/thanks'];
+const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment', 'savings', 'compound', 'military', 'car-loan', 'car-tax', 'severance', 'rent', 'area', 'dday', 'age', 'percent', 'charcount', 'refinance', 'goal', 'avgprice', 'car-acq', 'salary', 'wage', 'unemployment', 'vat', 'subscription', 'bmi', 'winrate', 'annual-leave', 'brokerage', 'freelance-tax', 'electricity', 'area-volume', 'materials', 'slope', 'stairs', 'earthwork', 'unit-convert', 'fc-transfer', 'image', 'about', 'privacy', 'contact', 'contact/thanks'];
 
 (async () => {
   const browser = await chromium.launch();
@@ -30,7 +30,7 @@ const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment'
       if (sw > vw.width) a11yBad.push(`/${slug} 가로스크롤 ${sw}`);
       const bad = await page.evaluate(() => {
         const out = [];
-        document.querySelectorAll('.calc input').forEach((i) => { if (i.type !== 'date' && !i.getAttribute('inputmode')) out.push('키패드 #' + i.id); if (!i.closest('label')) out.push('라벨 #' + i.id); });
+        document.querySelectorAll('.calc input').forEach((i) => { if (['hidden', 'file', 'checkbox'].includes(i.type)) { if (i.type !== 'hidden' && !i.closest('label')) out.push('라벨 #' + i.id); return; } if (i.type !== 'date' && !i.getAttribute('inputmode')) out.push('키패드 #' + i.id); if (!i.closest('label')) out.push('라벨 #' + i.id); });
         document.querySelectorAll('.catnav a, .f input, .f select, .ab, .tb, .k, .fav').forEach((e) => { const r = e.getBoundingClientRect(); if (r.height && r.height < 44) out.push(`터치 ${Math.round(r.height)}px ${e.id || e.className}`); });
         if (!document.querySelector('.skip[href="#main"]') || !document.getElementById('main')) out.push('건너뛰기 없음');
         return out;
@@ -130,7 +130,7 @@ const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment'
     }
     await page.goto(U("area-volume"), { waitUntil: "networkidle" }); const d1 = await page.locator("#chart svg").innerHTML(); await page.selectOption("#shape", "circle");
     ok(`[${tag}] 그림: 도형을 바꾸면 그림도 바뀜`, d1 !== (await page.locator("#chart svg").innerHTML()));
-    await page.goto(U("materials"), { waitUntil: "networkidle" });
+    await page.goto(U("materials"), { waitUntil: "networkidle" }); await page.click("[data-reset]"); // 앞 검사에서 바꾼 값이 저장돼 있으므로 처음 값으로
     ok(`[${tag}] 그림: 레미콘 차 3대 칸`, (await page.locator("#chart rect.dg-truck").count()) === 3);
 
     // SEO·문의 (2026-10-22)
@@ -148,6 +148,39 @@ const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment'
       }
       ok(`[${tag}] 모든 계산기: FAQ 3개+ · 전용 썸네일 · 설명 · 탐색경로 · 관련 링크`, bad.length === 0, bad.join(', '));
     }
+
+    // FC 이적시장: 체크박스·선수 추가/빼기·쿠폰 한도·역산
+    await page.goto(U('fc-transfer'), { waitUntil: 'networkidle' });
+    ok(`[${tag}] FC 1억 → 6,000만 BP`, (await main()).startsWith('6,000만'), await main());
+    await page.check('#fpc'); await page.check('#ftop');
+    ok(`[${tag}] FC PC방+TOP → 8,000만`, (await main()).startsWith('8,000만'), await main());
+    await page.click('[data-fc-add]'); await set('fcp2', '8500만'); await page.selectOption('#fcc2', '30'); await set('fcm2', '500만');
+    ok(`[${tag}] FC 2명·쿠폰 한도 → 1억 5,300만`, (await main()).startsWith('1억 5,300만'), await main());
+    await page.click('[data-fc-add]'); await set('fcp3', '2억'); await page.click('[data-fc-del="2"]');
+    ok(`[${tag}] FC 선수 빼기: 아래 줄이 당겨짐`, (await page.inputValue('#fcp2')) === '2억' && (await page.locator('.fc-row:not([hidden])').count()) === 2);
+    await page.reload({ waitUntil: 'networkidle' });
+    ok(`[${tag}] FC 체크박스·선수 수 저장·복원`, (await page.isChecked('#fpc')) && (await page.inputValue('#fcn')) === '2');
+    await page.selectOption('#fmode', 'target');
+    ok(`[${tag}] FC 역산 10억(PC+TOP) → 12억 5,000만`, (await main()).startsWith('12억 5,000만'), await main());
+    await page.click('[data-reset]');
+    // 이미지 계산기: 길이·면적 (글자 인식 없이 — 네트워크 불필요). 300×200px 방, 문 90px = 0.9m → 6㎡
+    const pic = await ctx.newPage(); await pic.setViewportSize({ width: 500, height: 360 });
+    await pic.setContent('<body style="margin:0"><svg width="500" height="360" xmlns="http://www.w3.org/2000/svg" style="background:#f4f1ea"><rect x="100" y="80" width="300" height="200" fill="#e3d9c6" stroke="#333" stroke-width="4"/></svg></body>');
+    const png = await pic.screenshot(); await pic.close();
+    await page.goto(U('image'), { waitUntil: 'networkidle' });
+    await page.selectOption('#pmode', 'measure');
+    await page.setInputFiles('#pfile', { name: 'room.png', mimeType: 'image/png', buffer: png });
+    await page.waitForFunction(() => !document.getElementById('pstage').hidden && document.getElementById('pcv').width === 500); // 이미지가 다 불러와질 때까지
+    const bx = await page.$eval('#pcv', (c) => { c.scrollIntoView(); const q = c.getBoundingClientRect(); return { x: q.left, y: q.top, s: q.width / c.width }; });
+    for (const [x, y] of [[160, 280], [250, 280], [100, 80], [400, 80], [400, 280], [100, 280]]) await page.mouse.click(bx.x + x * bx.s, bx.y + y * bx.s);
+    ok(`[${tag}] 이미지 계산기 면적 6㎡ ±2% (기준선 0.9m, 클릭 좌표 반올림 오차)`, Math.abs(parseFloat(await main()) - 6) <= 0.12, await main());
+    await page.selectOption('#pmode', 'slope'); await page.waitForFunction(() => /아래쪽과 위쪽/.test(document.getElementById('out').textContent));
+    const by = await page.$eval('#pcv', (c) => { c.scrollIntoView(); const q = c.getBoundingClientRect(); return { x: q.left, y: q.top, s: q.width / c.width }; }); // 선택 상자로 화면이 움직였으므로 다시 잼
+    for (const [x, y] of [[100, 280], [400, 205]]) await page.mouse.click(by.x + x * by.s, by.y + y * by.s);
+    ok(`[${tag}] 이미지 계산기 경사 1:4 → 14° 안팎`, Math.abs(parseFloat(await main()) - 14.04) <= 0.3, await main());
+    await page.selectOption('#pmode', 'receipt'); await page.evaluate(() => { const e = document.getElementById('pocr'); e.hidden = true; });
+    await set('ptotal', '37,000');
+    ok(`[${tag}] 이미지 계산기 영수증 37,000원 ÷ 4명 → 9,300원`, (await main()) === '9,300원', await main());
 
     // 일반·공학용 계산기
     await page.goto(U('basic'), { waitUntil: 'networkidle' });

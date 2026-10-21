@@ -31,6 +31,7 @@ const CATS = [
   { id: 'home', name: '부동산', tone: 'orange', icon: 'home' },
   { id: 'life', name: '날짜·생활', tone: 'rose', icon: 'calendar' },
   { id: 'build', name: '건축·토목', tone: 'lime', icon: 'ruler' },
+  { id: 'game', name: '게임', tone: 'violet', icon: 'gamepad' },
 ];
 const calcs = pages.filter((p) => p.calc);
 for (const p of calcs) if (!CATS.find((c) => c.id === p.cat)) throw new Error('카테고리 없음: ' + p.slug);
@@ -80,14 +81,14 @@ const header = () => `<a class="skip" href="#main">본문 바로가기</a>
 </header>
 <dialog class="search" id="search" aria-label="계산기 검색"><div class="search-in">${icon('search')}<input id="q" type="search" placeholder="계산기 이름·초성 (예: ㄷㅊ, 군적금) — 오타도 찾아 드려요" autocomplete="off" aria-controls="qr"><button type="button" class="tb" data-close-search aria-label="닫기">${icon('x')}</button></div><ul id="qr" role="listbox"></ul><p class="search-hint"><kbd>↑</kbd><kbd>↓</kbd> 이동 · <kbd>Enter</kbd> 열기 · <kbd>Esc</kbd> 닫기</p></dialog>`;
 
-const footer = () => `<footer class="foot"><div class="wrap">
+const footer = (p = {}) => `<footer class="foot"><div class="wrap">
 <div class="foot-grid"><div><b>${NAME}</b><p>모든 계산은 참고용이며 금융상품 가입·투자 권유가 아닙니다. 최종 금액은 해당 기관에 확인하세요.</p></div>
 <div class="foot-links"><a href="/about/">사이트 소개</a><a href="/privacy/">개인정보처리방침</a><a href="/contact/">문의하기 (평균 1일 이내 답변)</a><a href="mailto:${CONTACT}">${CONTACT}</a><a href="https://blog.naver.com/iwmyd99" rel="noopener">블로그: 에이팜의 이야기 보따리</a><button type="button" class="linkbtn" data-clear-storage>저장 기록 지우기</button></div></div>
 <p class="muted">최종 업데이트 ${UPDATED}</p></div></footer>
 <button class="totop" type="button" data-totop aria-label="맨 위로">${icon('up')}</button>
 <div class="toast" role="status" aria-live="polite" id="toast"></div>
 <script>window.AC_INDEX=${JSON.stringify(INDEX)};window.AC_ICONS=${JSON.stringify(Object.fromEntries(INDEX.map((x) => [x.i, ICONS[x.i] || ''])))};</script>
-${['calc.js', 'search.js', 'charts.js', 'diagram.js', 'app.js'].map((f) => `<script src="${V(f)}"></script>`).join('')}`;
+${['calc.js', 'search.js', 'charts.js', 'diagram.js', ...(p.js || []), 'app.js'].map((f) => `<script src="${V(f)}"></script>`).join('')}`;
 
 const tipsBlock = (t) => (t && t.length ? `<section class="tips" aria-label="핵심 정리">${t.map(([h, b]) => `<div class="tip"><b>${h}</b><p>${b}</p></div>`).join('')}</section>` : '');
 const basisBlock = (p) => (p.basis ? `<details class="card basis"><summary>${icon('info')}계산 기준과 근거</summary><ul>${p.basis.map((b) => `<li>${b}</li>`).join('')}</ul>${p.sources ? `<p class="src">출처: ${p.sources.map(([n, u]) => `<a href="${u}" rel="noopener">${n}</a>`).join(' · ')}</p>` : ''}</details>` : '');
@@ -135,11 +136,11 @@ ${actions(p)}
 ${tipsBlock(p.tips)}
 ${basisBlock(p)}
 ${faqBlock(p.faq)}
-<p class="report"><a href="/contact/?calc=${p.slug}">이 계산기에 틀린 곳이나 바라는 점이 있나요? 알려 주세요 →</a></p>
+<p class="report"><a href="/contact/?calc=${p.slug}">이 계산기에 틀린 곳이나 바라는 점이 있나요? 알려 주세요</a></p>
 <section class="related"><h2>함께 쓰면 좋은 계산기</h2><div class="tiles">${related.map(tile).join('')}</div></section>
 </main>
 ${p.pad ? '' : '<a class="mini" href="#out" data-mini hidden><span></span><b></b></a>'}
-${footer()}
+${footer(p)}
 </body></html>`;
 }
 
