@@ -65,7 +65,7 @@ const header = () => `<a class="skip" href="#main">본문 바로가기</a>
 </div></div>
 <nav class="wrap catnav" aria-label="카테고리">${CATS.map((c) => `<a href="/#${c.id}" data-tone="${c.tone}">${c.name}</a>`).join('')}</nav>
 </header>
-<dialog class="search" id="search" aria-label="계산기 검색"><div class="search-in">${icon('search')}<input id="q" type="search" placeholder="계산기 이름·초성 (예: ㄷㅊ, 군적금)" autocomplete="off" aria-controls="qr"><button type="button" class="tb" data-close-search aria-label="닫기">${icon('x')}</button></div><ul id="qr" role="listbox"></ul><p class="search-hint"><kbd>↑</kbd><kbd>↓</kbd> 이동 · <kbd>Enter</kbd> 열기 · <kbd>Esc</kbd> 닫기</p></dialog>`;
+<dialog class="search" id="search" aria-label="계산기 검색"><div class="search-in">${icon('search')}<input id="q" type="search" placeholder="계산기 이름·초성 (예: ㄷㅊ, 군적금) — 오타도 찾아 드려요" autocomplete="off" aria-controls="qr"><button type="button" class="tb" data-close-search aria-label="닫기">${icon('x')}</button></div><ul id="qr" role="listbox"></ul><p class="search-hint"><kbd>↑</kbd><kbd>↓</kbd> 이동 · <kbd>Enter</kbd> 열기 · <kbd>Esc</kbd> 닫기</p></dialog>`;
 
 const footer = () => `<footer class="foot"><div class="wrap">
 <div class="foot-grid"><div><b>${NAME}</b><p>모든 계산은 참고용이며 금융상품 가입·투자 권유가 아닙니다. 최종 금액은 해당 기관에 확인하세요.</p></div>
@@ -73,8 +73,8 @@ const footer = () => `<footer class="foot"><div class="wrap">
 <p class="muted">최종 업데이트 ${UPDATED}</p></div></footer>
 <button class="totop" type="button" data-totop aria-label="맨 위로">${icon('up')}</button>
 <div class="toast" role="status" aria-live="polite" id="toast"></div>
-<script>window.AC_INDEX=${JSON.stringify(INDEX)};</script>
-<script src="/assets/calc.js"></script><script src="/assets/charts.js"></script><script src="/assets/app.js"></script>`;
+<script>window.AC_INDEX=${JSON.stringify(INDEX)};window.AC_ICONS=${JSON.stringify(Object.fromEntries(INDEX.map((x) => [x.i, ICONS[x.i] || ''])))};</script>
+<script src="/assets/calc.js"></script><script src="/assets/search.js"></script><script src="/assets/charts.js"></script><script src="/assets/app.js"></script>`;
 
 const tipsBlock = (t) => (t && t.length ? `<section class="tips" aria-label="핵심 정리">${t.map(([h, b]) => `<div class="tip"><b>${h}</b><p>${b}</p></div>`).join('')}</section>` : '');
 const basisBlock = (p) => (p.basis ? `<details class="card basis"><summary>${icon('info')}계산 기준과 근거</summary><ul>${p.basis.map((b) => `<li>${b}</li>`).join('')}</ul>${p.sources ? `<p class="src">출처: ${p.sources.map(([n, u]) => `<a href="${u}" rel="noopener">${n}</a>`).join(' · ')}</p>` : ''}</details>` : '');
@@ -165,7 +165,7 @@ for (const p of pages) {
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, 'index.html'), html, 'utf8');
 }
-const p404 = { slug: '404', short: '페이지 없음', title: `페이지를 찾을 수 없어요 | ${NAME}`, desc: '요청한 페이지가 없습니다.', h1: '페이지를 찾을 수 없어요', summary: '주소가 바뀌었거나 없는 페이지입니다. 위의 검색으로 계산기를 찾아보세요.', extra: '<p><a class="btn" href="/">홈으로</a></p>' };
+const p404 = { slug: '404', short: '페이지 없음', title: `페이지를 찾을 수 없어요 | ${NAME}`, desc: '요청한 페이지가 없습니다.', h1: '페이지를 찾을 수 없어요', summary: '주소가 바뀌었거나 없는 페이지입니다. 위의 검색으로 계산기를 찾아보세요.', extra: '<p class="near" id="near" hidden></p><p><a class="btn" href="/">홈으로</a></p>' };
 fs.writeFileSync(path.join(OUT, '404.html'), infoPage(p404).replace('<meta name="description"', '<meta name="robots" content="noindex"><meta name="description"'), 'utf8');
 fs.writeFileSync(path.join(OUT, 'manifest.webmanifest'), JSON.stringify({ name: NAME, short_name: '종합계산기', start_url: '/', display: 'standalone', background_color: '#f8fafc', theme_color: '#0f172a', lang: 'ko', icons: [{ src: '/assets/icon-180.png', sizes: '180x180', type: 'image/png' }, { src: '/assets/icon-512.png', sizes: '512x512', type: 'image/png' }] }), 'utf8');
 fs.writeFileSync(path.join(OUT, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${pages.map((p) => `<url><loc>${url(p)}</loc><lastmod>${UPDATED}</lastmod></url>`).join('\n')}\n</urlset>\n`, 'utf8');

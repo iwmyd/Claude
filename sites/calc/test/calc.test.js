@@ -146,5 +146,35 @@ check('목표 1억·5년·4% → 월 적립 × FV 공식 = 1억', near(O.monthly
 let Z = C.bmi(170, 65);
 check('BMI 170cm 65kg = 22.49 정상, 정상체중 53.5~66.2kg', near(Z.bmi, 22.49, 0.01) && Z.level === '정상' && near(Z.normalMin, 53.47, 0.01) && near(Z.normalMax, 66.18, 0.01), Z);
 
+// 승률: 52승 48패 → .520, 60%까지 (0.6×100−52)/0.4 = 20연승, 50% 지키며 4연패까지
+let WR = C.winRate(52, 48, 0, 'exclude', 0.6);
+check('승률 52승 48패 = 52%, 60%까지 20연승', near(WR.rate, 0.52, 1e-9) && WR.needWins === 20, WR);
+WR = C.winRate(52, 48, 0, 'exclude', 0.5);
+check('50% 유지하며 4연패까지', WR.canLose === 4, WR);
+WR = C.winRate(10, 5, 2, 'half', 0.6);
+check('무승부 0.5승: (10+1)/17 = 64.7%', near(WR.rate, 11 / 17, 1e-9), WR);
+check('KBO 방식은 무승부 제외: 10/15', near(C.winRate(10, 5, 2, 'exclude', 0.5).rate, 10 / 15, 1e-9));
+check('한 번 졌으면 100% 도달 불가', C.winRate(5, 1, 0, 'exclude', 1).needWins === Infinity);
+
+// 검색: 정확·초성·별칭·오타·한/영 자판 실수·404 주소
+const SR = require('../assets/search.js');
+const IDX = require('../pages.js').filter((p) => p.calc).map((p) => ({ s: p.slug, n: p.short, l: p.lead }));
+const top = (q) => (SR.search(IDX, q).hits[0] || {}).s;
+check('정확: 군적금', top('군적금') === 'military');
+check('초성: ㄱㅈㄱ', top('ㄱㅈㄱ') === 'military');
+check('별칭: 월급 → 연봉 실수령액', top('월급') === 'salary');
+check('오타: 군젹금 → 군적금', top('군젹금') === 'military' && SR.search(IDX, '군젹금').fuzzy);
+check('오타: 연봉실수렁액 → 연봉', top('연봉실수렁액') === 'salary');
+check('오타: 자동차새 → 자동차세', top('자동차새') === 'car-tax');
+check('오타: 퇴직굼 → 퇴직금', top('퇴직굼') === 'severance');
+check('오타: 실업긊여 → 실업급여', top('실업긊여') === 'unemployment');
+check('오타: 숭률 → 승률', top('숭률계산기') === 'winrate');
+check('한/영: dusqhd → 연봉', top('dusqhd') === 'salary' && SR.search(IDX, 'dusqhd').via === 'qwerty');
+check('한/영: rnswjrrma → 군적금', top('rnswjrrma') === 'military');
+check('영문 그대로: BMI', top('bmi') === 'bmi');
+check('엉뚱한 말은 추천 안 함: 김치찌개', SR.search(IDX, '김치찌개').hits.length === 0);
+check('404: /salry/ → salary', (SR.nearSlug(IDX, '/salry/') || {}).s === 'salary');
+check('404: /wnrate/ → winrate', (SR.nearSlug(IDX, '/wnrate/') || {}).s === 'winrate');
+
 console.log(fail ? `\n❌ 실패 ${fail}건` : '\n✅ 전체 통과');
 process.exitCode = fail ? 1 : 0;

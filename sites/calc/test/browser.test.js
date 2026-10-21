@@ -11,7 +11,7 @@ const server = http.createServer((q, s) => {
   s.writeHead(200, { 'Content-Type': types[path.extname(f)] || 'application/octet-stream' }); fs.createReadStream(f).pipe(s);
 }).listen(8765);
 const U = (p) => `http://localhost:8765/${p ? p + '/' : ''}`;
-const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment', 'savings', 'compound', 'military', 'car-loan', 'car-tax', 'severance', 'rent', 'area', 'dday', 'age', 'percent', 'charcount', 'refinance', 'goal', 'avgprice', 'car-acq', 'salary', 'wage', 'unemployment', 'vat', 'subscription', 'bmi', 'about', 'privacy'];
+const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment', 'savings', 'compound', 'military', 'car-loan', 'car-tax', 'severance', 'rent', 'area', 'dday', 'age', 'percent', 'charcount', 'refinance', 'goal', 'avgprice', 'car-acq', 'salary', 'wage', 'unemployment', 'vat', 'subscription', 'bmi', 'winrate', 'about', 'privacy'];
 
 (async () => {
   const browser = await chromium.launch();
@@ -114,6 +114,11 @@ const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment'
     ok(`[${tag}] 즐겨찾기·최근 사용 홈 표시`, (await page.locator('#favs .tile').count()) === 1 && (await page.locator('#recent .tile').count()) >= 1);
     await page.keyboard.press('/'); await page.keyboard.type('ㄱㅈㄱ');
     ok(`[${tag}] 초성 검색 ㄱㅈㄱ → 군적금`, (await page.locator('#qr li').first().innerText()).includes('군적금'));
+    await page.fill('#q', '군젹금');
+    ok(`[${tag}] 오타 검색 군젹금 → 군적금 추천`, (await page.locator('#qr li.sug').count()) === 1 && (await page.locator('#qr li[role=option]').first().innerText()).includes('군적금'));
+    await page.fill('#q', 'dusqhd');
+    ok(`[${tag}] 한/영 실수 dusqhd → 연봉`, (await page.locator('#qr li[role=option]').first().innerText()).includes('연봉'));
+    await page.fill('#q', 'ㄱㅈㄱ');
     await Promise.all([page.waitForURL('**/military/'), page.keyboard.press('Enter')]); await page.waitForLoadState('networkidle');
     ok(`[${tag}] 검색 Enter 이동`, page.url().endsWith('/military/'));
     const before = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
