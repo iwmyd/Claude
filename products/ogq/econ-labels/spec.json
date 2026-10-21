@@ -1,0 +1,30 @@
+{
+  "outDir": "products/ogq/econ-labels/png",
+  "mainSet": [0, 3, 8, 16], "tab": 0,
+  "stickers": [
+    { "text": "금리 인상", "style": "pill", "accent": "red", "sub": "올랐어요" },
+    { "text": "금리 인하", "style": "pill", "accent": "navy", "sub": "내렸어요" },
+    { "text": "금리 동결", "style": "pill", "accent": "orange", "sub": "그대로예요" },
+    { "text": "환율 상승", "style": "tag", "accent": "red" },
+    { "text": "환율 하락", "style": "tag", "accent": "navy" },
+    { "text": "물가 상승", "style": "tag", "accent": "orange" },
+    { "text": "신청 시작", "style": "stamp", "accent": "navy", "sub": "지금부터" },
+    { "text": "신청 마감", "style": "stamp", "accent": "red", "sub": "놓치지 마세요" },
+    { "text": "지원금", "style": "bubble", "accent": "orange" },
+    { "text": "세금 혜택", "style": "bubble", "accent": "navy" },
+    { "text": "절약 꿀팁", "style": "note", "accent": "orange" },
+    { "text": "이자 계산", "style": "marker", "accent": "orange" },
+    { "text": "대출 체크", "style": "tag", "accent": "navy" },
+    { "text": "연말정산", "style": "pill", "accent": "navy" },
+    { "text": "오늘의 경제", "style": "note", "accent": "navy" },
+    { "text": "숫자로 보기", "style": "marker", "accent": "orange" },
+    { "text": "내 지갑 영향", "style": "bubble", "accent": "red" },
+    { "text": "놓치면 손해", "style": "stamp", "accent": "red" },
+    { "text": "조건 충족", "style": "pill", "accent": "navy", "sub": "해당돼요" },
+    { "text": "대상 아님", "style": "pill", "accent": "red", "sub": "해당 안 돼요" },
+    { "text": "시행일", "style": "tag", "accent": "orange" },
+    { "text": "바뀐 점", "style": "marker", "accent": "orange" },
+    { "text": "경제 뉴스", "style": "note", "accent": "red" },
+    { "text": "한눈에 정리", "style": "bubble", "accent": "navy" }
+  ]
+}
