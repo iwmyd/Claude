@@ -10,6 +10,7 @@ const path = require('path');
 const ROOT = __dirname, OUT = path.join(ROOT, 'public');
 const SITE = (process.env.SITE_URL || 'https://aipomcalc.com').replace(/\/$/, '');
 const PUB = (process.env.ADSENSE_PUB || '').replace(/^ca-/, '');
+const GSC = process.env.GSC_VERIFY || ''; // 구글 서치 콘솔 소유권 확인 값
 const NAME = '에이팜 종합계산기';
 const UPDATED = '2026-10-21';
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
@@ -47,6 +48,7 @@ const head = (p) => `<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/style.css">
+${GSC ? `<meta name="google-site-verification" content="${GSC}">` : ''}
 ${PUB ? `<meta name="google-adsense-account" content="ca-${PUB}">` : ''}
 ${PUB ? `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-${PUB}" crossorigin="anonymous"></script>` : ''}
 ${p.schema ? `<script type="application/ld+json">${JSON.stringify(p.schema)}</script>` : ''}
