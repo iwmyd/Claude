@@ -123,6 +123,16 @@ const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment'
     await page.goto(U('unit-convert'), { waitUntil: 'networkidle' }); await page.selectOption('#ukind', 'press'); await set('uval', '24');
     ok(`[${tag}] 단위 24MPa → 244.73kgf/cm² (맨 위)`, (await main()).startsWith('244.73'), await main());
 
+    // 결과 그림: 건축·토목 5종 모두 SVG 그림이 나오고 모드를 바꾸면 그림도 바뀐다
+    for (const [sl, prep] of [["area-volume", null], ["materials", null], ["slope", null], ["stairs", null], ["earthwork", null]]) {
+      await page.goto(U(sl), { waitUntil: "networkidle" });
+      ok(`[${tag}] 그림: ${sl} SVG 표시`, (await page.locator("#chart figure.diagram svg").count()) >= 1);
+    }
+    await page.goto(U("area-volume"), { waitUntil: "networkidle" }); const d1 = await page.locator("#chart svg").innerHTML(); await page.selectOption("#shape", "circle");
+    ok(`[${tag}] 그림: 도형을 바꾸면 그림도 바뀜`, d1 !== (await page.locator("#chart svg").innerHTML()));
+    await page.goto(U("materials"), { waitUntil: "networkidle" });
+    ok(`[${tag}] 그림: 레미콘 차 3대 칸`, (await page.locator("#chart rect.dg-truck").count()) === 3);
+
     // SEO·문의 (2026-10-22)
     await page.goto(U('contact') + '?calc=wage', { waitUntil: 'networkidle' });
     ok(`[${tag}] 문의: ?calc=wage → 관련 계산기 미리 선택 · 감사 페이지로 이동 설정`, (await page.inputValue('#c-calc')) === '시급·주휴수당 계산기' && (await page.getAttribute('input[name=_next]', 'value')).endsWith('/contact/thanks/'));

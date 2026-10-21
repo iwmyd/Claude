@@ -87,7 +87,7 @@ const footer = () => `<footer class="foot"><div class="wrap">
 <button class="totop" type="button" data-totop aria-label="맨 위로">${icon('up')}</button>
 <div class="toast" role="status" aria-live="polite" id="toast"></div>
 <script>window.AC_INDEX=${JSON.stringify(INDEX)};window.AC_ICONS=${JSON.stringify(Object.fromEntries(INDEX.map((x) => [x.i, ICONS[x.i] || ''])))};</script>
-${['calc.js', 'search.js', 'charts.js', 'app.js'].map((f) => `<script src="${V(f)}"></script>`).join('')}`;
+${['calc.js', 'search.js', 'charts.js', 'diagram.js', 'app.js'].map((f) => `<script src="${V(f)}"></script>`).join('')}`;
 
 const tipsBlock = (t) => (t && t.length ? `<section class="tips" aria-label="핵심 정리">${t.map(([h, b]) => `<div class="tip"><b>${h}</b><p>${b}</p></div>`).join('')}</section>` : '');
 const basisBlock = (p) => (p.basis ? `<details class="card basis"><summary>${icon('info')}계산 기준과 근거</summary><ul>${p.basis.map((b) => `<li>${b}</li>`).join('')}</ul>${p.sources ? `<p class="src">출처: ${p.sources.map(([n, u]) => `<a href="${u}" rel="noopener">${n}</a>`).join(' · ')}</p>` : ''}</details>` : '');
