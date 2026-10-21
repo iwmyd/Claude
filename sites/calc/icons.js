@@ -42,5 +42,6 @@ module.exports = {
   building: P('r:x="4" y="3" width="16" height="18" rx="1"|M9 21v-4h6v4|M8 7h.01|M12 7h.01|M16 7h.01|M8 11h.01|M12 11h.01|M16 11h.01'),
   scale: P('r:x="3" y="3" width="18" height="18" rx="3"|M8 9a5 5 0 0 1 8 0|M12 9l1.5-2'),
   trophy: P('M8 4h8v6a4 4 0 0 1-8 0z|M8 6H5a3 3 0 0 0 3 4|M16 6h3a3 3 0 0 1-3 4|M12 14v4|M8 21h8|M10 18h4'),
+  bolt: P('M13 2L4 14h7l-1 8 9-12h-7z'),
   chart: P('M4 20V10|M10 20V4|M16 20v-7|M22 20H2'),
 };

@@ -191,5 +191,40 @@ check('엉뚱한 말은 추천 안 함: 김치찌개', SR.search(IDX, '김치찌
 check('404: /salry/ → salary', (SR.nearSlug(IDX, '/salry/') || {}).s === 'salary');
 check('404: /wnrate/ → winrate', (SR.nearSlug(IDX, '/wnrate/') || {}).s === 'winrate');
 
+// 추가 4종 (2026-10-22) — 법령 예시·공식 요율표·언론 계산 예시로 검산
+let LV = C.annualLeave('2025-01-01', '2025-12-31', 0, 100000);
+check('연차: 1년 계약(365일) 후 퇴사 → 11일만 (15일 미발생)', LV.cur === 11 && LV.years === 0, LV);
+LV = C.annualLeave('2025-01-01', '2026-01-01', 0, 100000);
+check('연차: 1년 + 하루 → 11 + 15 = 26일, 수당 260만 원', LV.cur === 26 && LV.pay === 2600000, LV);
+LV = C.annualLeave('2020-03-02', '2026-10-22', 5, 100000);
+check('연차: 6년 근속 → 17일, 누적 107일, 다음 2027-03-02에 18일, 5일 쓰면 12일 남음', LV.cur === 17 && LV.total === 107 && LV.next.date === '2027-03-02' && LV.next.days === 18 && LV.unused === 12, LV);
+check('연차 일수: 1·2년 15, 3년 16, 5년 17, 21년 25, 30년 25(상한)', [1, 2, 3, 5, 21, 30].map(C.leaveGrant).join() === '15,15,16,17,25,25');
+check('연차: 1월 31일 입사 → 첫 월차 3월 1일(2월엔 31일이 없어 말일에 1개월 끝남)', C.annualLeave('2026-01-31', '2026-02-28', 0, 0).monthly === 0 && C.annualLeave('2026-01-31', '2026-03-01', 0, 0).monthly === 1);
+check('연차: 입사 전 날짜면 null', C.annualLeave('2026-05-01', '2026-04-30', 0, 0) === null);
+check('복비: 주택 매매 10억 → 0.5% 500만 원', C.brokerage('house', 'sale', 1e9, 0, 0, false).fee === 5000000);
+check('복비: 매매 1.9억 → 0.5% 95만 → 한도 80만 원', C.brokerage('house', 'sale', 1.9e8, 0, 0, false).fee === 800000);
+check('복비: 매매 2억 → 0.4% 80만 원 (2억부터 다음 구간)', C.brokerage('house', 'sale', 2e8, 0, 0, false).rate === 0.004);
+check('복비: 매매 15억 → 0.7% 1,050만 원', C.brokerage('house', 'sale', 15e8, 0, 0, false).fee === 10500000);
+check('복비: 전세 3억 → 0.3% 90만 원', C.brokerage('house', 'lease', 0, 3e8, 0, false).fee === 900000);
+check('복비: 보증금 1천 + 월세 30만 → ×100 = 4천만 < 5천만 → ×70 = 3,100만 × 0.5% = 155,000원', C.brokerage('house', 'lease', 0, 1e7, 3e5, false).fee === 155000);
+check('복비: 보증금 5천 + 월세 50만 → 1억 × 0.3% = 30만 원', C.brokerage('house', 'lease', 0, 5e7, 5e5, false).fee === 300000);
+check('복비: 오피스텔 매매 3억 0.5% + 부가세 → 165만 원', C.brokerage('officetel', 'sale', 3e8, 0, 0, true).total === 1650000);
+check('종소세 기본세율: 과표 1,400만 84만·5,000만 624만·8,800만 1,536만', C.basicTax(14e6) === 840000 && C.basicTax(50e6) === 6240000 && C.basicTax(88e6) === 15360000);
+let FT = C.freelanceTax(3e7, 0.641, 1, 0);
+check('3.3%: 수입 3천만·64.1% → 소득 1,077만, 결정 486,200 + 지방 48,620, 환급 455,180원', FT.earn === 10770000 && FT.tax === 486200 && FT.local === 48620 && FT.refund === 455180, FT);
+FT = C.freelanceTax(6.5e7, 0.641, 1, 0);
+check('3.3%: 수입 6,500만 → 경비 = 4천만 × 64.1% + 2,500만 × 49.74%', Math.round(FT.expense) === Math.round(4e7 * 0.641 + 2.5e7 * 0.4974), FT.expense);
+check('3.3%: 수입 500만 → 세금 0, 미리 낸 165,000원 전액 환급', C.freelanceTax(5e6, 0.641, 1, 0).refund === 165000);
+let EL = C.electricity(350, false, 0, 0);
+check('전기: 기타 계절 350kWh 기본+전력량 57,790원 (기사 예시)', EL.basic + EL.energy === 57790, EL);
+EL = C.electricity(350, true, 0, 0);
+check('전기: 여름 350kWh 48,330원 (기사 예시)', EL.basic + EL.energy === 48330, EL);
+EL = C.electricity(450, false, 0, 0);
+check('전기: 기타 계절 450kWh 89,585원, 3단계', EL.basic + EL.energy === 89585 && EL.step === 3, EL);
+check('전기: 여름 450kWh 69,790원, 2단계', (() => { const y = C.electricity(450, true, 0, 0); return y.basic + y.energy === 69790 && y.step === 2; })());
+EL = C.electricity(350, false, 9, 5);
+check('전기: 350kWh 청구 = (57,790 + 3,150 + 1,750) + 부가세 6,269 + 기금 1,690 → 70,640원', EL.sum === 62690 && EL.vat === 6269 && EL.fund === 1690 && EL.total === 70640, EL);
+check('전기: 200kWh는 1단계, 201kWh는 2단계', C.electricity(200, false, 9, 5).step === 1 && C.electricity(201, false, 9, 5).step === 2);
+
 console.log(fail ? `\n❌ 실패 ${fail}건` : '\n✅ 전체 통과');
 process.exitCode = fail ? 1 : 0;

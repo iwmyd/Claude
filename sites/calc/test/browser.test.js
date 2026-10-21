@@ -11,7 +11,7 @@ const server = http.createServer((q, s) => {
   s.writeHead(200, { 'Content-Type': types[path.extname(f)] || 'application/octet-stream' }); fs.createReadStream(f).pipe(s);
 }).listen(8765);
 const U = (p) => `http://localhost:8765/${p ? p + '/' : ''}`;
-const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment', 'savings', 'compound', 'military', 'car-loan', 'car-tax', 'severance', 'rent', 'area', 'dday', 'age', 'percent', 'charcount', 'refinance', 'goal', 'avgprice', 'car-acq', 'salary', 'wage', 'unemployment', 'vat', 'subscription', 'bmi', 'winrate', 'about', 'privacy'];
+const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment', 'savings', 'compound', 'military', 'car-loan', 'car-tax', 'severance', 'rent', 'area', 'dday', 'age', 'percent', 'charcount', 'refinance', 'goal', 'avgprice', 'car-acq', 'salary', 'wage', 'unemployment', 'vat', 'subscription', 'bmi', 'winrate', 'annual-leave', 'brokerage', 'freelance-tax', 'electricity', 'about', 'privacy'];
 
 (async () => {
   const browser = await chromium.launch();
@@ -87,6 +87,18 @@ const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment'
     ok(`[${tag}] 연봉 실수령 그래프·표`, (await page.locator("#chart svg rect").count()) >= 6 && (await page.locator("#tables tbody tr").count()) === 7);
     for (const sl of ["refinance", "goal", "avgprice", "bmi"]) { await page.goto(U(sl), { waitUntil: "networkidle" }); ok(`[${tag}] ${sl} 결과 표시`, /d/.test(await main()) || (await main()).length > 0, await main()); }
 
+    // 추가 4종
+    await page.goto(U('annual-leave'), { waitUntil: 'networkidle' }); await set('start', '2020-03-02'); await set('last', '2026-10-22');
+    ok(`[${tag}] 연차 6년 근속 17일 · 표 강조 1줄`, (await main()) === '17일' && (await page.locator('#tables tr.now').count()) === 1, await main());
+    await page.goto(U('brokerage'), { waitUntil: 'networkidle' });
+    ok(`[${tag}] 복비 매매 5억 → 200만 원 · 보증금 칸 숨김`, (await main()).includes('2,000,000') && !(await page.locator('#deposit').isVisible()), await main());
+    await page.selectOption('#deal', 'lease'); await set('deposit', '10,000,000'); await set('rent', '300,000');
+    ok(`[${tag}] 복비 월세 1천/30 → 155,000원`, (await main()).includes('155,000') && (await page.locator('#deposit').isVisible()), await main());
+    await page.goto(U('freelance-tax'), { waitUntil: 'networkidle' }); await set('income', '30,000,000');
+    ok(`[${tag}] 3.3% 수입 3천만 → 환급 455,180원`, (await main()).includes('455,180'), await main());
+    await page.goto(U('electricity'), { waitUntil: 'networkidle' });
+    ok(`[${tag}] 전기 350kWh → 70,640원 · 표 8행`, (await main()).includes('70,640') && (await page.locator('#tables tbody tr').count()) === 8, await main());
+
     // 일반·공학용 계산기
     await page.goto(U('basic'), { waitUntil: 'networkidle' });
     for (const k of ['2', '+', '3', '×', '4']) await page.click(`.k[data-k="${k}"]`);
@@ -114,6 +126,12 @@ const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment'
     await page.click('[data-fav]');
     await page.goto(U(''), { waitUntil: 'networkidle' });
     ok(`[${tag}] 즐겨찾기·최근 사용 홈 표시`, (await page.locator('#favs .tile').count()) === 1 && (await page.locator('#recent .tile').count()) >= 1);
+    // 최근 사용은 가로 2줄까지만 (열 수 × 2)
+    for (const sl of ['salary', 'wage', 'vat', 'bmi', 'percent', 'goal', 'refinance', 'severance']) await page.goto(U(sl), { waitUntil: 'domcontentloaded' });
+    await page.goto(U(''), { waitUntil: 'networkidle' });
+    const rec = await page.evaluate(() => { const g = document.getElementById('recent'); const vis = [...g.children].filter((t) => t.offsetParent); const tops = new Set(vis.map((t) => Math.round(t.getBoundingClientRect().top))); return { rows: tops.size, n: vis.length, all: g.children.length, cols: getComputedStyle(g).gridTemplateColumns.split(' ').length }; });
+    ok(`[${tag}] 최근 사용 2줄 이하 (${rec.n}개 · ${rec.cols}열)`, rec.rows <= 2 && rec.n === Math.min(rec.all, rec.cols * 2), JSON.stringify(rec));
+
     await page.keyboard.press('/'); await page.keyboard.type('ㄱㅈㄱ');
     ok(`[${tag}] 초성 검색 ㄱㅈㄱ → 군적금`, (await page.locator('#qr li').first().innerText()).includes('군적금'));
     await page.fill('#q', '군젹금');

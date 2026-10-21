@@ -90,9 +90,9 @@ ${p.pad ? '' : `<button type="button" class="ab" data-reset>${icon('reset')}초�
 const pad = (kind) => {
   const B = [['AC', 'fn'], ['⌫', 'fn'], ['%', 'fn'], ['÷', 'op'], ['7'], ['8'], ['9'], ['×', 'op'], ['4'], ['5'], ['6'], ['−', 'op'], ['1'], ['2'], ['3'], ['+', 'op'], ['±', 'fn'], ['0'], ['.'], ['=', 'eq']];
   const S = [['deg', 'mode'], ['sin'], ['cos'], ['tan'], ['ln'], ['log'], ['√'], ['x²'], ['xʸ'], ['('], [')'], ['n!'], ['π'], ['e'], ['1/x'], ['Ans']];
-  const keys = (arr, cls) => `<div class="keys ${cls}">${arr.map(([k, t]) => `<button type="button" class="k ${t || 'num'}" data-k="${k}" aria-label="${k === '⌫' ? '지우기' : k === 'AC' ? '전체 지우기' : k}">${k}</button>`).join('')}</div>`;
+  const keys = (arr, cls) => `<div class="keys ${cls}">${arr.map(([k, t]) => `<button type="button" class="k ${t || 'num'}" data-k="${k}" aria-label="${k === '⌫' ? '지우기' : k === 'AC' ? 'AC 전체 지우기' : k}">${k}</button>`).join('')}</div>`;
   return `<div class="pad-wrap"><section class="card calcpad" data-calc="${kind === 'sci' ? 'scientific' : 'basic'}">
-<div class="display"><input id="expr" class="expr" aria-label="수식" autocomplete="off" spellcheck="false" inputmode="${kind === 'sci' ? 'text' : 'decimal'}"><output id="res" class="res" aria-live="polite">0</output><p id="err" class="err" role="alert"></p></div>
+<div class="display"><input id="expr" type="text" class="expr" aria-label="수식" autocomplete="off" spellcheck="false" inputmode="${kind === 'sci' ? 'text' : 'decimal'}"><output id="res" class="res" aria-live="polite">0</output><p id="err" class="err" role="alert"></p></div>
 ${kind === 'sci' ? keys(S, 'sci') : ''}${keys(B, 'basic')}
 </section>
 <section class="card hist"><div class="hist-h"><h2>계산 기록</h2><button type="button" class="linkbtn" data-clear-history>지우기</button></div><ol id="history" class="history"></ol></section></div>`;

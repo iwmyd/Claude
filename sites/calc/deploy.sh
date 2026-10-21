@@ -11,6 +11,8 @@ export ADSENSE_PUB="${ADSENSE_PUB:-pub-8001197559123230}"  # 애드센스 게시
 node build.js
 node test/calc.test.js | tail -1 | grep -q "전체 통과" || { echo "❌ 계산 테스트 실패 — 배포 중단"; exit 1; }
 node test/browser.test.js | tail -1 | grep -q "전체 통과" || { echo "❌ 브라우저 테스트 실패 — 배포 중단"; exit 1; }
+../../node_modules/.bin/html-validate "public/**/*.html" || { echo "❌ HTML 검사(html-validate) 실패 — 배포 중단"; exit 1; }
+node test/a11y.test.js | tail -1 | grep -q "전체 통과" || { echo "❌ 접근성 검사(axe) 실패 — 배포 중단"; exit 1; }
 DEP=".deploy"
 if [ ! -d "$DEP/.git" ]; then rm -rf "$DEP"; git clone -q "https://github.com/$REPO.git" "$DEP" 2>/dev/null || { mkdir -p "$DEP"; git -C "$DEP" init -q -b main; git -C "$DEP" remote add origin "https://github.com/$REPO.git"; }; fi
 git -C "$DEP" fetch -q origin 2>/dev/null && git -C "$DEP" reset -q --hard origin/main 2>/dev/null || true  # 원격(GitHub 가 직접 쓴 CNAME 등) 최신화
