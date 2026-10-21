@@ -126,11 +126,11 @@ const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment'
     await page.click('[data-fav]');
     await page.goto(U(''), { waitUntil: 'networkidle' });
     ok(`[${tag}] 즐겨찾기·최근 사용 홈 표시`, (await page.locator('#favs .tile').count()) === 1 && (await page.locator('#recent .tile').count()) >= 1);
-    // 최근 사용은 가로 2줄까지만 (열 수 × 2)
+    // 최근 사용은 가로 1줄만 (열 수만큼)
     for (const sl of ['salary', 'wage', 'vat', 'bmi', 'percent', 'goal', 'refinance', 'severance']) await page.goto(U(sl), { waitUntil: 'domcontentloaded' });
     await page.goto(U(''), { waitUntil: 'networkidle' });
     const rec = await page.evaluate(() => { const g = document.getElementById('recent'); const vis = [...g.children].filter((t) => t.offsetParent); const tops = new Set(vis.map((t) => Math.round(t.getBoundingClientRect().top))); return { rows: tops.size, n: vis.length, all: g.children.length, cols: getComputedStyle(g).gridTemplateColumns.split(' ').length }; });
-    ok(`[${tag}] 최근 사용 2줄 이하 (${rec.n}개 · ${rec.cols}열)`, rec.rows <= 2 && rec.n === Math.min(rec.all, rec.cols * 2), JSON.stringify(rec));
+    ok(`[${tag}] 최근 사용 1줄 (${rec.n}개 · ${rec.cols}열)`, rec.rows === 1 && rec.n === Math.min(rec.all, rec.cols), JSON.stringify(rec));
 
     await page.keyboard.press('/'); await page.keyboard.type('ㄱㅈㄱ');
     ok(`[${tag}] 초성 검색 ㄱㅈㄱ → 군적금`, (await page.locator('#qr li').first().innerText()).includes('군적금'));
