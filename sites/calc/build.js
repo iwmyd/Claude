@@ -47,6 +47,7 @@ const head = (p) => `<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/style.css">
+${PUB ? `<meta name="google-adsense-account" content="ca-${PUB}">` : ''}
 ${PUB ? `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-${PUB}" crossorigin="anonymous"></script>` : ''}
 ${p.schema ? `<script type="application/ld+json">${JSON.stringify(p.schema)}</script>` : ''}
 </head>`;
