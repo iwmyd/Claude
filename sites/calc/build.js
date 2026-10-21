@@ -17,6 +17,8 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 const pages = require('./pages');
 const { CONTACT } = require('./pages');
 const ICONS = require('./icons');
+// 배포 직후에도 새 파일을 받도록 내용 해시를 주소에 붙인다 (/assets/app.js?v=ab12cd34)
+const V = (f) => '/assets/' + f + '?v=' + require('crypto').createHash('md5').update(fs.readFileSync(path.join(__dirname, 'assets', f))).digest('hex').slice(0, 8);
 
 // 카테고리 — 홈 섹션 순서·색. tone 은 assets/style.css 의 [data-tone] 정의와 짝
 const CATS = [
@@ -48,7 +50,7 @@ const head = (p) => `<!doctype html>
 <script>try{var t=localStorage.getItem('ac-theme');if(t)document.documentElement.dataset.theme=t;var z=localStorage.getItem('ac-zoom');if(z)document.documentElement.dataset.zoom=z}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/style.css">
+<link rel="stylesheet" href="${V('style.css')}">
 ${GSC ? `<meta name="google-site-verification" content="${GSC}">` : ''}
 ${PUB ? `<meta name="google-adsense-account" content="ca-${PUB}">` : ''}
 ${PUB ? `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-${PUB}" crossorigin="anonymous"></script>` : ''}
@@ -74,7 +76,7 @@ const footer = () => `<footer class="foot"><div class="wrap">
 <button class="totop" type="button" data-totop aria-label="맨 위로">${icon('up')}</button>
 <div class="toast" role="status" aria-live="polite" id="toast"></div>
 <script>window.AC_INDEX=${JSON.stringify(INDEX)};window.AC_ICONS=${JSON.stringify(Object.fromEntries(INDEX.map((x) => [x.i, ICONS[x.i] || ''])))};</script>
-<script src="/assets/calc.js"></script><script src="/assets/search.js"></script><script src="/assets/charts.js"></script><script src="/assets/app.js"></script>`;
+${['calc.js', 'search.js', 'charts.js', 'app.js'].map((f) => `<script src="${V(f)}"></script>`).join('')}`;
 
 const tipsBlock = (t) => (t && t.length ? `<section class="tips" aria-label="핵심 정리">${t.map(([h, b]) => `<div class="tip"><b>${h}</b><p>${b}</p></div>`).join('')}</section>` : '');
 const basisBlock = (p) => (p.basis ? `<details class="card basis"><summary>${icon('info')}계산 기준과 근거</summary><ul>${p.basis.map((b) => `<li>${b}</li>`).join('')}</ul>${p.sources ? `<p class="src">출처: ${p.sources.map(([n, u]) => `<a href="${u}" rel="noopener">${n}</a>`).join(' · ')}</p>` : ''}</details>` : '');
