@@ -6,6 +6,7 @@ cd "$(dirname "$0")"
 MSG="${1:-update}"
 REPO="iwmyd/aipomcalc"
 export SITE_URL="https://aipomcalc.com"
+export ADSENSE_PUB="${ADSENSE_PUB:-pub-8001197559123230}"  # 애드센스 게시자 ID (공개 정보 — ads.txt 에 그대로 노출됨)
 node build.js
 node test/calc.test.js | tail -1 | grep -q "전체 통과" || { echo "❌ 계산 테스트 실패 — 배포 중단"; exit 1; }
 node test/browser.test.js | tail -1 | grep -q "전체 통과" || { echo "❌ 브라우저 테스트 실패 — 배포 중단"; exit 1; }
