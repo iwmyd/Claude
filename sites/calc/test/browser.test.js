@@ -11,7 +11,7 @@ const server = http.createServer((q, s) => {
   s.writeHead(200, { 'Content-Type': types[path.extname(f)] || 'application/octet-stream' }); fs.createReadStream(f).pipe(s);
 }).listen(8765);
 const U = (p) => `http://localhost:8765/${p ? p + '/' : ''}`;
-const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment', 'savings', 'compound', 'military', 'car-loan', 'car-tax', 'severance', 'rent', 'area', 'dday', 'age', 'about', 'privacy'];
+const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment', 'savings', 'compound', 'military', 'car-loan', 'car-tax', 'severance', 'rent', 'area', 'dday', 'age', 'percent', 'charcount', 'refinance', 'goal', 'avgprice', 'car-acq', 'salary', 'wage', 'unemployment', 'vat', 'subscription', 'bmi', 'about', 'privacy'];
 
 (async () => {
   const browser = await chromium.launch();
@@ -38,7 +38,7 @@ const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment'
       a11yBad.push(...bad.map((b) => `/${slug} ${b}`));
       await page.screenshot({ path: path.join(SHOT, `${tag}-${slug || 'home'}.png`), fullPage: ['', 'loan', 'compound', 'basic', 'scientific', 'car-tax'].includes(slug) });
     }
-    ok(`[${tag}] 19페이지 접근성(키패드·라벨·터치44px·건너뛰기)·가로스크롤 없음`, a11yBad.length === 0, a11yBad.slice(0, 6).join(' | '));
+    ok(`[${tag}] 31페이지 접근성(키패드·라벨·터치44px·건너뛰기)·가로스크롤 없음`, a11yBad.length === 0, a11yBad.slice(0, 6).join(' | '));
 
     // 계산 결과
     await page.goto(U('loan'), { waitUntil: 'networkidle' });
@@ -65,6 +65,25 @@ const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment'
     ok(`[${tag}] 만 나이 35세`, (await main()).includes('35세'));
     await page.goto(U('area'), { waitUntil: 'networkidle' });
     ok(`[${tag}] 84㎡ = 25.41평`, (await page.inputValue('#py')) === '25.41');
+
+    // 추가 12종
+    await page.goto(U("percent"), { waitUntil: "networkidle" });
+    ok(`[${tag}] 퍼센트 200의 15% = 30`, (await page.locator("#o1").innerText()).includes("= 30"));
+    await page.goto(U("charcount"), { waitUntil: "networkidle" }); await set("text", "안녕 하세요");
+    ok(`[${tag}] 글자 수 공백포함 6`, (await main()) === "6자");
+    await page.goto(U("wage"), { waitUntil: "networkidle" });
+    ok(`[${tag}] 최저임금 월 환산 2,156,880원`, (await main()).includes("2,156,880"));
+    await page.goto(U("vat"), { waitUntil: "networkidle" });
+    ok(`[${tag}] 부가세 합계 1,100,000원`, (await main()).includes("1,100,000"));
+    await page.goto(U("subscription"), { waitUntil: "networkidle" }); await set("home", 15); await set("dep", 6); await set("acc", 15);
+    ok(`[${tag}] 청약 만점 84점`, (await main()).startsWith("84점"));
+    await page.goto(U("unemployment"), { waitUntil: "networkidle" }); await set("wage3m", "15,000,000");
+    ok(`[${tag}] 실업급여 상한 68,100 × 180일 = 12,258,000원`, (await main()).includes("12,258,000"), await main());
+    await page.goto(U("car-acq"), { waitUntil: "networkidle" });
+    ok(`[${tag}] 취등록세 3,000만 승용 2,100,000원`, (await main()).includes("2,100,000"));
+    await page.goto(U("salary"), { waitUntil: "networkidle" });
+    ok(`[${tag}] 연봉 실수령 그래프·표`, (await page.locator("#chart svg rect").count()) >= 6 && (await page.locator("#tables tbody tr").count()) === 7);
+    for (const sl of ["refinance", "goal", "avgprice", "bmi"]) { await page.goto(U(sl), { waitUntil: "networkidle" }); ok(`[${tag}] ${sl} 결과 표시`, /d/.test(await main()) || (await main()).length > 0, await main()); }
 
     // 일반·공학용 계산기
     await page.goto(U('basic'), { waitUntil: 'networkidle' });

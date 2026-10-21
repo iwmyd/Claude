@@ -96,5 +96,55 @@ check('차령 3년차 5% 경감 (399,600×0.95=379,620)', C.carTax(1998, 3, 'ice
 check('차령 20년 → 12년으로 보고 50% 경감 (199,800)', C.carTax(1998, 20, 'ice').tax === 199800);
 check('전기차 10만 + 교육세 3만 = 13만', C.carTax(0, 5, 'ev').total === 130000);
 
+// 14) 연봉 실수령액 (2026 요율): 연 5,000만·비과세 20만·1인
+let W = C.salary(50000000, 200000, 1, 0);
+check('국민연금 4.75% (396.6만 → 188,410)', W.pension === 188410, W.pension);
+check('건강 3.595% 142,600 · 요양 13.14% 18,730 · 고용 0.9% 35,700', W.health === 142600 && W.care === 18730 && W.employ === 35700, [W.health, W.care, W.employ]);
+check('소득세 10~25만 범위·지방세 = 소득세 10%', W.incomeTax > 100000 && W.incomeTax < 250000 && W.localTax === Math.floor(W.incomeTax * 0.1 / 10) * 10, W.incomeTax);
+check('실수령 340~370만', W.net > 3.4e6 && W.net < 3.7e6, Math.round(W.net));
+check('국민연금 상한 659만 적용 (연 2억)', C.salary(2e8, 0, 1, 0).pension === Math.floor(6590000 * 0.0475 / 10) * 10);
+check('부양가족 늘면 소득세 감소', C.salary(5e7, 2e5, 3, 1).incomeTax < W.incomeTax);
+check('고소득 결정세액 > 0', C.incomeTaxYear(1e9, 1, 0, 0, 0) > 0);
+
+// 15) 퍼센트·부가세·시급
+check('200의 15% = 30', C.percent.of(200, 15) === 30);
+check('30은 200의 15%', C.percent.ratio(30, 200) === 15);
+check('80→100 = +25%', C.percent.change(80, 100) === 25);
+check('100을 10% 줄이면 90', near(C.percent.apply(100, -10), 90, 1e-9));
+check('공급가 100만 → 부가세 10만·합계 110만', C.vat(1000000, 'supply').total === 1100000);
+check('합계 110만 → 공급가 100만·부가세 10만', C.vat(1100000, 'total').supply === 1000000 && C.vat(1100000, 'total').tax === 100000);
+let G = C.wage(10320, 8, 5);
+check('주 40시간 → 주휴 8시간, 월 209시간, 월 2,156,880원 (2026 최저임금 월 환산)', G.holidayHours === 8 && G.monthHours === 209 && G.monthPay === 2156880, G);
+check('주 20시간 → 주휴 4시간', C.wage(10320, 4, 5).holidayHours === 4);
+check('주 14시간 → 주휴 없음', C.wage(10320, 7, 2).holidayHours === 0);
+
+// 16) 글자 수·평단가
+let T2 = C.charCount('안녕 하세요\nabc');
+check('글자수 공백포함 10·제외 8·줄 2·단어 3·UTF-8 20바이트', T2.withSpace === 10 && T2.noSpace === 8 && T2.lines === 2 && T2.words === 3 && T2.utf8 === 20, T2);
+check('평단가 (1만×10 + 8천×10) = 9,000', C.avgPrice([{ price: 10000, qty: 10 }, { price: 8000, qty: 10 }]).avg === 9000);
+
+// 17) 실업급여 2026: 상한 68,100, 하한 66,048(8시간)
+check('평균임금 일 15만 → 상한 68,100', C.unemployment(150000, 8, 3, false).daily === 68100);
+check('평균임금 일 10만 → 60%=60,000 < 하한 66,048', C.unemployment(100000, 8, 3, false).daily === 66048);
+check('4시간 근로 하한 = 33,024', C.unemployment(40000, 4, 3, false).daily === 33024);
+check('소정급여일수: 1년 미만 120 · 50세 미만 3~5년 180 · 50세 이상 10년 이상 270', C.unemployment(1e5, 8, 0.5, false).days === 120 && C.unemployment(1e5, 8, 4, false).days === 180 && C.unemployment(1e5, 8, 12, true).days === 270);
+
+// 18) 대환·취득세·청약·목표·BMI
+let F = C.refinance(2e8, 0.055, 0.045, 240, 0.012, 12, 36, 300000);
+check('대환: 이자 절감 > 0, 순이익 = 절감 − 수수료 − 비용', F.save > 0 && near(F.net, F.save - F.fee - 300000), F);
+check('취득세 승용 3,000만 → 210만', C.carAcqTax(3e7, 'car').pay === 2100000);
+check('경차 1,500만 → 4% 60만 − 감면 60만 = 0', C.carAcqTax(1.5e7, 'light').pay === 0);
+check('경차 2,000만 → 80만 − 75만 = 5만', C.carAcqTax(2e7, 'light').pay === 50000);
+check('전기차 4,000만 → 280만 − 140만 = 140만', C.carAcqTax(4e7, 'ev').pay === 1400000);
+let H = C.subscription(15, 6, 15, 0);
+check('청약 만점 84 (무주택 15년·부양 6명·통장 15년)', H.total === 84, H);
+check('유주택 0점 · 부양 0명 5점 · 통장 6개월 미만 1점', C.subscription(-1, 0, 0.3, 0).total === 6);
+check('무주택 1년 미만 2점 · 3년 8점', C.subscription(0.5, 0, 0, 0).home === 2 && C.subscription(3, 0, 0, 0).home === 8);
+check('배우자 통장 50%(최대 3점) 합산', C.subscription(0, 0, 5, 10).spouse === 3 && C.subscription(0, 0, 5, 10).account === 10);
+let O = C.goal(1e8, 5, 0.04, 0);
+check('목표 1억·5년·4% → 월 적립 × FV 공식 = 1억', near(O.monthly * (Math.pow(1 + 0.04 / 12, 60) - 1) / (0.04 / 12), 1e8, 1), O.monthly);
+let Z = C.bmi(170, 65);
+check('BMI 170cm 65kg = 22.49 정상, 정상체중 53.5~66.2kg', near(Z.bmi, 22.49, 0.01) && Z.level === '정상' && near(Z.normalMin, 53.47, 0.01) && near(Z.normalMax, 66.18, 0.01), Z);
+
 console.log(fail ? `\n❌ 실패 ${fail}건` : '\n✅ 전체 통과');
 process.exitCode = fail ? 1 : 0;

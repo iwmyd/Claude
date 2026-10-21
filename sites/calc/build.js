@@ -24,7 +24,8 @@ const CATS = [
   { id: 'loan', name: '대출·금융', tone: 'blue', icon: 'landmark' },
   { id: 'save', name: '저축·투자', tone: 'emerald', icon: 'piggy' },
   { id: 'car', name: '자동차', tone: 'red', icon: 'car' },
-  { id: 'work', name: '근로·부동산', tone: 'amber', icon: 'briefcase' },
+  { id: 'work', name: '근로·세금', tone: 'amber', icon: 'briefcase' },
+  { id: 'home', name: '부동산', tone: 'orange', icon: 'home' },
   { id: 'life', name: '날짜·생활', tone: 'rose', icon: 'calendar' },
 ];
 const calcs = pages.filter((p) => p.calc);
@@ -106,7 +107,7 @@ function calcPage(p) {
     { '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: '홈', item: SITE + '/' }, { '@type': 'ListItem', position: 2, name: cat.name, item: `${SITE}/#${cat.id}` }, { '@type': 'ListItem', position: 3, name: p.short, item: url(p) }] }] };
   const body = p.pad ? pad(p.pad) : `<section class="card calc" data-calc="${p.calc}">
 <div class="calc-grid"><div class="inputs">${p.form}</div>
-<div class="results"><div id="out" class="out"></div></div></div>
+${p.calc === 'percent' ? '' : '<div class="results"><div id="out" class="out"></div></div>'}</div>
 <div class="viz"><div id="chart" class="chart"></div><div id="tables"></div></div>
 </section>`;
   return `${head(p)}<body data-page="${p.slug}" data-tone="${p.tone}">
