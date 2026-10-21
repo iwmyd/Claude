@@ -18,15 +18,18 @@ module.exports = [
   { slug: 'about', short: '사이트 소개', title: '사이트 소개 | 에이팜 종합계산기', desc: '에이팜 종합계산기 소개와 계산 원칙.', h1: '사이트 소개',
     summary: '생활 속 돈·날짜 계산을 빠르고 정확하게 하도록 만든 무료 계산기 모음입니다.',
     tips: [['계산식 공개', '모든 계산기 아래 "계산 기준"에 식과 가정을 적어 둡니다.'], ['출처 확인', '법정 기준·정부 제도는 법령·기관 안내로 확인한 값만 씁니다.'], ['내 기기에서만', '입력값은 서버로 보내지 않고 브라우저 안에서 계산·저장합니다.'], ['자동 검산', '공개된 예시값으로 계산 결과를 매번 테스트합니다.']],
-    extra: `<section class="card"><h2>문의</h2><p>오류 제보·제안·기타 문의: <a href="mailto:${CONTACT}">${CONTACT}</a></p></section>` },
-  { slug: 'privacy', short: '개인정보처리방침', title: '개인정보처리방침 | 에이팜 종합계산기', desc: '에이팜 종합계산기 개인정보처리방침.', h1: '개인정보처리방침',
-    summary: '시행일: 2026년 10월 21일',
+    extra: `<section class="card"><h2>문의</h2><p>오류 제보·계산기 제안·기타 문의는 <a href="/contact/">문의하기</a>에서 보내 주세요. 평균 1일 이내에 답변드립니다. 이메일: <a href="mailto:${CONTACT}">${CONTACT}</a></p></section>` },
+  { slug: 'privacy', short: '개인정보처리방침', title: '개인정보처리방침 | 에이팜 종합계산기', desc: '에이팜 종합계산기 개인정보처리방침 — 수집 항목, 문의 처리, 쿠키·광고, 방문 통계.', h1: '개인정보처리방침',
+    summary: '시행일: 2026년 10월 22일',
     extra: `<section class="card prose">
-<h2>1. 수집하는 개인정보</h2><p>회원가입이 없으며 계산기 입력값을 수집·전송하지 않습니다. 즐겨찾기·최근 사용·입력값·계산 기록은 이용자 브라우저 저장소(localStorage)에만 남고, 브라우저 설정이나 사이트의 "저장 기록 지우기"로 언제든 지울 수 있습니다.</p>
-<h2>2. 쿠키와 광고</h2><p>Google AdSense 등 제3자 광고를 게재할 수 있습니다. 이 경우 Google을 포함한 제3자 공급업체가 쿠키를 사용해 이용자의 이 사이트 및 다른 사이트 방문 기록을 바탕으로 광고를 게재할 수 있습니다. <a href="https://adssettings.google.com" rel="noopener">Google 광고 설정</a>에서 맞춤 광고를 끌 수 있습니다.</p>
-<h2>3. 방문 통계</h2><p>개인을 식별하지 않는 통계 도구를 쓸 수 있으며, 도입 시 이 방침에 이름을 추가합니다.</p>
-<h2>4. 문의</h2><p><a href="mailto:${CONTACT}">${CONTACT}</a></p>
-<h2>5. 변경</h2><p>방침이 바뀌면 이 페이지에 시행일과 함께 공지합니다.</p></section>` },
+<h2>1. 계산기 이용</h2><p>회원가입이 없으며 계산기 입력값을 수집·전송하지 않습니다. 즐겨찾기·최근 사용·입력값·계산 기록은 이용자 브라우저 저장소(localStorage)에만 남고, 브라우저 설정이나 사이트 아래 "저장 기록 지우기"로 언제든 지울 수 있습니다.</p>
+<h2>2. 문의하기로 받는 정보</h2><p><b>항목</b>: 답변 받을 이메일(필수), 이름(선택), 문의 종류·관련 계산기·문의 내용. <b>목적</b>: 문의 확인과 답변. <b>보관</b>: 답변을 마친 뒤 1년 이내에 지웁니다. 이용자가 요청하면 바로 지웁니다.</p>
+<p><b>처리 위탁</b>: 문의 양식은 FormSubmit(formsubmit.co)을 거쳐 운영자 이메일(Gmail)로 전달됩니다. 동의하지 않으면 문의를 보내지 않거나 이메일(<a href="mailto:${CONTACT}">${CONTACT}</a>)로 직접 보내실 수 있습니다.</p>
+<h2>3. 쿠키와 광고</h2><p>Google AdSense 등 제3자 광고를 게재할 수 있습니다. 이 경우 Google을 포함한 제3자 공급업체가 쿠키를 사용해 이용자의 이 사이트 및 다른 사이트 방문 기록을 바탕으로 광고를 게재할 수 있습니다. <a href="https://adssettings.google.com" rel="noopener">Google 광고 설정</a>에서 맞춤 광고를 끌 수 있습니다.</p>
+<h2>4. 방문 통계</h2>${process.env.GA_ID ? '<p>사이트 개선을 위해 Google 애널리틱스 4를 씁니다. 쿠키로 방문 페이지, 머문 시간, 기기·브라우저 종류, 대략적인 지역 같은 정보를 모으며 이름·이메일 등 개인을 바로 알아볼 수 있는 정보는 모으지 않습니다. <a href="https://tools.google.com/dlpage/gaoptout" rel="noopener">Google 애널리틱스 차단 부가 기능</a>이나 브라우저 쿠키 설정으로 거부할 수 있습니다.</p>' : '<p>현재 방문 통계 도구를 쓰지 않습니다. 도입하면 이 방침에 이름과 수집 항목을 추가합니다.</p>'}
+<h2>5. 이용자의 권리</h2><p>문의하며 보낸 정보의 열람·정정·삭제를 <a href="/contact/">문의하기</a>나 이메일로 요청할 수 있습니다.</p>
+<h2>6. 문의</h2><p><a href="/contact/">문의하기</a> · <a href="mailto:${CONTACT}">${CONTACT}</a> (평균 1일 이내 답변)</p>
+<h2>7. 변경</h2><p>방침이 바뀌면 이 페이지에 시행일과 함께 공지합니다.</p></section>` },
 
   // ── 기본 계산기 ──
   { slug: 'basic', calc: 'basic', cat: 'basic', tone: 'slate', icon: 'calculator', short: '일반 계산기', lead: '휴대폰 계산기처럼 바로 계산', pad: 'basic',
@@ -165,4 +168,29 @@ module.exports = [
     basis: ['만 나이: 행정기본법 제7조의2(2023.6.28 시행). 연 나이 = 기준 연도 − 출생 연도, 세는 나이 = 연 나이 + 1.'] },
 ];
 module.exports.push(...require('./pages-more')(f, sel, form));
+const FAQ_MORE = require('./faq-more'); // 모든 계산기 FAQ 최소 3개
+for (const p of module.exports) if (FAQ_MORE[p.slug]) p.faq = [...(p.faq || []), ...FAQ_MORE[p.slug]];
+const CALC_OPTS = module.exports.filter((p) => p.calc).map((p) => `<option value="${p.short}" data-slug="${p.slug}">${p.short}</option>`).join('');
+const SITE = (process.env.SITE_URL || 'https://aipomcalc.com').replace(/\/$/, '');
+module.exports.push(
+  { slug: 'contact', short: '문의하기', title: '문의하기 | 에이팜 종합계산기', desc: '계산 오류 제보, 새 계산기 제안, 광고·제휴 문의를 보내 주세요. 평균 1일 이내에 답변드립니다.', h1: '문의하기',
+    summary: '계산이 틀렸거나 바라는 계산기가 있으면 알려 주세요. <b>평균 1일 이내</b>에 이메일로 답변드립니다.',
+    extra: `<section class="card"><form class="contact" action="https://formsubmit.co/${CONTACT}" method="POST">
+<input type="hidden" name="_subject" value="[에이팜 종합계산기] 새 문의"><input type="hidden" name="_template" value="table"><input type="hidden" name="_next" value="${SITE}/contact/thanks/">
+<input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+<div class="form">
+<label class="f"><span class="fl">답변 받을 이메일 (필수)</span><input id="c-email" type="email" name="email" required autocomplete="email" placeholder="you@example.com"></label>
+<label class="f"><span class="fl">이름 (선택)</span><input id="c-name" type="text" name="이름" autocomplete="name"></label>
+<label class="f"><span class="fl">문의 종류</span><select id="c-kind" name="문의 종류"><option>계산 오류 제보</option><option>새 계산기 제안</option><option>사용 중 불편한 점</option><option>광고·제휴</option><option>기타</option></select></label>
+<label class="f"><span class="fl">관련 계산기 (선택)</span><select id="c-calc" name="관련 계산기"><option value="">선택 안 함</option>${CALC_OPTS}</select></label>
+<label class="f wide"><span class="fl">문의 내용 (필수)</span><textarea id="c-msg" name="문의 내용" rows="8" required minlength="10" placeholder="예: 연봉 5,000만 원을 넣었는데 실수령액이 회사 명세서와 3만 원 차이가 나요."></textarea></label>
+</div>
+<label class="agree"><input id="c-agree" type="checkbox" name="개인정보 수집 동의" value="동의함" required><span>답변을 위해 이메일·문의 내용을 수집하는 데 동의합니다. (<a href="/privacy/">개인정보처리방침</a> — 답변 후 1년 이내 삭제)</span></label>
+<p><button class="btn" type="submit">문의 보내기</button></p>
+<p class="muted">보내기를 누르면 스팸 방지 확인 화면이 한 번 나올 수 있습니다. 이메일로 직접 보내셔도 됩니다: <a href="mailto:${CONTACT}">${CONTACT}</a></p>
+</form></section>` },
+  { slug: 'contact/thanks', short: '문의 완료', noindex: true, title: '문의를 보냈어요 | 에이팜 종합계산기', desc: '문의가 접수되었습니다.', h1: '문의를 보냈어요. 감사합니다!',
+    summary: '보내 주신 내용을 잘 받았습니다. <b>평균 1일 이내</b>에 적어 주신 이메일로 답변드립니다.',
+    extra: '<section class="card"><p>답장이 안 보이면 스팸함도 확인해 주세요. 급한 내용은 이메일로 다시 보내 주셔도 됩니다.</p><p><a class="btn" href="/">계산기 홈으로</a></p></section>' },
+);
 module.exports.CONTACT = CONTACT;

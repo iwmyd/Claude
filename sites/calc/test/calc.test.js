@@ -226,5 +226,9 @@ EL = C.electricity(350, false, 9, 5);
 check('전기: 350kWh 청구 = (57,790 + 3,150 + 1,750) + 부가세 6,269 + 기금 1,690 → 70,640원', EL.sum === 62690 && EL.vat === 6269 && EL.fund === 1690 && EL.total === 70640, EL);
 check('전기: 200kWh는 1단계, 201kWh는 2단계', C.electricity(200, false, 9, 5).step === 1 && C.electricity(201, false, 9, 5).step === 2);
 
+const PG = require('../pages.js');
+check('사이트맵 제외: 감사 페이지 noindex', PG.find((p) => p.slug === 'contact/thanks').noindex === true);
+check('모든 계산기 FAQ 3개 이상', PG.filter((p) => p.calc).every((p) => (p.faq || []).length >= 3));
+
 console.log(fail ? `\n❌ 실패 ${fail}건` : '\n✅ 전체 통과');
 process.exitCode = fail ? 1 : 0;

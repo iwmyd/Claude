@@ -11,7 +11,7 @@ const server = http.createServer((q, s) => {
   s.writeHead(200, { 'Content-Type': types[path.extname(f)] || 'application/octet-stream' }); fs.createReadStream(f).pipe(s);
 }).listen(8765);
 const U = (p) => `http://localhost:8765/${p ? p + '/' : ''}`;
-const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment', 'savings', 'compound', 'military', 'car-loan', 'car-tax', 'severance', 'rent', 'area', 'dday', 'age', 'percent', 'charcount', 'refinance', 'goal', 'avgprice', 'car-acq', 'salary', 'wage', 'unemployment', 'vat', 'subscription', 'bmi', 'winrate', 'annual-leave', 'brokerage', 'freelance-tax', 'electricity', 'about', 'privacy'];
+const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment', 'savings', 'compound', 'military', 'car-loan', 'car-tax', 'severance', 'rent', 'area', 'dday', 'age', 'percent', 'charcount', 'refinance', 'goal', 'avgprice', 'car-acq', 'salary', 'wage', 'unemployment', 'vat', 'subscription', 'bmi', 'winrate', 'annual-leave', 'brokerage', 'freelance-tax', 'electricity', 'about', 'privacy', 'contact', 'contact/thanks'];
 
 (async () => {
   const browser = await chromium.launch();
@@ -98,6 +98,22 @@ const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment'
     ok(`[${tag}] 3.3% 수입 3천만 → 환급 455,180원`, (await main()).includes('455,180'), await main());
     await page.goto(U('electricity'), { waitUntil: 'networkidle' });
     ok(`[${tag}] 전기 350kWh → 70,640원 · 표 8행`, (await main()).includes('70,640') && (await page.locator('#tables tbody tr').count()) === 8, await main());
+
+    // SEO·문의 (2026-10-22)
+    await page.goto(U('contact') + '?calc=wage', { waitUntil: 'networkidle' });
+    ok(`[${tag}] 문의: ?calc=wage → 관련 계산기 미리 선택 · 감사 페이지로 이동 설정`, (await page.inputValue('#c-calc')) === '시급·주휴수당 계산기' && (await page.getAttribute('input[name=_next]', 'value')).endsWith('/contact/thanks/'));
+    ok(`[${tag}] 문의: 이메일·내용·동의 필수`, (await page.locator('#c-email[required], #c-msg[required], #c-agree[required]').count()) === 3);
+    await page.goto(U('contact/thanks'), { waitUntil: 'networkidle' });
+    ok(`[${tag}] 감사 페이지 noindex`, (await page.locator('meta[name=robots][content=noindex]').count()) === 1);
+    if (tag === 'pc') {
+      const bad = [];
+      for (const sl of SLUGS.filter((x) => x && !['about', 'privacy', 'contact', 'contact/thanks'].includes(x))) {
+        await page.goto(U(sl), { waitUntil: 'domcontentloaded' });
+        const n = await page.locator('.faq details').count(), og = await page.getAttribute('meta[property="og:image"]', 'content'), d = await page.getAttribute('meta[name=description]', 'content');
+        if (n < 3 || !og.endsWith('/og/' + sl + '.png') || !d || d.length < 40 || (await page.locator('nav.crumb').count()) !== 1 || (await page.locator('.related .tile').count()) < 3) bad.push(`${sl}(faq ${n}, og ${og.split('/').pop()})`);
+      }
+      ok(`[${tag}] 모든 계산기: FAQ 3개+ · 전용 썸네일 · 설명 · 탐색경로 · 관련 링크`, bad.length === 0, bad.join(', '));
+    }
 
     // 일반·공학용 계산기
     await page.goto(U('basic'), { waitUntil: 'networkidle' });

@@ -19,7 +19,7 @@ const pages = fs.readdirSync(ROOT, { withFileTypes: true }).filter((d) => d.isDi
   for (const scheme of ['light', 'dark']) {
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, colorScheme: scheme });
     const page = await ctx.newPage();
-    for (const slug of ['', ...pages]) {
+    for (const slug of ['', ...pages, 'contact/thanks']) {
       await page.goto(`http://localhost:8766/${slug ? slug + '/' : ''}`, { waitUntil: 'networkidle' });
       const r = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).exclude('ins.adsbygoogle').analyze();
       const bad = r.violations.filter((v) => ['serious', 'critical'].includes(v.impact));
