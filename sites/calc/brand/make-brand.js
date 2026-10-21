@@ -7,7 +7,7 @@ const ICONS = require('../icons');
 const CALCS = require('../pages').filter((p) => p.calc), n = CALCS.length;
 // 계산기 색: style.css 의 [data-tone] 정의를 그대로 읽는다
 const TONES = Object.fromEntries([...fs.readFileSync(path.join(__dirname, '..', 'assets', 'style.css'), 'utf8').matchAll(/\[data-tone="(\w+)"\]\s*\{ --tb: (#\w+); --tsb: (#\w+); \}/g)].map((m) => [m[1], [m[2], m[3]]]));
-const CATNAME = { basic: '기본 계산기', loan: '대출·금융', save: '저축·투자', car: '자동차', work: '근로·세금', home: '부동산', life: '날짜·생활' };
+const CATNAME = { build: '건축·토목', basic: '기본 계산기', loan: '대출·금융', save: '저축·투자', car: '자동차', work: '근로·세금', home: '부동산', life: '날짜·생활' };
 const esc = (t) => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;');
 const ogCalc = (p) => { const [c, bg] = TONES[p.tone] || ['#0f172a', '#f1f5f9']; const t = p.short;
   return `<div id="b" style="width:1200px;height:630px;background:#f8fafc;font-family:'IBM Plex Sans KR';color:#0f172a;padding:64px 80px;display:flex;flex-direction:column;justify-content:space-between;border-top:14px solid ${c}">
@@ -17,7 +17,7 @@ const ogCalc = (p) => { const [c, bg] = TONES[p.tone] || ['#0f172a', '#f1f5f9'];
   <div style="min-width:0"><div style="font-size:${t.length > 14 ? 64 : 78}px;font-weight:700;letter-spacing:-.03em;line-height:1.12;word-break:keep-all">${esc(t)}</div><div style="font-size:34px;font-weight:500;color:#334155;margin-top:14px;word-break:keep-all">${esc(p.lead)}</div></div></div>
  <div style="display:flex;justify-content:space-between;font-size:26px;font-weight:500;color:#475569"><span>무료 · 회원가입 없이 바로 계산</span><b style="color:${c}">aipomcalc.com</b></div>
 </div>`; };
-const CATS = [['기본 계산기', '#334155', '#f1f5f9', 'calculator'], ['대출·금융', '#1d4ed8', '#eff6ff', 'landmark'], ['저축·투자', '#047857', '#ecfdf5', 'piggy'], ['자동차', '#b91c1c', '#fef2f2', 'car'], ['근로·세금', '#b45309', '#fffbeb', 'briefcase'], ['부동산', '#c2410c', '#fff7ed', 'home'], ['날짜·생활', '#be123c', '#fff1f2', 'calendar']];
+const CATS = [['기본 계산기', '#334155', '#f1f5f9', 'calculator'], ['대출·금융', '#1d4ed8', '#eff6ff', 'landmark'], ['저축·투자', '#047857', '#ecfdf5', 'piggy'], ['자동차', '#b91c1c', '#fef2f2', 'car'], ['근로·세금', '#b45309', '#fffbeb', 'briefcase'], ['부동산', '#c2410c', '#fff7ed', 'home'], ['날짜·생활', '#be123c', '#fff1f2', 'calendar'], ['건축·토목', '#4d7c0f', '#f7fee7', 'ruler']];
 const svgIcon = (k, color, size) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`;
 const FONT = '<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@500;700&display=swap" rel="stylesheet">';
 

@@ -30,6 +30,7 @@ const CATS = [
   { id: 'work', name: '근로·세금', tone: 'amber', icon: 'briefcase' },
   { id: 'home', name: '부동산', tone: 'orange', icon: 'home' },
   { id: 'life', name: '날짜·생활', tone: 'rose', icon: 'calendar' },
+  { id: 'build', name: '건축·토목', tone: 'lime', icon: 'ruler' },
 ];
 const calcs = pages.filter((p) => p.calc);
 for (const p of calcs) if (!CATS.find((c) => c.id === p.cat)) throw new Error('카테고리 없음: ' + p.slug);

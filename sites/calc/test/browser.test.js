@@ -11,7 +11,7 @@ const server = http.createServer((q, s) => {
   s.writeHead(200, { 'Content-Type': types[path.extname(f)] || 'application/octet-stream' }); fs.createReadStream(f).pipe(s);
 }).listen(8765);
 const U = (p) => `http://localhost:8765/${p ? p + '/' : ''}`;
-const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment', 'savings', 'compound', 'military', 'car-loan', 'car-tax', 'severance', 'rent', 'area', 'dday', 'age', 'percent', 'charcount', 'refinance', 'goal', 'avgprice', 'car-acq', 'salary', 'wage', 'unemployment', 'vat', 'subscription', 'bmi', 'winrate', 'annual-leave', 'brokerage', 'freelance-tax', 'electricity', 'about', 'privacy', 'contact', 'contact/thanks'];
+const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment', 'savings', 'compound', 'military', 'car-loan', 'car-tax', 'severance', 'rent', 'area', 'dday', 'age', 'percent', 'charcount', 'refinance', 'goal', 'avgprice', 'car-acq', 'salary', 'wage', 'unemployment', 'vat', 'subscription', 'bmi', 'winrate', 'annual-leave', 'brokerage', 'freelance-tax', 'electricity', 'area-volume', 'materials', 'slope', 'stairs', 'earthwork', 'unit-convert', 'about', 'privacy', 'contact', 'contact/thanks'];
 
 (async () => {
   const browser = await chromium.launch();
@@ -98,6 +98,30 @@ const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment'
     ok(`[${tag}] 3.3% 수입 3천만 → 환급 455,180원`, (await main()).includes('455,180'), await main());
     await page.goto(U('electricity'), { waitUntil: 'networkidle' });
     ok(`[${tag}] 전기 350kWh → 70,640원 · 표 8행`, (await main()).includes('70,640') && (await page.locator('#tables tbody tr').count()) === 8, await main());
+
+    // 건축·토목 6종 — 모드 전환 시 칸이 바뀌고 결과가 맞는지
+    await page.goto(U('area-volume'), { waitUntil: 'networkidle' });
+    ok(`[${tag}] 면적: 기본 직사각형 10×8 = 80㎡ · 세 변 칸 숨김`, (await main()).startsWith('80') && !(await page.locator('#sa').isVisible()), await main());
+    await page.selectOption('#shape', 'poly');
+    ok(`[${tag}] 면적: 다각형 좌표 → 120㎡ · 가로 칸 숨김`, (await main()).startsWith('120') && !(await page.locator('#w').isVisible()) && (await page.locator('#pts').isVisible()), await main());
+    await page.selectOption('#shape', 'frustum');
+    ok(`[${tag}] 부피: 원뿔대 3·2·2m = 9.948㎥`, (await main()).startsWith('9.948'), await main());
+    await page.goto(U('materials'), { waitUntil: 'networkidle' });
+    ok(`[${tag}] 콘크리트 10×8×0.2 → 16.16㎥ · 3대`, (await main()).startsWith('16.16') && (await page.locator('#out').innerText()).includes('3대'), await main());
+    await page.selectOption('#mat', 'rebar');
+    ok(`[${tag}] 철근 D10 8m×100 → 0.461톤 · KS 표 12행 · 콘크리트 칸 숨김`, (await main()).startsWith('0.461') && (await page.locator('#tables tbody tr').count()) === 12 && !(await page.locator('#cw').isVisible()), await main());
+    await page.selectOption('#mat', 'brick');
+    ok(`[${tag}] 벽돌 (10×2.4−3.6)×75 → 1,530매, 3% 1,576매`, (await main()).startsWith('1,576'), await main());
+    await page.goto(U('slope'), { waitUntil: 'networkidle' });
+    ok(`[${tag}] 경사 1/12 → 8.33%`, (await main()).startsWith('8.33'), await main());
+    await page.selectOption('#smode', 'deg'); await set('deg', '45');
+    ok(`[${tag}] 경사 45° → 100%`, (await main()).startsWith('100'), await main());
+    await page.goto(U('stairs'), { waitUntil: 'networkidle' }); await page.selectOption('#use', 'elem');
+    ok(`[${tag}] 계단 2,800/175 → 16단 · 초등학교 기준 단높이 초과 경고`, (await main()).startsWith('16') && (await page.locator('#out .note.over').count()) === 1, await main());
+    await page.goto(U('earthwork'), { waitUntil: 'networkidle' });
+    ok(`[${tag}] 토공량 630㎥`, (await main()).startsWith('630'), await main());
+    await page.goto(U('unit-convert'), { waitUntil: 'networkidle' }); await page.selectOption('#ukind', 'press'); await set('uval', '24');
+    ok(`[${tag}] 단위 24MPa → 244.73kgf/cm² (맨 위)`, (await main()).startsWith('244.73'), await main());
 
     // SEO·문의 (2026-10-22)
     await page.goto(U('contact') + '?calc=wage', { waitUntil: 'networkidle' });

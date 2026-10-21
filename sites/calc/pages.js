@@ -168,6 +168,7 @@ module.exports = [
     basis: ['만 나이: 행정기본법 제7조의2(2023.6.28 시행). 연 나이 = 기준 연도 − 출생 연도, 세는 나이 = 연 나이 + 1.'] },
 ];
 module.exports.push(...require('./pages-more')(f, sel, form));
+module.exports.push(...require('./pages-build')(f, sel, form)); // 건축·토목
 const FAQ_MORE = require('./faq-more'); // 모든 계산기 FAQ 최소 3개
 for (const p of module.exports) if (FAQ_MORE[p.slug]) p.faq = [...(p.faq || []), ...FAQ_MORE[p.slug]];
 const CALC_OPTS = module.exports.filter((p) => p.calc).map((p) => `<option value="${p.short}" data-slug="${p.slug}">${p.short}</option>`).join('');
