@@ -82,7 +82,7 @@ const header = () => `<a class="skip" href="#main">본문 바로가기</a>
 
 const footer = () => `<footer class="foot"><div class="wrap">
 <div class="foot-grid"><div><b>${NAME}</b><p>모든 계산은 참고용이며 금융상품 가입·투자 권유가 아닙니다. 최종 금액은 해당 기관에 확인하세요.</p></div>
-<div class="foot-links"><a href="/about/">사이트 소개</a><a href="/privacy/">개인정보처리방침</a><a href="/contact/">문의하기 (평균 1일 이내 답변)</a><a href="mailto:${CONTACT}">${CONTACT}</a><button type="button" class="linkbtn" data-clear-storage>저장 기록 지우기</button></div></div>
+<div class="foot-links"><a href="/about/">사이트 소개</a><a href="/privacy/">개인정보처리방침</a><a href="/contact/">문의하기 (평균 1일 이내 답변)</a><a href="mailto:${CONTACT}">${CONTACT}</a><a href="https://blog.naver.com/iwmyd99" rel="noopener">블로그: 에이팜의 이야기 보따리</a><button type="button" class="linkbtn" data-clear-storage>저장 기록 지우기</button></div></div>
 <p class="muted">최종 업데이트 ${UPDATED}</p></div></footer>
 <button class="totop" type="button" data-totop aria-label="맨 위로">${icon('up')}</button>
 <div class="toast" role="status" aria-live="polite" id="toast"></div>
@@ -148,8 +148,8 @@ function homePage(p) {
   return `${head(p)}<body data-page="home">
 ${header()}
 <main class="wrap" id="main" tabindex="-1">
-<section class="hero"><h1>${NAME}</h1><p>${calcs.length}가지 생활 계산을 한곳에서. ${p.summary}</p>
-<button class="hero-search" type="button" data-open-search>${icon('search')}<span>어떤 계산을 할까요? 예: 대출이자, 군적금, ㄷㄷㅇ</span><kbd>/</kbd></button></section>
+<section class="hero"><h1>${NAME}</h1>
+<button class="hero-search" type="button" data-open-search>${icon('search')}<span>어떤 계산기를 찾으시나요?</span><kbd>/</kbd></button></section>
 <section id="mine" class="mine" hidden><div class="mine-col" id="favs-wrap" hidden><h2>${icon('star')}즐겨찾기</h2><div class="tiles" id="favs"></div></div><div class="mine-col" id="recent-wrap" hidden><h2>${icon('clock')}최근 사용</h2><div class="tiles" id="recent"></div></div></section>
 ${CATS.map((c) => `<section class="cat" id="${c.id}" data-tone="${c.tone}"><h2><span class="cic">${icon(c.icon)}</span>${c.name}<small>${calcs.filter((q) => q.cat === c.id).length}</small></h2><div class="tiles">${calcs.filter((q) => q.cat === c.id).map(tile).join('')}</div></section>`).join('')}
 </main>
