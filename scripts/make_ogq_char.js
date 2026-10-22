@@ -94,18 +94,22 @@ function fx(kind, cx, cy) {
 function squirrel(st, cx, by) {
   const hx = cx, hy = by - 225; // 머리 중심
   const out = [];
-  // 꼬리 (몸 뒤, 오른쪽으로 크게 말림)
+  const MK = st.char === 'monkey'; // 원숭이 '팜이' (오리지널 — 특정 IP 를 닮지 않게: 갈색 털, 소용돌이 꼬리+도토리, 머리털 세 가닥+잎)
+  const F = MK ? { fur: '#a8683f', furD: '#7f4a2b', belly: '#f7dcc0' } : { fur: K.fur, furD: K.furD, belly: K.belly };
   const tx = cx + 70, ty = by - 40;
-  out.push(pth(`M${tx - 10} ${ty} C${tx + 120} ${ty + 10} ${tx + 150} ${ty - 140} ${tx + 90} ${ty - 210} C${tx + 50} ${ty - 260} ${tx - 20} ${ty - 230} ${tx + 10} ${ty - 180} C${tx + 30} ${ty - 150} ${tx + 70} ${ty - 160} ${tx + 60} ${ty - 120} C${tx + 50} ${ty - 70} ${tx - 30} ${ty - 70} ${tx - 10} ${ty} Z`, { fill: K.furD }));
-  out.push(pth(`M${tx + 40} ${ty - 40} C${tx + 90} ${ty - 70} ${tx + 100} ${ty - 140} ${tx + 74} ${ty - 180}`, { strokeWidth: 4, stroke: '#8a5526' }));
+  if (MK) {
+    out.push(pth(`M${cx + 60} ${by - 40} C${cx + 170} ${by - 30} ${cx + 200} ${by - 150} ${cx + 160} ${by - 220} C${cx + 130} ${by - 270} ${cx + 70} ${by - 250} ${cx + 80} ${by - 210} C${cx + 88} ${by - 180} ${cx + 128} ${by - 186} ${cx + 126} ${by - 214}`, { strokeWidth: 22, stroke: K.ink, fill: 'none', roughness: 0.6 }));
+    out.push(pth(`M${cx + 60} ${by - 40} C${cx + 170} ${by - 30} ${cx + 200} ${by - 150} ${cx + 160} ${by - 220} C${cx + 130} ${by - 270} ${cx + 70} ${by - 250} ${cx + 80} ${by - 210} C${cx + 88} ${by - 180} ${cx + 128} ${by - 186} ${cx + 126} ${by - 214}`, { strokeWidth: 13, stroke: F.fur, fill: 'none', roughness: 0.6 }));
+  } else out.push(pth(`M${tx - 10} ${ty} C${tx + 120} ${ty + 10} ${tx + 150} ${ty - 140} ${tx + 90} ${ty - 210} C${tx + 50} ${ty - 260} ${tx - 20} ${ty - 230} ${tx + 10} ${ty - 180} C${tx + 30} ${ty - 150} ${tx + 70} ${ty - 160} ${tx + 60} ${ty - 120} C${tx + 50} ${ty - 70} ${tx - 30} ${ty - 70} ${tx - 10} ${ty} Z`, { fill: K.furD }));
+  if (!MK) out.push(pth(`M${tx + 40} ${ty - 40} C${tx + 90} ${ty - 70} ${tx + 100} ${ty - 140} ${tx + 74} ${ty - 180}`, { strokeWidth: 4, stroke: '#8a5526' }));
   // 몸
-  out.push(ell(cx, by - 78, 170, 150, { fill: K.fur }));
-  out.push(ell(cx, by - 70, 104, 108, { fill: K.belly, strokeWidth: 0, stroke: 'none' }));
+  out.push(ell(cx, by - 78, 170, 150, { fill: F.fur }));
+  out.push(ell(cx, by - 70, 104, 108, { fill: F.belly, strokeWidth: 0, stroke: 'none' }));
   // 발
-  out.push(ell(cx - 46, by - 8, 62, 30, { fill: K.furD }), ell(cx + 46, by - 8, 62, 30, { fill: K.furD }));
+  out.push(ell(cx - 46, by - 8, 62, 30, { fill: F.furD }), ell(cx + 46, by - 8, 62, 30, { fill: F.furD }));
   // 팔 (포즈별)
   const front = []; // 머리보다 위로 올린 팔은 머리 다음에 그려야 보인다
-  const arm = (x, y, a) => rot(ell(x, y, 34, 66, { fill: K.fur }), a, x, y);
+  const arm = (x, y, a) => rot(ell(x, y, 34, 66, { fill: F.fur }), a, x, y);
   const P = st.pose || 'wave';
   let hand = [cx + 70, by - 120];
   if (P === 'wave') { out.push(arm(cx - 70, by - 100, 30)); front.push(arm(cx + 104, by - 196, -150)); hand = [cx + 110, by - 205]; }
@@ -119,10 +123,18 @@ function squirrel(st, cx, by) {
   // 머리
   const headTilt = P === 'think' ? -8 : P === 'bow' ? 10 : 0;
   const head = [];
+  if (MK) {
+    head.push(ell(hx - 118, hy + 6, 70, 76, { fill: F.fur }), ell(hx - 118, hy + 8, 38, 44, { fill: F.belly, strokeWidth: 0, stroke: 'none' }), ell(hx + 118, hy + 6, 70, 76, { fill: F.fur }), ell(hx + 118, hy + 8, 38, 44, { fill: F.belly, strokeWidth: 0, stroke: 'none' }));
+  } else {
   head.push(pth(`M${hx - 86} ${hy - 50} L${hx - 70} ${hy - 128} L${hx - 30} ${hy - 82} Z`, { fill: K.fur }), pth(`M${hx + 86} ${hy - 50} L${hx + 70} ${hy - 128} L${hx + 30} ${hy - 82} Z`, { fill: K.fur }));
   head.push(`<path d="M${hx - 70} ${hy - 128} l-8 -16 M${hx - 70} ${hy - 128} l4 -18 M${hx + 70} ${hy - 128} l8 -16 M${hx + 70} ${hy - 128} l-4 -18" stroke="${K.ink}" stroke-width="5" stroke-linecap="round"/>`);
-  head.push(ell(hx, hy, 230, 196, { fill: K.fur }));
-  head.push(ell(hx, hy + 36, 132, 90, { fill: K.belly, strokeWidth: 0, stroke: 'none' }));
+  }
+  head.push(ell(hx, hy, 230, 196, { fill: F.fur }));
+  if (MK) { // 하트 모양 얼굴 가면 + 머리털 세 가닥 + 잎
+    head.push(pth(`M${hx} ${hy - 30} C${hx - 30} ${hy - 70} ${hx - 100} ${hy - 50} ${hx - 92} ${hy + 10} C${hx - 86} ${hy + 70} ${hx - 30} ${hy + 84} ${hx} ${hy + 84} C${hx + 30} ${hy + 84} ${hx + 86} ${hy + 70} ${hx + 92} ${hy + 10} C${hx + 100} ${hy - 50} ${hx + 30} ${hy - 70} ${hx} ${hy - 30} Z`, { fill: F.belly, strokeWidth: 0, stroke: 'none', roughness: 0.5 }));
+    head.push(`<path d="M${hx - 14} ${hy - 96} q-6 -34 -26 -40 M${hx} ${hy - 98} q2 -38 -6 -52 M${hx + 14} ${hy - 96} q14 -30 34 -34" stroke="${K.ink}" stroke-width="6" fill="none" stroke-linecap="round"/>`);
+    head.push(rot(pth(`M${hx + 30} ${hy - 128} Q${hx + 62} ${hy - 168} ${hx + 96} ${hy - 136} Q${hx + 62} ${hy - 110} ${hx + 30} ${hy - 128} Z`, { fill: K.leaf, strokeWidth: 4 }), -10, hx + 30, hy - 128));
+  } else head.push(ell(hx, hy + 36, 132, 90, { fill: K.belly, strokeWidth: 0, stroke: 'none' }));
   head.push(face(st.face || 'smile', hx, hy));
   out.push(rot(head.join(''), headTilt, hx, hy + 80));
   out.push(...front);
