@@ -154,9 +154,14 @@ const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment'
     ok(`[${tag}] FC 1억 → 6,000만 BP`, (await main()).startsWith('6,000만'), await main());
     await page.check('#fpc'); await page.check('#ftop');
     ok(`[${tag}] FC PC방+TOP → 8,000만`, (await main()).startsWith('8,000만'), await main());
-    await page.click('[data-fc-add]'); await set('fcp2', '8500만'); await page.selectOption('#fcc2', '30'); await set('fcm2', '500만');
-    ok(`[${tag}] FC 2명·쿠폰 한도 → 1억 5,300만`, (await main()).startsWith('1억 5,300만'), await main());
-    await page.click('[data-fc-add]'); await set('fcp3', '2억'); await page.click('[data-fc-del="2"]');
+    // 전체 판매 금액 1억 8500만 중 8500만 선수 1명에만 30% 쿠폰(한도 500만) → 나머지 1억은 쿠폰 없이
+    await set('ftot', '1억 8500만'); await set('fcp1', '8500만'); await page.selectOption('#fcc1', '30'); await set('fcm1', '500만');
+    ok(`[${tag}] FC 전체 금액 + 쿠폰 선수·한도 → 1억 5,300만`, (await main()).startsWith('1억 5,300만'), await main());
+    ok(`[${tag}] FC 선수별 내역에 쿠폰 없는 나머지 줄`, (await page.locator('#tables').innerText()).includes('나머지 (쿠폰 없음)'));
+    await set('fcp1', '3억');
+    ok(`[${tag}] FC 선수 합이 전체보다 크면 안내`, (await page.locator('#out').innerText()).includes('선수 판매 금액의 합'));
+    await set('fcp1', '8500만');
+    await page.click('[data-fc-add]'); await set('fcp2', '3000만'); await page.click('[data-fc-add]'); await set('fcp3', '2억'); await page.click('[data-fc-del="2"]');
     ok(`[${tag}] FC 선수 빼기: 아래 줄이 당겨짐`, (await page.inputValue('#fcp2')) === '2억' && (await page.locator('.fc-row:not([hidden])').count()) === 2);
     await page.reload({ waitUntil: 'networkidle' });
     ok(`[${tag}] FC 체크박스·선수 수 저장·복원`, (await page.isChecked('#fpc')) && (await page.inputValue('#fcn')) === '2');

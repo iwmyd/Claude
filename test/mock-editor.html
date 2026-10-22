@@ -43,6 +43,9 @@ wrap.addEventListener('keydown',e=>{const c=curComp(); if(e.key==='Enter'&&c&&(c
 const fmtBtn=document.querySelector('.se-text-format-toolbar-button'), fsBtn=document.querySelector('.se-font-size-code-toolbar-button');
 fmtBtn.onclick=()=>{fmt.style.display='block'}; fsBtn.onclick=()=>{fs.style.display='block'};
 fmt.querySelectorAll('button').forEach(b=>{b.addEventListener('mousedown',e=>e.preventDefault()); b.onclick=()=>{fmtBtn.querySelector('span').textContent=b.dataset.label; fmt.style.display='none'; applyFormat(b.dataset.value);}});
+// [실측 2026-10-22] 주소를 친 문단에서 Enter → 잠시 뒤 "그 순간의 캐럿 위치"에 링크 미리보기 카드(se-oglink)가 붙는다
+wrap.addEventListener('keydown',e=>{if(e.key!=='Enter')return; const n=getSelection().anchorNode; const p=n&&(n.nodeType===1?n:n.parentElement).closest('p'); if(!p||!/https?:\/\//.test(p.textContent)||p.dataset.og)return; p.dataset.og='1';
+ setTimeout(()=>{insertComp('se-oglink','<div class="se-oglink-info">링크 미리보기 aipomcalc.com</div>');},1500);},true);
 // [실측 2026-10-11] 소제목 적용 → 그 문단이 se-sectionTitle 컴포넌트로 분리, 소제목에서 Enter → 아래에 새 본문 컴포넌트
 function applyFormat(v){const c=curComp(); if(!c) return; const n=lastSel.startContainer; const p=(n.nodeType===1?n:n.parentElement).closest('p'); if(!p) return;
  if(v==='sectionTitle'&&c.classList.contains('se-text')){const ps=[...c.querySelectorAll('p')]; const i=ps.indexOf(p); const rest=ps.slice(i+1);

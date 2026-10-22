@@ -50,6 +50,7 @@ common.launchBrowser = async () => {
   draft.blocks.forEach((b) => { if (b.type === 'image') b.path = imgs[k++]; });
   // 이모지 분리 입력 검증용
   draft.blocks[draft.blocks.length - 1].text += '\n오늘도 확인 완료 ✅ 다음 글에서 뵐게요';
+  draft.blocks.splice(draft.blocks.length - 1, 0, { type: 'text', text: '직접 계산해 보기\nhttps://aipomcalc.com/' }); // 링크 카드(se-oglink) 위치 검사용
   const draftPath = path.join(tmp, 'mock.json');
   fs.writeFileSync(draftPath, JSON.stringify(draft), 'utf8');
 

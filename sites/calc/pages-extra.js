@@ -8,24 +8,26 @@ const couponSel = (id, cx, xid, capId) => `<label class="f"><span class="fl">수
 ${bp(capId, '쿠폰 최대 할인 금액', '', '쿠폰에 "최대 ○○ BP 할인"이 적혀 있을 때만 (없으면 비움)')}`;
 const fcRow = (i) => `<fieldset class="sub fc-row" data-row="${i}"${i > 1 ? ' hidden' : ''}><legend>선수 ${i}</legend>
 ${i > 1 ? `<button type="button" class="linkbtn fc-del" data-fc-del="${i}" aria-label="선수 ${i} 빼기">빼기</button>` : ''}
-<div class="form">${bp('fcp' + i, '판매 금액', i === 1 ? '1억' : '')}${couponSel('fcc' + i, 'cx' + i, 'fcx' + i, 'fcm' + i)}</div></fieldset>`;
+<div class="form">${bp('fcp' + i, '이 선수 판매 금액', '', '전체 판매 금액 중 이 선수 몫')}${couponSel('fcc' + i, 'cx' + i, 'fcx' + i, 'fcm' + i)}</div></fieldset>`;
 
 module.exports = (f, sel, form) => [
   { slug: 'fc-transfer', calc: 'fc', cat: 'game', tone: 'violet', icon: 'ball', short: 'FC 온라인 이적시장 수수료 계산기', tileName: 'FC 온라인 수수료 계산기', lead: '받는 BP · 쿠폰 · 목표 BP 역산',
     title: 'FC 온라인 이적시장 수수료 계산기 — 받는 BP, 수수료 쿠폰, 목표 BP 역산 | 에이팜 종합계산기',
     desc: 'FC 온라인 이적시장에서 선수를 팔면 수수료 40%를 떼고 얼마를 받는지 계산합니다. 프리미엄 PC방·TOP CLASS 할인, 20~50% 수수료 쿠폰과 최대 할인 한도, 여러 선수 합산, 목표 BP 역산까지.',
-    h1: 'FC 온라인 이적시장 수수료 계산기', summary: '판매 금액을 넣으면 수수료 40%와 PC방·TOP CLASS·쿠폰 할인을 반영해 실제로 받는 BP를 계산합니다. 받고 싶은 BP에서 거꾸로 판매가를 구할 수도 있습니다.',
+    h1: 'FC 온라인 이적시장 수수료 계산기', summary: '전체 판매 금액을 넣으면 수수료 40%와 PC방·TOP CLASS·쿠폰 할인을 반영해 실제로 받는 BP를 계산합니다. 쿠폰을 쓴 선수는 따로 넣어 선수별 쿠폰을 반영합니다. 받고 싶은 BP에서 거꾸로 판매가를 구할 수도 있습니다.',
     form: `<div class="form">${sel('fmode', '무엇을 계산할까요?', [['sell', '팔면 얼마 받나'], ['target', '목표 BP를 받으려면 얼마에 팔아야 하나']])}</div>
 <div class="chks" role="group" aria-label="수수료 할인 혜택">
 <label class="chk"><input type="checkbox" id="fpc"><span><b>프리미엄 PC방</b><small>기본 수수료 30% 할인</small></span></label>
 <label class="chk"><input type="checkbox" id="ftop"><span><b>TOP CLASS</b><small>기본 수수료 20% 할인</small></span></label></div>
-<div class="fw" data-show="sell"><div class="fc-rows">${Array.from({ length: FC_MAX }, (_, i) => fcRow(i + 1)).join('')}</div>
+<div class="fw" data-show="sell"><div class="form">${bp('ftot', '전체 판매 금액', '1억', '이번에 판 선수들의 판매 금액을 모두 더한 값')}</div>
+<p class="fc-guide">쿠폰을 쓴 선수가 있다면 아래에 그 선수의 판매 금액과 쿠폰을 넣으세요. 선수로 넣지 않은 나머지 금액은 쿠폰 없이 계산합니다.</p>
+<div class="fc-rows">${Array.from({ length: FC_MAX }, (_, i) => fcRow(i + 1)).join('')}</div>
 <input type="hidden" id="fcn" value="1">
-<button type="button" class="ab fc-add" data-fc-add>+ 선수 추가</button></div>
+<button type="button" class="ab fc-add" data-fc-add>+ 쿠폰 쓴 선수 추가</button></div>
 <div class="fw" data-show="target"><fieldset class="sub"><legend>목표</legend><div class="form">${bp('ftg', '받고 싶은 BP', '10억')}${couponSel('ftc', 'tcx', 'ftx', 'ftm')}</div></fieldset></div>
 <p class="note">금액은 <b>1억 2000만</b>, <b>12.5억</b>, <b>1,250,000,000</b>처럼 편하게 쓰셔도 됩니다.</p>`,
     tips: [['수수료는 판매 금액의 40%', '선수가 팔리면 판매 금액의 40%가 기본 수수료로 빠지고 나머지가 들어옵니다.'], ['PC방·TOP CLASS는 더해집니다', '프리미엄 PC방 30%와 TOP CLASS 20%를 함께 받으면 기본 수수료의 50%가 할인됩니다.'],
-      ['쿠폰은 합쳐서 100%까지', 'PC방·TOP CLASS 할인과 쿠폰을 더해 100%를 넘으면 넘는 만큼은 버려집니다. 50%를 이미 받는다면 50% 쿠폰까지만 효과가 있습니다.'], ['한도 있는 쿠폰은 싼 선수에', '최대 할인 금액이 정해진 쿠폰을 비싼 선수에 쓰면 한도에 걸려 할인율만큼 깎이지 않습니다. 선수별 내역 표에서 확인하세요.']],
+      ['쿠폰은 합쳐서 100%까지', 'PC방·TOP CLASS 할인과 쿠폰을 더해 100%를 넘으면 넘는 만큼은 버려집니다. 50%를 이미 받는다면 50% 쿠폰까지만 효과가 있습니다.'], ['쿠폰은 선수마다 따로', '쿠폰은 선수 한 명의 판매에만 적용됩니다. 전체 판매 금액을 먼저 넣고, 쿠폰을 쓴 선수만 아래에 나눠 넣으면 나머지는 쿠폰 없이 계산합니다.'], ['한도 있는 쿠폰은 싼 선수에', '최대 할인 금액이 정해진 쿠폰을 비싼 선수에 쓰면 한도에 걸려 할인율만큼 깎이지 않습니다. 선수별 내역 표에서 확인하세요.']],
     basis: ['넥슨 FC 온라인 공식 이적시장 수수료 계산기와 같은 식으로 계산합니다(2026-10-22 확인).', '기본 수수료 = 판매 금액 × 40% (1 BP 미만 버림)', '기본 할인 = 기본 수수료 × (프리미엄 PC방 30% + TOP CLASS 20%) (버림)', '쿠폰 할인 = 기본 수수료 × 쿠폰 할인율 (기본 할인과 합쳐 100% 이하로 자름, 최대 할인 금액 이하, 버림)', '받는 BP = 판매 금액 − (기본 수수료 − 기본 할인 − 쿠폰 할인)', '쿠폰 목록(20·30·40·50%)은 넥슨 공지로 확인한 전체 수수료 할인 쿠폰입니다. 다른 할인율 쿠폰은 "직접 입력"을 고르세요.', '이 계산기는 넥슨·EA의 공식 서비스가 아닙니다. 게임 안 수수료 정책이 바뀌면 결과가 달라질 수 있습니다.'],
     sources: [['EA SPORTS FC ONLINE 이적시장 수수료 계산기', 'https://fconline.nexon.com/common/calculator'], ['FC 온라인 공지사항 (수수료 할인 쿠폰)', 'https://fconline.nexon.com/news/notice/list']],
     faq: [['FC 온라인 이적시장 수수료는 몇 %인가요?', '기본 수수료는 판매 금액의 40%입니다. 1억 BP에 팔리면 4,000만 BP가 수수료로 빠지고 6,000만 BP를 받습니다.'],
