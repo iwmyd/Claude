@@ -5,7 +5,10 @@
  *   메인 240x240 1장 · 스티커 740x640 24장 · 탭 96x74 1장 · PNG · RGB · 각 1MB 이하
  * 사용: node scripts/make_ogq.js <spec.json>   → spec.outDir 에 main.png, tab.png, 01~24.png, preview.png
  * 산출: preview.png(밝은 바탕)·preview-dark.png(다크모드) 는 검수용 — 업로드하지 않는다.
- * spec: { outDir, stickers: [{ text, style, sub? }] (24개) }  style: pill|tag|bubble|stamp|note|marker
+ * spec: { outDir, palette?, stickers: [{ text, style, sub?, accent? }] (24개) }  style: pill|tag|bubble|stamp|note|marker|notice
+ *   palette: { navy, orange, red, beige } 일부만 덮어써도 됨 — 세트마다 색을 달리해 시리즈 구분
+ *   notice: 긴 문구용 상자. text 의 
+ 으로 줄바꿈(최대 5줄), sub = 상단 머리표(예: '광고')
  * ⚠️ OGQ 약관 제25조: 등록 시 AI 활용 여부·범위 표기 (이 세트는 Claude 가 코드로 그린 것).
  */
 const fs = require('fs');
@@ -13,7 +16,7 @@ const path = require('path');
 const sharp = require('sharp');
 
 const F = 'Malgun Gothic, 맑은 고딕, sans-serif';
-const C = { navy: '#1d2a44', orange: '#e8a33d', red: '#c9562b', beige: '#f5f0e6', white: '#ffffff', gray: '#4a5568' };
+let C = { navy: '#1d2a44', orange: '#e8a33d', red: '#c9562b', beige: '#f5f0e6', white: '#ffffff', gray: '#4a5568' };
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
 const W = 740, H = 640;
 
@@ -63,6 +66,14 @@ ${sub ? `<text x="370" y="410" text-anchor="middle" font-family="${F}" font-size
 ${lines.map((l, i) => `<text x="370" y="${y0 + i * lh}" text-anchor="middle" font-family="${F}" font-size="${fs1}" font-weight="800" fill="${C.navy}">${esc(l)}</text>`).join("")}
 ${sub ? `<text x="370" y="${y0 + lines.length * lh}" text-anchor="middle" font-family="${F}" font-size="44" font-weight="700" fill="${C.gray}">${esc(sub)}</text>` : ""}</g>`;
   },
+  notice: ({ text, sub }, accent) => {
+    const lines = String(text).split('\n').slice(0, 5);
+    const fs1 = Math.min(...lines.map((l) => fit(l, 600, [84, 84, 72, 60, 52][lines.length - 1])));
+    const lh = fs1 * 1.22, top = 330 - ((lines.length - 1) * lh) / 2 + fs1 * 0.35 + (sub ? 28 : 0);
+    return `<g filter="url(#sh)"><rect x="50" y="${sub ? 110 : 140}" width="640" height="${sub ? 430 : 380}" rx="40" fill="${C.white}" stroke="${accent}" stroke-width="14"/></g>
+${sub ? `<rect x="${370 - Math.max(120, [...sub].length * 34 + 40) / 2}" y="80" width="${Math.max(120, [...sub].length * 34 + 40)}" height="76" rx="38" fill="${accent}"/><text x="370" y="132" text-anchor="middle" font-family="${F}" font-size="42" font-weight="800" fill="${C.white}">${esc(sub)}</text>` : ''}
+${lines.map((l, i) => `<text x="370" y="${top + i * lh}" text-anchor="middle" font-family="${F}" font-size="${fs1}" font-weight="800" fill="${C.navy}">${esc(l)}</text>`).join('')}`;
+  },
   marker: ({ text }, accent) => {
     const fs1 = fit(text, 600, 124);
     const tw = Math.min(660, [...text].length * fs1 * 0.98 + 40);
@@ -72,7 +83,7 @@ ${sub ? `<text x="370" y="${y0 + lines.length * lh}" text-anchor="middle" font-f
 <text x="370" y="${base}" text-anchor="middle" font-family="${F}" font-size="${fs1}" font-weight="900" fill="${C.navy}">${esc(text)}</text>`;
   },
 };
-const ACC = [C.navy, C.orange, C.red];
+let ACC = [C.navy, C.orange, C.red];
 // 흰 테두리(스티커 컷 라인): 다크모드 배경에서도 네이비 도장·형광펜 글자가 보이게 (OGQ 업로드 가이드 '다크모드 확인', 2026-10-23)
 const outline = `<filter id="ol" filterUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}"><feMorphology in="SourceAlpha" operator="dilate" radius="14" result="d"/><feGaussianBlur in="d" stdDeviation="1.2" result="b"/><feComponentTransfer in="b" result="m"><feFuncA type="linear" slope="8"/></feComponentTransfer><feFlood flood-color="#ffffff"/><feComposite in2="m" operator="in" result="w"/><feMerge><feMergeNode in="w"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`;
 const svg = (w, h, body, vb = `0 0 ${W} ${H}`) => `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="${vb}"><defs>${shadow}${outline}</defs><g filter="url(#ol)">${body}</g></svg>`;
@@ -80,6 +91,7 @@ const sticker = (s, i) => (styles[s.style] || styles.pill)(s, s.accent ? C[s.acc
 
 (async () => {
   const spec = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+  if (spec.palette) { C = { ...C, ...spec.palette }; ACC = [C.navy, C.orange, C.red]; }
   const out = path.resolve(spec.outDir);
   fs.mkdirSync(out, { recursive: true });
   if (spec.stickers.length !== 24) throw new Error(`스티커는 24개여야 함 (현재 ${spec.stickers.length})`);

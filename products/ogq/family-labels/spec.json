@@ -1,0 +1,140 @@
+{
+ "outDir": "products/ogq/family-labels/png",
+ "palette": {
+  "navy": "#1e40af",
+  "orange": "#ea580c",
+  "red": "#db2777"
+ },
+ "mainSet": [
+  0,
+  1,
+  8,
+  23
+ ],
+ "tab": 1,
+ "stickers": [
+  {
+   "text": "육아휴직",
+   "style": "pill",
+   "accent": "navy"
+  },
+  {
+   "text": "출산 축하",
+   "style": "tag",
+   "accent": "navy",
+   "sub": "환영해"
+  },
+  {
+   "text": "부모급여",
+   "style": "bubble",
+   "accent": "orange"
+  },
+  {
+   "text": "아동수당",
+   "style": "stamp",
+   "accent": "orange"
+  },
+  {
+   "text": "첫만남이용권",
+   "style": "note",
+   "accent": "red"
+  },
+  {
+   "text": "어린이집",
+   "style": "marker",
+   "accent": "red"
+  },
+  {
+   "text": "신청 완료",
+   "style": "pill",
+   "accent": "navy",
+   "sub": "잘했어요"
+  },
+  {
+   "text": "지급일",
+   "style": "tag",
+   "accent": "navy"
+  },
+  {
+   "text": "지원 대상",
+   "style": "bubble",
+   "accent": "orange"
+  },
+  {
+   "text": "육아 꿀팁",
+   "style": "stamp",
+   "accent": "orange"
+  },
+  {
+   "text": "예방접종",
+   "style": "note",
+   "accent": "red"
+  },
+  {
+   "text": "성장 기록",
+   "style": "marker",
+   "accent": "red"
+  },
+  {
+   "text": "우리 아이",
+   "style": "pill",
+   "accent": "navy"
+  },
+  {
+   "text": "맞벌이",
+   "style": "tag",
+   "accent": "navy"
+  },
+  {
+   "text": "육아 퇴근",
+   "style": "bubble",
+   "accent": "orange"
+  },
+  {
+   "text": "엄마 아빠 화이팅",
+   "style": "note",
+   "accent": "orange"
+  },
+  {
+   "text": "가족 나들이",
+   "style": "note",
+   "accent": "red"
+  },
+  {
+   "text": "육아템",
+   "style": "marker",
+   "accent": "red"
+  },
+  {
+   "text": "돌잔치",
+   "style": "pill",
+   "accent": "navy"
+  },
+  {
+   "text": "100일",
+   "style": "tag",
+   "accent": "navy",
+   "sub": "축하해"
+  },
+  {
+   "text": "생일 축하",
+   "style": "bubble",
+   "accent": "orange"
+  },
+  {
+   "text": "사랑해",
+   "style": "stamp",
+   "accent": "orange"
+  },
+  {
+   "text": "고마워요",
+   "style": "note",
+   "accent": "red"
+  },
+  {
+   "text": "행복한 하루",
+   "style": "marker",
+   "accent": "red"
+  }
+ ]
+}

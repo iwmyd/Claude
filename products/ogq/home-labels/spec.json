@@ -1,0 +1,140 @@
+{
+ "outDir": "products/ogq/home-labels/png",
+ "palette": {
+  "navy": "#1e3a5f",
+  "orange": "#d97706",
+  "red": "#059669"
+ },
+ "mainSet": [
+  0,
+  3,
+  9,
+  23
+ ],
+ "tab": 0,
+ "stickers": [
+  {
+   "text": "청약 당첨",
+   "style": "pill",
+   "accent": "navy",
+   "sub": "축하해요"
+  },
+  {
+   "text": "무주택",
+   "style": "tag",
+   "accent": "navy"
+  },
+  {
+   "text": "전세",
+   "style": "bubble",
+   "accent": "orange"
+  },
+  {
+   "text": "월세",
+   "style": "stamp",
+   "accent": "orange"
+  },
+  {
+   "text": "매매",
+   "style": "note",
+   "accent": "red"
+  },
+  {
+   "text": "계약 완료",
+   "style": "marker",
+   "accent": "red"
+  },
+  {
+   "text": "잔금일",
+   "style": "pill",
+   "accent": "navy",
+   "sub": "잊지 마세요"
+  },
+  {
+   "text": "이사 D-DAY",
+   "style": "tag",
+   "accent": "navy"
+  },
+  {
+   "text": "입주 완료",
+   "style": "bubble",
+   "accent": "orange"
+  },
+  {
+   "text": "대출 승인",
+   "style": "stamp",
+   "accent": "orange",
+   "sub": "드디어"
+  },
+  {
+   "text": "금리 비교",
+   "style": "note",
+   "accent": "red"
+  },
+  {
+   "text": "등기 완료",
+   "style": "marker",
+   "accent": "red"
+  },
+  {
+   "text": "확정일자",
+   "style": "pill",
+   "accent": "navy"
+  },
+  {
+   "text": "전입신고",
+   "style": "tag",
+   "accent": "navy"
+  },
+  {
+   "text": "집 보러 가요",
+   "style": "bubble",
+   "accent": "orange"
+  },
+  {
+   "text": "임장 기록",
+   "style": "stamp",
+   "accent": "orange"
+  },
+  {
+   "text": "시세 확인",
+   "style": "note",
+   "accent": "red"
+  },
+  {
+   "text": "실거래가",
+   "style": "marker",
+   "accent": "red"
+  },
+  {
+   "text": "관리비",
+   "style": "pill",
+   "accent": "navy"
+  },
+  {
+   "text": "하자 체크",
+   "style": "tag",
+   "accent": "navy"
+  },
+  {
+   "text": "인테리어",
+   "style": "bubble",
+   "accent": "orange"
+  },
+  {
+   "text": "우리 집",
+   "style": "stamp",
+   "accent": "orange"
+  },
+  {
+   "text": "청약 신청",
+   "style": "note",
+   "accent": "red"
+  },
+  {
+   "text": "내 집 마련 성공",
+   "style": "marker",
+   "accent": "red"
+  }
+ ]
+}

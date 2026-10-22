@@ -1,0 +1,140 @@
+{
+ "outDir": "products/ogq/saving-labels/png",
+ "palette": {
+  "navy": "#065f46",
+  "orange": "#ca8a04",
+  "red": "#be123c"
+ },
+ "mainSet": [
+  0,
+  3,
+  10,
+  23
+ ],
+ "tab": 0,
+ "stickers": [
+  {
+   "text": "적금 만기",
+   "style": "pill",
+   "accent": "navy",
+   "sub": "축하해요"
+  },
+  {
+   "text": "예금 가입",
+   "style": "tag",
+   "accent": "navy"
+  },
+  {
+   "text": "저축 성공",
+   "style": "bubble",
+   "accent": "orange"
+  },
+  {
+   "text": "무지출 데이",
+   "style": "stamp",
+   "accent": "orange",
+   "sub": "오늘은 0원"
+  },
+  {
+   "text": "가계부 작성",
+   "style": "note",
+   "accent": "red"
+  },
+  {
+   "text": "고정비 점검",
+   "style": "marker",
+   "accent": "red"
+  },
+  {
+   "text": "짠테크",
+   "style": "pill",
+   "accent": "navy"
+  },
+  {
+   "text": "포인트 적립",
+   "style": "tag",
+   "accent": "navy"
+  },
+  {
+   "text": "캐시백",
+   "style": "bubble",
+   "accent": "orange"
+  },
+  {
+   "text": "할인 득템",
+   "style": "stamp",
+   "accent": "orange"
+  },
+  {
+   "text": "목표 달성",
+   "style": "note",
+   "accent": "red",
+   "sub": "해냈다"
+  },
+  {
+   "text": "비상금",
+   "style": "marker",
+   "accent": "red"
+  },
+  {
+   "text": "통장 쪼개기",
+   "style": "pill",
+   "accent": "navy"
+  },
+  {
+   "text": "이자 받음",
+   "style": "tag",
+   "accent": "navy"
+  },
+  {
+   "text": "복리 효과",
+   "style": "bubble",
+   "accent": "orange"
+  },
+  {
+   "text": "자동이체",
+   "style": "stamp",
+   "accent": "orange"
+  },
+  {
+   "text": "절약 성공",
+   "style": "note",
+   "accent": "red"
+  },
+  {
+   "text": "소비 줄이기",
+   "style": "marker",
+   "accent": "red"
+  },
+  {
+   "text": "충동구매 금지",
+   "style": "pill",
+   "accent": "navy"
+  },
+  {
+   "text": "장바구니 비움",
+   "style": "tag",
+   "accent": "navy"
+  },
+  {
+   "text": "1억 모으기",
+   "style": "bubble",
+   "accent": "orange"
+  },
+  {
+   "text": "오늘도 저축",
+   "style": "stamp",
+   "accent": "orange"
+  },
+  {
+   "text": "티끌 모아 태산",
+   "style": "note",
+   "accent": "red"
+  },
+  {
+   "text": "부자 되자",
+   "style": "marker",
+   "accent": "red"
+  }
+ ]
+}

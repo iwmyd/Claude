@@ -1,0 +1,140 @@
+{
+ "outDir": "products/ogq/worker-labels/png",
+ "palette": {
+  "navy": "#312e81",
+  "orange": "#f59e0b",
+  "red": "#db2777"
+ },
+ "mainSet": [
+  0,
+  4,
+  9,
+  23
+ ],
+ "tab": 0,
+ "stickers": [
+  {
+   "text": "월급날",
+   "style": "pill",
+   "accent": "navy",
+   "sub": "드디어"
+  },
+  {
+   "text": "통장 스침",
+   "style": "tag",
+   "accent": "navy"
+  },
+  {
+   "text": "연말정산",
+   "style": "bubble",
+   "accent": "orange"
+  },
+  {
+   "text": "13월의 월급",
+   "style": "note",
+   "accent": "orange"
+  },
+  {
+   "text": "환급 완료",
+   "style": "note",
+   "accent": "red"
+  },
+  {
+   "text": "추가 납부",
+   "style": "marker",
+   "accent": "red"
+  },
+  {
+   "text": "퇴근!",
+   "style": "pill",
+   "accent": "navy"
+  },
+  {
+   "text": "야근 중",
+   "style": "tag",
+   "accent": "navy"
+  },
+  {
+   "text": "출근 완료",
+   "style": "bubble",
+   "accent": "orange"
+  },
+  {
+   "text": "연차 사용",
+   "style": "stamp",
+   "accent": "orange",
+   "sub": "쉬어요"
+  },
+  {
+   "text": "휴가 승인",
+   "style": "note",
+   "accent": "red"
+  },
+  {
+   "text": "성과급",
+   "style": "marker",
+   "accent": "red",
+   "sub": "나왔다"
+  },
+  {
+   "text": "연봉 협상",
+   "style": "pill",
+   "accent": "navy"
+  },
+  {
+   "text": "실수령액",
+   "style": "tag",
+   "accent": "navy"
+  },
+  {
+   "text": "4대보험",
+   "style": "bubble",
+   "accent": "orange"
+  },
+  {
+   "text": "퇴직금",
+   "style": "stamp",
+   "accent": "orange"
+  },
+  {
+   "text": "이직 준비",
+   "style": "note",
+   "accent": "red"
+  },
+  {
+   "text": "회의 중",
+   "style": "marker",
+   "accent": "red"
+  },
+  {
+   "text": "칼퇴",
+   "style": "pill",
+   "accent": "navy"
+  },
+  {
+   "text": "점심 뭐 먹지",
+   "style": "tag",
+   "accent": "navy"
+  },
+  {
+   "text": "금요일",
+   "style": "bubble",
+   "accent": "orange"
+  },
+  {
+   "text": "주말 대기",
+   "style": "stamp",
+   "accent": "orange"
+  },
+  {
+   "text": "오늘도 출근",
+   "style": "note",
+   "accent": "red"
+  },
+  {
+   "text": "수고했어요",
+   "style": "marker",
+   "accent": "red"
+  }
+ ]
+}

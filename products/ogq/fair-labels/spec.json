@@ -1,0 +1,148 @@
+{
+ "outDir": "products/ogq/fair-labels/png",
+ "palette": {
+  "navy": "#1f2937",
+  "orange": "#0f766e",
+  "red": "#b91c1c"
+ },
+ "mainSet": [
+  8,
+  9,
+  14,
+  0
+ ],
+ "tab": 8,
+ "stickers": [
+  {
+   "text": "이 글은 업체로부터\n원고료를 받아\n작성했습니다",
+   "style": "notice",
+   "sub": "광고",
+   "accent": "red"
+  },
+  {
+   "text": "제품을 무상으로\n제공받아 사용하고\n작성했습니다",
+   "style": "notice",
+   "sub": "협찬",
+   "accent": "orange"
+  },
+  {
+   "text": "체험단으로 참여해\n서비스를 제공받고\n작성한 글입니다",
+   "style": "notice",
+   "sub": "체험단",
+   "accent": "navy"
+  },
+  {
+   "text": "이 포스팅은\n쿠팡 파트너스 활동의\n일환으로, 이에 따른\n일정액의 수수료를\n제공받습니다",
+   "style": "notice",
+   "sub": "쿠팡 파트너스",
+   "accent": "red"
+  },
+  {
+   "text": "이 글의 링크로\n구매하면 소정의\n수수료를 받을 수\n있습니다",
+   "style": "notice",
+   "sub": "제휴 링크",
+   "accent": "orange"
+  },
+  {
+   "text": "제품 할인을 받아\n사용해 보고\n작성한 후기입니다",
+   "style": "notice",
+   "sub": "할인 제공",
+   "accent": "navy"
+  },
+  {
+   "text": "제 돈으로\n직접 구매해 사용한\n후기입니다",
+   "style": "notice",
+   "sub": "내돈내산",
+   "accent": "orange"
+  },
+  {
+   "text": "어떠한 대가도\n받지 않고\n작성한 글입니다",
+   "style": "notice",
+   "sub": "대가 없음",
+   "accent": "navy"
+  },
+  {
+   "text": "광고",
+   "style": "pill",
+   "accent": "red"
+  },
+  {
+   "text": "협찬",
+   "style": "pill",
+   "accent": "orange"
+  },
+  {
+   "text": "유료 광고 포함",
+   "style": "pill",
+   "accent": "red"
+  },
+  {
+   "text": "제품 제공",
+   "style": "tag",
+   "accent": "orange"
+  },
+  {
+   "text": "원고료 받음",
+   "style": "tag",
+   "accent": "red"
+  },
+  {
+   "text": "체험단",
+   "style": "tag",
+   "accent": "navy"
+  },
+  {
+   "text": "내돈내산",
+   "style": "stamp",
+   "accent": "navy",
+   "sub": "직접 구매"
+  },
+  {
+   "text": "광고 포함",
+   "style": "stamp",
+   "accent": "red",
+   "sub": "대가 있음"
+  },
+  {
+   "text": "협찬 받음",
+   "style": "stamp",
+   "accent": "orange",
+   "sub": "제품 제공"
+  },
+  {
+   "text": "수수료 링크 포함",
+   "style": "marker",
+   "accent": "orange"
+  },
+  {
+   "text": "솔직 후기",
+   "style": "marker",
+   "accent": "navy"
+  },
+  {
+   "text": "직접 사용",
+   "style": "marker",
+   "accent": "red"
+  },
+  {
+   "text": "경제적 대가를 받았어요",
+   "style": "bubble",
+   "accent": "red"
+  },
+  {
+   "text": "솔직하게 썼어요",
+   "style": "bubble",
+   "accent": "navy"
+  },
+  {
+   "text": "광고 표기",
+   "style": "note",
+   "accent": "red"
+  },
+  {
+   "text": "후기 시작",
+   "style": "note",
+   "accent": "navy"
+  }
+ ]
+}

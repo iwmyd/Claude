@@ -1,0 +1,140 @@
+{
+ "outDir": "products/ogq/review-labels/png",
+ "palette": {
+  "navy": "#374151",
+  "orange": "#f97316",
+  "red": "#16a34a"
+ },
+ "mainSet": [
+  0,
+  3,
+  13,
+  22
+ ],
+ "tab": 0,
+ "stickers": [
+  {
+   "text": "솔직 후기",
+   "style": "pill",
+   "accent": "navy"
+  },
+  {
+   "text": "사용 전",
+   "style": "tag",
+   "accent": "navy"
+  },
+  {
+   "text": "사용 후",
+   "style": "bubble",
+   "accent": "orange"
+  },
+  {
+   "text": "비포 애프터",
+   "style": "stamp",
+   "accent": "orange"
+  },
+  {
+   "text": "가격 정보",
+   "style": "note",
+   "accent": "red"
+  },
+  {
+   "text": "위치 정보",
+   "style": "marker",
+   "accent": "red"
+  },
+  {
+   "text": "영업시간",
+   "style": "pill",
+   "accent": "navy"
+  },
+  {
+   "text": "주차 가능",
+   "style": "tag",
+   "accent": "navy"
+  },
+  {
+   "text": "웨이팅 있음",
+   "style": "bubble",
+   "accent": "orange"
+  },
+  {
+   "text": "맛집 인정",
+   "style": "stamp",
+   "accent": "orange"
+  },
+  {
+   "text": "가성비 갑",
+   "style": "note",
+   "accent": "red"
+  },
+  {
+   "text": "재방문 의사",
+   "style": "marker",
+   "accent": "red"
+  },
+  {
+   "text": "재구매 의사",
+   "style": "pill",
+   "accent": "navy",
+   "sub": "100%"
+  },
+  {
+   "text": "강력 추천",
+   "style": "tag",
+   "accent": "navy",
+   "sub": "믿고 사요"
+  },
+  {
+   "text": "아쉬운 점",
+   "style": "bubble",
+   "accent": "orange"
+  },
+  {
+   "text": "좋았던 점",
+   "style": "stamp",
+   "accent": "orange"
+  },
+  {
+   "text": "한 달 사용기",
+   "style": "note",
+   "accent": "red"
+  },
+  {
+   "text": "언박싱",
+   "style": "marker",
+   "accent": "red"
+  },
+  {
+   "text": "첫인상",
+   "style": "pill",
+   "accent": "navy"
+  },
+  {
+   "text": "총평",
+   "style": "tag",
+   "accent": "navy",
+   "sub": "한 줄로"
+  },
+  {
+   "text": "★★★★★",
+   "style": "bubble",
+   "accent": "orange"
+  },
+  {
+   "text": "꿀조합",
+   "style": "stamp",
+   "accent": "orange"
+  },
+  {
+   "text": "내 픽",
+   "style": "note",
+   "accent": "red"
+  },
+  {
+   "text": "추천해요",
+   "style": "marker",
+   "accent": "red"
+  }
+ ]
+}
