@@ -4,6 +4,7 @@
  * OGQ 스티커 세트 생성 — 공식 규격(OGQ 고객센터 2026-10-21 확인):
  *   메인 240x240 1장 · 스티커 740x640 24장 · 탭 96x74 1장 · PNG · RGB · 각 1MB 이하
  * 사용: node scripts/make_ogq.js <spec.json>   → spec.outDir 에 main.png, tab.png, 01~24.png, preview.png
+ * 산출: preview.png(밝은 바탕)·preview-dark.png(다크모드) 는 검수용 — 업로드하지 않는다.
  * spec: { outDir, stickers: [{ text, style, sub? }] (24개) }  style: pill|tag|bubble|stamp|note|marker
  * ⚠️ OGQ 약관 제25조: 등록 시 AI 활용 여부·범위 표기 (이 세트는 Claude 가 코드로 그린 것).
  */
@@ -41,7 +42,7 @@ ${sub ? `<text x="370" y="390" text-anchor="middle" font-family="${F}" font-size
   },
   stamp: ({ text, sub }, accent) => {
     const fs1 = fit(text, 380, 108);
-    return `<g transform="rotate(-12 370 320)">
+    return `<g transform="rotate(-12 370 320)"><g filter="url(#sh)"><circle cx="370" cy="320" r="262" fill="${C.white}"/></g>
 <circle cx="370" cy="320" r="250" fill="none" stroke="${accent}" stroke-width="22"/>
 <circle cx="370" cy="320" r="215" fill="none" stroke="${accent}" stroke-width="6"/>
 <text x="370" y="${sub ? 320 : 320 + fs1 * 0.35}" text-anchor="middle" font-family="${F}" font-size="${fs1}" font-weight="900" fill="${accent}">${esc(text)}</text>
@@ -66,12 +67,15 @@ ${sub ? `<text x="370" y="${y0 + lines.length * lh}" text-anchor="middle" font-f
     const fs1 = fit(text, 600, 124);
     const tw = Math.min(660, [...text].length * fs1 * 0.98 + 40);
     const base = 320 + fs1 * 0.38;
-    return `<rect x="${370 - tw / 2}" y="${base - fs1 * 0.5}" width="${tw}" height="${fs1 * 0.68}" rx="${fs1 * 0.12}" fill="${accent}" opacity=".45"/>
+    return `<g filter="url(#sh)"><rect x="${370 - tw / 2 - 34}" y="${base - fs1 * 1.02}" width="${tw + 68}" height="${fs1 * 1.38}" rx="${fs1 * 0.3}" fill="${C.white}"/></g>
+<rect x="${370 - tw / 2}" y="${base - fs1 * 0.5}" width="${tw}" height="${fs1 * 0.68}" rx="${fs1 * 0.12}" fill="${accent}" opacity=".45"/>
 <text x="370" y="${base}" text-anchor="middle" font-family="${F}" font-size="${fs1}" font-weight="900" fill="${C.navy}">${esc(text)}</text>`;
   },
 };
 const ACC = [C.navy, C.orange, C.red];
-const svg = (w, h, body, vb = `0 0 ${W} ${H}`) => `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="${vb}"><defs>${shadow}</defs>${body}</svg>`;
+// 흰 테두리(스티커 컷 라인): 다크모드 배경에서도 네이비 도장·형광펜 글자가 보이게 (OGQ 업로드 가이드 '다크모드 확인', 2026-10-23)
+const outline = `<filter id="ol" filterUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}"><feMorphology in="SourceAlpha" operator="dilate" radius="14" result="d"/><feGaussianBlur in="d" stdDeviation="1.2" result="b"/><feComponentTransfer in="b" result="m"><feFuncA type="linear" slope="8"/></feComponentTransfer><feFlood flood-color="#ffffff"/><feComposite in2="m" operator="in" result="w"/><feMerge><feMergeNode in="w"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`;
+const svg = (w, h, body, vb = `0 0 ${W} ${H}`) => `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="${vb}"><defs>${shadow}${outline}</defs><g filter="url(#ol)">${body}</g></svg>`;
 const sticker = (s, i) => (styles[s.style] || styles.pill)(s, s.accent ? C[s.accent] : ACC[i % 3]);
 
 (async () => {
@@ -97,6 +101,9 @@ const sticker = (s, i) => (styles[s.style] || styles.pill)(s, s.accent ? C[s.acc
   const tiles = await Promise.all(files.map((f) => sharp(f).resize(370, 320).toBuffer()));
   await sharp({ create: { width: 370 * 6, height: 320 * 4, channels: 3, background: '#dfe3ea' } })
     .composite(tiles.map((b, i) => ({ input: b, left: (i % 6) * 370, top: Math.floor(i / 6) * 320 }))).png().toFile(path.join(out, 'preview.png'));
+  // 다크모드 확인용 (업로드하지 않음)
+  await sharp({ create: { width: 370 * 6, height: 320 * 4, channels: 3, background: '#1e1e1e' } })
+    .composite(tiles.map((b, i) => ({ input: b, left: (i % 6) * 370, top: Math.floor(i / 6) * 320 }))).png().toFile(path.join(out, 'preview-dark.png'));
   // 규격 검증
   for (const f of [...files, path.join(out, 'main.png'), path.join(out, 'tab.png')]) {
     const meta = await sharp(f).metadata(); const kb = fs.statSync(f).size / 1024;
