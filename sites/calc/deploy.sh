@@ -7,6 +7,7 @@ MSG="${1:-update}"
 REPO="iwmyd/aipomcalc"
 export SITE_URL="https://aipomcalc.com"
 export GSC_VERIFY="${GSC_VERIFY:-8fJsMNjd0sqmaGHMqYhyhjJIt86XgNtRdXpRI8Gaa18}"  # 구글 서치 콘솔 HTML 태그 확인 값
+export NAVER_VERIFY="${NAVER_VERIFY:-}"  # 네이버 서치어드바이저 HTML 태그 확인 값 (받으면 기본값에 넣는다)
 export ADSENSE_PUB="${ADSENSE_PUB:-pub-8001197559123230}"  # 애드센스 게시자 ID (공개 정보 — ads.txt 에 그대로 노출됨)
 export GA_ID="${GA_ID:-G-R3THF973CB}"  # 구글 애널리틱스 4 측정 ID (G-XXXXXXX). 비어 있으면 애널리틱스 코드·방침 문구를 넣지 않음
 node build.js

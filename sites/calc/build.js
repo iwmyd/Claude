@@ -11,6 +11,7 @@ const ROOT = __dirname, OUT = path.join(ROOT, 'public');
 const SITE = (process.env.SITE_URL || 'https://aipomcalc.com').replace(/\/$/, '');
 const PUB = (process.env.ADSENSE_PUB || '').replace(/^ca-/, '');
 const GSC = process.env.GSC_VERIFY || ''; // 구글 서치 콘솔 소유권 확인 값
+const NAVER = process.env.NAVER_VERIFY || ''; // 네이버 서치어드바이저 소유 확인 값 (HTML 태그 방식)
 const GA = /^G-[A-Z0-9]+$/.test(process.env.GA_ID || '') ? process.env.GA_ID : ''; // 구글 애널리틱스 4 측정 ID (없으면 코드 안 넣음)
 const NAME = '에이팜 종합계산기';
 const UPDATED = '2026-10-22';
@@ -63,7 +64,7 @@ ${GA ? `<!-- Google tag (gtag.js) -->
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="${V('style.css')}">
-${GSC ? `<meta name="google-site-verification" content="${GSC}">` : ''}
+${GSC ? `<meta name="google-site-verification" content="${GSC}">` : ''}${NAVER ? `<meta name="naver-site-verification" content="${NAVER}">` : ''}
 ${PUB ? `<meta name="google-adsense-account" content="ca-${PUB}">` : ''}
 ${PUB ? `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-${PUB}" crossorigin="anonymous"></script>` : ''}
 ${p.schema ? `<script type="application/ld+json">${JSON.stringify(p.schema)}</script>` : ''}
