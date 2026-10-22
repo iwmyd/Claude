@@ -302,6 +302,16 @@ async function prepareSlot(ed, page) {
   throw new Error('착지 문단 준비 실패 — 캐럿이 마지막 텍스트 컴포넌트에 없음 (삽입하면 순서가 틀어짐)');
 }
 
+// 본문에 주소를 치면 에디터가 링크 미리보기 카드(se-oglink)를 비동기로 붙인다. 카드는 생성이 끝난 순간의 캐럿 위치에 들어가므로
+// 기다리지 않고 진행하면 맨 마지막 제목 입력 중에 생겨 글 맨 위로 간다(2026-10-22 실측) → 카드가 생길 때까지 기다린 뒤 캐럿을 문서 끝으로.
+const URL_RE = /https?:\/\/\S+/;
+async function waitOglink(ed, page, before) {
+  const made = await waitCount(ed, page, 'se-oglink', before, 12000);
+  log(made ? '링크 카드 생성 확인' : '링크 카드 안 생김(12초) — 그대로 진행');
+  if (made) { await sleep(page, 300); if (!(await ed.evaluate(() => window.__nd.caretInLastText()))) await focusEnd(ed, page); }
+  return made;
+}
+
 async function waitCount(ed, page, cls, before, timeout) {
   const deadline = Date.now() + timeout;
   while (Date.now() < deadline) {
@@ -725,7 +735,9 @@ async function dumpAndVerify(ed, page) {
   const TYPE = { image: 'image', quote: 'quotation', divider: 'horizontalLine' };
   if (!R.subtitle.failed.length) TYPE.subtitle = 'sectionTitle';
   const watched = new Set(Object.values(TYPE));
-  const wantSeq = draft.blocks.map((b) => TYPE[b.type]).filter(Boolean);
+  // 링크 카드: 실제로 생겼을 때만 "주소가 든 text 블록 바로 뒤"에 있어야 한다 (글 맨 위로 가는 실패를 잡는다)
+  const og = have('oglink') > 0; if (og) watched.add('oglink');
+  const wantSeq = draft.blocks.flatMap((b) => [TYPE[b.type], og && b.type === 'text' && URL_RE.test(b.text) ? 'oglink' : null]).filter(Boolean);
   const haveSeq = dump.comps.filter((c) => watched.has(c));
   R.verify.orderIssue = null;
   if (!countIssues.length && wantSeq.join(',') !== haveSeq.join(',')) {
@@ -768,8 +780,11 @@ async function dumpAndVerify(ed, page) {
       const next = draft.blocks[i + 1];
       try {
         if (b.type === 'text') {
+          const hasUrl = URL_RE.test(b.text);
+          const ogBefore = hasUrl ? await ed.evaluate(() => window.__nd.count('se-oglink')) : 0;
           await typeLines(page, b.text.split('\n'));
           await page.keyboard.press('Enter');
+          if (hasUrl) { await prepareSlot(ed, page); await waitOglink(ed, page, ogBefore); } // 카드 뒤에 착지 문단을 미리 (사진과 같은 캐럿 불변식)
           if (next && next.type === 'text') await page.keyboard.press('Enter'); // 연속 text 사이 빈 줄
           await sleep(page, 100);
           if (!firstTextSeen && draft.video) {
