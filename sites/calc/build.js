@@ -23,17 +23,7 @@ const ICONS = require('./icons');
 const V = (f) => '/assets/' + f + '?v=' + require('crypto').createHash('md5').update(fs.readFileSync(path.join(__dirname, 'assets', f))).digest('hex').slice(0, 8);
 
 // 카테고리 — 홈 섹션 순서·색. tone 은 assets/style.css 의 [data-tone] 정의와 짝
-const CATS = [
-  { id: 'basic', name: '기본 계산기', tone: 'slate', icon: 'calculator' },
-  { id: 'loan', name: '대출·금융', tone: 'blue', icon: 'landmark' },
-  { id: 'save', name: '저축·투자', tone: 'emerald', icon: 'piggy' },
-  { id: 'car', name: '자동차', tone: 'red', icon: 'car' },
-  { id: 'work', name: '근로·세금', tone: 'amber', icon: 'briefcase' },
-  { id: 'home', name: '부동산', tone: 'orange', icon: 'home' },
-  { id: 'life', name: '날짜·생활', tone: 'rose', icon: 'calendar' },
-  { id: 'build', name: '건축·토목', tone: 'lime', icon: 'ruler' },
-  { id: 'game', name: '게임', tone: 'violet', icon: 'gamepad' },
-];
+const CATS = require('./cats'); // 카테고리 (공유 썸네일과 공유)
 const calcs = pages.filter((p) => p.calc);
 for (const p of calcs) if (!CATS.find((c) => c.id === p.cat)) throw new Error('카테고리 없음: ' + p.slug);
 const icon = (k, cls = 'ic') => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[k] || ICONS.calculator}</svg>`;
@@ -56,7 +46,7 @@ ${GA ? `<!-- Google tag (gtag.js) -->
 <meta name="description" content="${esc(p.desc)}">
 <link rel="canonical" href="${url(p)}">${p.noindex ? '<meta name="robots" content="noindex">' : ''}
 <meta property="og:type" content="website"><meta property="og:site_name" content="${NAME}"><meta property="og:locale" content="ko_KR">
-<meta property="og:title" content="${esc(p.title)}"><meta property="og:description" content="${esc(p.desc)}"><meta property="og:url" content="${url(p)}">
+<meta property="og:title" content="${esc(p.title)}"><meta property="og:description" content="${esc(p.slug === '' ? CATS.tagline(calcs.length).line : p.desc)}"><meta property="og:url" content="${url(p)}">
 <meta property="og:image" content="${SITE}/assets/${p.calc && fs.existsSync(path.join(ROOT, 'assets', 'og', p.slug + '.png')) ? 'og/' + p.slug : 'og'}.png"><meta property="og:image:alt" content="${esc(p.short || NAME)}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/assets/icon.svg" type="image/svg+xml"><link rel="icon" href="/assets/icon-32.png" sizes="32x32"><link rel="apple-touch-icon" href="/assets/icon-180.png">
 <link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#0f172a">

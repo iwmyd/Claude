@@ -7,9 +7,10 @@ MSG="${1:-update}"
 REPO="iwmyd/aipomcalc"
 export SITE_URL="https://aipomcalc.com"
 export GSC_VERIFY="${GSC_VERIFY:-8fJsMNjd0sqmaGHMqYhyhjJIt86XgNtRdXpRI8Gaa18}"  # 구글 서치 콘솔 HTML 태그 확인 값
-export NAVER_VERIFY="${NAVER_VERIFY:-}"  # 네이버 서치어드바이저 HTML 태그 확인 값 (받으면 기본값에 넣는다)
+export NAVER_VERIFY="${NAVER_VERIFY:-13c49a27996e51cb543a0dffee34e67dcaf40787}"  # 네이버 서치어드바이저 HTML 태그 확인 값
 export ADSENSE_PUB="${ADSENSE_PUB:-pub-8001197559123230}"  # 애드센스 게시자 ID (공개 정보 — ads.txt 에 그대로 노출됨)
 export GA_ID="${GA_ID:-G-R3THF973CB}"  # 구글 애널리틱스 4 측정 ID (G-XXXXXXX). 비어 있으면 애널리틱스 코드·방침 문구를 넣지 않음
+node brand/make-brand.js >/dev/null  # 공유 썸네일: 계산기 수(n가지)·카테고리를 매번 다시 그림
 node build.js
 node test/calc.test.js | tail -1 | grep -q "전체 통과" || { echo "❌ 계산 테스트 실패 — 배포 중단"; exit 1; }
 node test/browser.test.js | tail -1 | grep -q "전체 통과" || { echo "❌ 브라우저 테스트 실패 — 배포 중단"; exit 1; }
@@ -25,3 +26,5 @@ if git -C "$DEP" diff --cached --quiet; then echo "변경 없음 — 배포할 �
 git -C "$DEP" commit -qm "$MSG"
 git -C "$DEP" push -q -u origin main
 echo "✅ 배포 완료: https://aipomcalc.com (반영까지 1~2분)"
+# 색인 요청 규칙: 사이트맵에 있는데 indexing.json 에 없는 주소 = 구글 서치 콘솔 "색인 생성 요청" 해야 할 새 페이지
+node -e "const j=require('./indexing.json'),p=require('./pages').filter((x)=>!x.noindex).map((x)=>x.slug).filter((s)=>!j.done.includes(s));console.log(p.length?'❗ 색인 생성 요청 필요 ('+p.length+'건): '+p.map((s)=>'https://aipomcalc.com/'+(s?s+'/':'')).join(' ')+' → 서치 콘솔에서 요청 후 sites/calc/indexing.json 의 done 에 추가':'✅ 색인 요청 대기 주소 없음')"
