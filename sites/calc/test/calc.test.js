@@ -278,6 +278,33 @@ check('BP 읽기: 1억 2,000만 / 12.5억 / 3억 2.000만 / 3,500,000', C.parseB
 check('BP 표기: 12억 3,456만 7,890', C.korBP(1234567890n) === '12억 3,456만 7,890');
 
 const PG = require('../pages.js');
+// 육아휴직 급여 (고용보험법 시행령 제95조)
+check('육아휴직 월 400만 12개월 일반 = 2,310만 (250×3+200×3+160×6)', C.parentalLeave(4e6, 12, 'normal', 0).total === 23100000);
+check('육아휴직 6+6 월 500만 6개월 = 2,000만 (250+250+300+350+400+450)', C.parentalLeave(5e6, 6, 'six', 6).total === 20000000);
+check('육아휴직 6+6 공통 3개월만 → 4~6개월은 일반 200만', C.parentalLeave(5e6, 6, 'six', 3).total === 250e4 * 2 + 300e4 + 200e4 * 3);
+check('육아휴직 한부모 1~3개월 300만', C.parentalLeave(5e6, 3, 'single', 0).total === 9e6);
+check('육아휴직 하한 70만 · 7개월째 80%', C.parentalLeave(5e5, 1, 'normal', 0).total === 7e5 && C.parentalLeave(15e5, 7, 'normal', 0).rows[6].pay === 12e5);
+// 주택 취득세 (지방세법 제11조·제13조의2)
+check('취득세 7억 1주택 85㎡ 이하 → 1.67%, 1,169만 + 교육세 116.9만', (() => { const x = C.homeAcqTax(7e8, 1, false, true, false, false); return x.rate === 0.0167 && x.acq === 11690000 && x.edu === 1169000 && x.rural === 0; })());
+check('취득세 5억 1주택 85㎡ 초과 → 1% + 0.1% + 0.2% = 650만', C.homeAcqTax(5e8, 1, false, false, false, false).total === 6500000);
+check('취득세 20억 조정 2주택 85㎡ 초과 → 8% + 0.4% + 0.6% = 1억 8천만', C.homeAcqTax(20e8, 2, true, false, false, false).total === 180000000);
+check('취득세 20억 4주택 → 12% + 0.4% + 1.0% = 2억 6,800만', C.homeAcqTax(20e8, 4, false, false, false, false).total === 268000000);
+check('취득세 비조정 2주택은 1~3% · 비조정 3주택 8%', C.homeAcqTax(5e8, 2, false, true, false, false).rate === 0.01 && C.homeAcqTax(5e8, 3, false, true, false, false).rate === 0.08);
+check('생애최초 5억 → 취득세 500만 − 200만 / 소형 2억 → 200만 전액 면제', C.homeAcqTax(5e8, 1, false, true, true, false).acq === 3e6 && C.homeAcqTax(2e8, 1, false, true, true, true).acq === 0);
+check('생애최초는 12억 초과·다주택 제외', C.homeAcqTax(13e8, 1, false, true, true, false).relief === 0 && C.homeAcqTax(5e8, 2, true, true, true, false).relief === 0);
+// 연말정산 (2026년 귀속)
+const YB = { pay: 5e7, family: 1, elder: 0, disabled: 0, credit: 0, debit: 0, culture: 0, market: 0, transit: 0, kidsAll: 0, houseOk: false, house: 0, kidsCredit: 0, birth: 0, marry: false, pensionSave: 0, irp: 0, medSelf: 0, medOther: 0, insure: 0, edu: 0, donate: 0, rent: 0, paid: -1 };
+check('연말정산: 추가 공제 없고 낸 세금 비우면 환급 0', C.yearEnd(YB).refund === 0);
+check('카드 공제: 총급여 5천, 신용 1,500만·체크 500만 → 187.5만', C.cardDeduction(5e7, 15e6, 5e6, 0, 0, 0, 0).ded === 1875000);
+check('카드 공제 한도: 7천 이하 자녀 0/1/2명 → 300/350/400만', [0, 1, 2].map((k) => C.cardDeduction(3e7, 5e7, 0, 0, 0, 0, k).basic).join() === '3000000,3500000,4000000');
+check('카드 추가 공제: 전통시장분은 한도 넘어도 300만까지 더', C.cardDeduction(3e7, 5e7, 0, 0, 1e7, 0, 0).extra === 3e6);
+check('연금저축 600 + IRP 300, 총급여 5천 → 세액공제 135만', C.yearEnd({ ...YB, pensionSave: 6e6, irp: 3e6 }).credits.pension === 1350000);
+check('연금계좌 한도: 연금저축 900 넣어도 600만까지', C.yearEnd({ ...YB, pensionSave: 9e6 }).credits.pension === 900000);
+check('자녀세액공제 1/2/3명 = 25/55/95만', [1, 2, 3].map((k) => C.yearEnd({ ...YB, family: 1 + k, kidsAll: k, kidsCredit: k }).credits.kid).join() === '250000,550000,950000');
+check('월세 600만, 총급여 5천 → 17% = 102만', C.yearEnd({ ...YB, rent: 6e6 }).credits.rent === 1020000);
+check('의료비: 총급여 3%(150만) 넘는 50만 × 15% = 7.5만', Math.round(C.yearEnd({ ...YB, medSelf: 2e6 }).credits.special) === 75000);
+check('결정세액은 0 아래로 안 내려감', C.yearEnd({ ...YB, pay: 2e7, pensionSave: 6e6, irp: 3e6, rent: 1e7 }).tax === 0);
+check('낸 세금 입력 → 환급 = (낸 세금 − 결정세액) × 1.1 근사', (() => { const x = C.yearEnd({ ...YB, paid: 3e6 }); return x.refund === 3e6 + 3e5 - x.tax - x.local; })());
 check('사이트맵 제외: 감사 페이지 noindex', PG.find((p) => p.slug === 'contact/thanks').noindex === true);
 check('모든 계산기 FAQ 3개 이상', PG.filter((p) => p.calc).every((p) => (p.faq || []).length >= 3));
 

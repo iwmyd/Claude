@@ -11,7 +11,7 @@ const server = http.createServer((q, s) => {
   s.writeHead(200, { 'Content-Type': types[path.extname(f)] || 'application/octet-stream' }); fs.createReadStream(f).pipe(s);
 }).listen(8765);
 const U = (p) => `http://localhost:8765/${p ? p + '/' : ''}`;
-const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment', 'savings', 'compound', 'military', 'car-loan', 'car-tax', 'severance', 'rent', 'area', 'dday', 'age', 'percent', 'charcount', 'refinance', 'goal', 'avgprice', 'car-acq', 'salary', 'wage', 'unemployment', 'vat', 'subscription', 'bmi', 'winrate', 'annual-leave', 'brokerage', 'freelance-tax', 'electricity', 'area-volume', 'materials', 'slope', 'stairs', 'earthwork', 'unit-convert', 'fc-transfer', 'image', 'about', 'privacy', 'contact', 'contact/thanks'];
+const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment', 'savings', 'compound', 'military', 'car-loan', 'car-tax', 'severance', 'rent', 'area', 'dday', 'age', 'percent', 'charcount', 'refinance', 'goal', 'avgprice', 'car-acq', 'salary', 'wage', 'unemployment', 'vat', 'subscription', 'bmi', 'winrate', 'annual-leave', 'brokerage', 'freelance-tax', 'electricity', 'area-volume', 'materials', 'slope', 'stairs', 'earthwork', 'unit-convert', 'fc-transfer', 'image', 'parental-leave', 'home-acq-tax', 'year-end-tax', 'about', 'privacy', 'contact', 'contact/thanks'];
 
 (async () => {
   const browser = await chromium.launch();
@@ -166,6 +166,20 @@ const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment'
     ok(`[${tag}] FC 선수 빼기: 아래 줄이 당겨짐`, (await page.inputValue('#fcp2')) === '2억' && (await page.locator('.fc-row:not([hidden])').count()) === 2);
     await page.reload({ waitUntil: 'networkidle' });
     ok(`[${tag}] FC 체크박스·선수 수 저장·복원`, (await page.isChecked('#fpc')) && (await page.inputValue('#fcn')) === '2');
+    await page.click('[data-reset]');
+    // 육아휴직 급여·주택 취득세·연말정산
+    await page.goto(U('parental-leave'), { waitUntil: 'networkidle' }); await set('pwage', '4,000,000');
+    ok(`[${tag}] 육아휴직 월 400만 12개월 → 23,100,000원 · 월별 표 12행`, (await main()).includes('23,100,000') && (await page.locator('#tables tbody tr').count()) === 12, await main());
+    await page.selectOption('#pkind', 'six'); await set('pwage', '5,000,000'); await set('pmonths', '6');
+    ok(`[${tag}] 육아휴직 6+6 월 500만 6개월 → 20,000,000원`, (await main()).includes('20,000,000'), await main());
+    await page.click('[data-reset]');
+    await page.goto(U('home-acq-tax'), { waitUntil: 'networkidle' });
+    ok(`[${tag}] 주택 취득세 7억 1주택 85㎡ 이하 → 12,859,000원`, (await main()).includes('12,859,000'), await main());
+    await page.selectOption('#hhomes', '2'); await page.selectOption('#hadj', '1');
+    ok(`[${tag}] 주택 취득세 조정 2주택 → 8% 중과`, (await page.locator('#out').innerText()).includes('8%'));
+    await page.click('[data-reset]');
+    await page.goto(U('year-end-tax'), { waitUntil: 'networkidle' }); await set('ysave', '6,000,000'); await set('yirp', '3,000,000');
+    ok(`[${tag}] 연말정산 결과·계산 과정 표`, /환급|납부/.test(await page.locator('#out').innerText()) && (await page.locator('#tables tbody tr').count()) >= 10, await main());
     await page.click('[data-reset]');
     // 이미지 계산기: 길이·면적 (글자 인식 없이 — 네트워크 불필요). 300×200px 방, 문 90px = 0.9m → 6㎡
     const pic = await ctx.newPage(); await pic.setViewportSize({ width: 500, height: 360 });
