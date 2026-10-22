@@ -1,0 +1,200 @@
+{
+ "outDir": "products/ogq/pami-food/png",
+ "font": "Jua",
+ "main": 1,
+ "tab": 1,
+ "stickers": [
+  {
+   "char": "monkey",
+   "text": "맛집 발견",
+   "face": "wow",
+   "pose": "point",
+   "color": "berry",
+   "prop": "magnifier"
+  },
+  {
+   "char": "monkey",
+   "text": "존맛!",
+   "face": "yum",
+   "pose": "hold",
+   "color": "berry",
+   "prop": "bowl"
+  },
+  {
+   "char": "monkey",
+   "text": "냠냠",
+   "face": "yum",
+   "pose": "hold",
+   "color": "acorn",
+   "prop": "spoon"
+  },
+  {
+   "char": "monkey",
+   "text": "웨이팅 중",
+   "face": "sad",
+   "pose": "sit",
+   "color": "sky",
+   "prop": "sweat"
+  },
+  {
+   "char": "monkey",
+   "text": "메뉴 고민",
+   "face": "smile",
+   "pose": "think",
+   "color": "acorn",
+   "prop": "question"
+  },
+  {
+   "char": "monkey",
+   "text": "가격 정보",
+   "face": "smile",
+   "pose": "hold",
+   "color": "leaf",
+   "prop": "note"
+  },
+  {
+   "char": "monkey",
+   "text": "위치 정보",
+   "face": "smile",
+   "pose": "point",
+   "color": "sky",
+   "prop": "magnifier"
+  },
+  {
+   "char": "monkey",
+   "text": "주차 가능",
+   "face": "happy",
+   "pose": "wave",
+   "color": "leaf",
+   "prop": "sparkle"
+  },
+  {
+   "char": "monkey",
+   "text": "사진 맛집",
+   "face": "wink",
+   "pose": "hold",
+   "color": "sky",
+   "prop": "camera"
+  },
+  {
+   "char": "monkey",
+   "text": "분위기\n맛집",
+   "face": "love",
+   "pose": "hug",
+   "color": "berry",
+   "fx": "hearts"
+  },
+  {
+   "char": "monkey",
+   "text": "커피 한 잔",
+   "face": "happy",
+   "pose": "hold",
+   "color": "acorn",
+   "prop": "cup"
+  },
+  {
+   "char": "monkey",
+   "text": "디저트는\n다른 배",
+   "face": "yum",
+   "pose": "hold",
+   "color": "berry",
+   "prop": "cake"
+  },
+  {
+   "char": "monkey",
+   "text": "배불러요",
+   "face": "smug",
+   "pose": "sit",
+   "color": "acorn",
+   "fx": "sweat"
+  },
+  {
+   "char": "monkey",
+   "text": "가성비 갑",
+   "face": "smug",
+   "pose": "hold",
+   "color": "acorn",
+   "prop": "bag"
+  },
+  {
+   "char": "monkey",
+   "text": "양이 많아요",
+   "face": "wow",
+   "pose": "hold",
+   "color": "acorn",
+   "prop": "bowl"
+  },
+  {
+   "char": "monkey",
+   "text": "재방문\n의사 100%",
+   "face": "happy",
+   "pose": "cheer",
+   "color": "leaf",
+   "prop": "sparkle"
+  },
+  {
+   "char": "monkey",
+   "text": "강력 추천",
+   "face": "wink",
+   "pose": "point",
+   "color": "berry",
+   "prop": "star"
+  },
+  {
+   "char": "monkey",
+   "text": "별점 5점",
+   "face": "love",
+   "pose": "wave",
+   "color": "acorn",
+   "prop": "star"
+  },
+  {
+   "char": "monkey",
+   "text": "아쉬운 점",
+   "face": "sad",
+   "pose": "think",
+   "color": "sky",
+   "prop": "sweat"
+  },
+  {
+   "char": "monkey",
+   "text": "혼밥 성공",
+   "face": "smug",
+   "pose": "hold",
+   "color": "sky",
+   "prop": "bowl"
+  },
+  {
+   "char": "monkey",
+   "text": "카페 투어",
+   "face": "happy",
+   "pose": "run",
+   "color": "acorn",
+   "prop": "cup"
+  },
+  {
+   "char": "monkey",
+   "text": "포장 완료",
+   "face": "happy",
+   "pose": "run",
+   "color": "sky",
+   "prop": "bag"
+  },
+  {
+   "char": "monkey",
+   "text": "내돈내산",
+   "face": "smug",
+   "pose": "hold",
+   "color": "berry",
+   "prop": "acorn"
+  },
+  {
+   "char": "monkey",
+   "text": "또 올게요",
+   "face": "smile",
+   "pose": "wave",
+   "color": "leaf",
+   "prop": "hearts"
+  }
+ ]
+}

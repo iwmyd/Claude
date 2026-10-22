@@ -43,6 +43,7 @@ function face(kind, cx, cy) {
   else if (kind === 'love') s.push(...[eL, eR].map((x) => `<path d="M${x} ${ey + 10} C${x - 22} ${ey - 4} ${x - 10} ${ey - 20} ${x} ${ey - 8} C${x + 10} ${ey - 20} ${x + 22} ${ey - 4} ${x} ${ey + 10} Z" fill="${K.berry}" stroke="${K.ink}" stroke-width="3"/>`));
   else if (kind === 'wow') s.push(`<circle cx="${eL}" cy="${ey}" r="13" fill="${K.ink}"/><circle cx="${eL + 4}" cy="${ey - 4}" r="4" fill="#fff"/><circle cx="${eR}" cy="${ey}" r="13" fill="${K.ink}"/><circle cx="${eR + 4}" cy="${ey - 4}" r="4" fill="#fff"/>`);
   else if (kind === 'cry' || kind === 'sad') s.push(arc(eL, ey + 2, false), arc(eR, ey + 2, false));
+  else if (kind === 'angry') s.push(dot(eL, ey + 4), dot(eR, ey + 4), `<path d="M${eL - 18} ${ey - 26} L${eL + 12} ${ey - 14} M${eR + 18} ${ey - 26} L${eR - 12} ${ey - 14}" stroke="${K.ink}" stroke-width="7" stroke-linecap="round"/>`);
   else s.push(dot(eL, ey), dot(eR, ey)); // smile, shy
   // 볼
   s.push(`<ellipse cx="${cx - 62}" cy="${cy + 30}" rx="17" ry="10" fill="${K.cheek}" opacity=".85"/><ellipse cx="${cx + 62}" cy="${cy + 30}" rx="17" ry="10" fill="${K.cheek}" opacity=".85"/>`);
@@ -73,6 +74,10 @@ function prop(kind, x, y) {
     case 'bag': return pth(`M${x - 36} ${y - 14} L${x + 36} ${y - 14} L${x + 30} ${y + 44} L${x - 30} ${y + 44} Z`, { fill: K.sun }) + `<path d="M${x - 16} ${y - 14} q16 -36 32 0" stroke="${K.ink}" stroke-width="5" fill="none"/>`;
     case 'magnifier': return ell(x - 6, y - 14, 56, 56, { fill: '#e3f0fb' }) + line(x + 14, y + 8, x + 40, y + 40, { strokeWidth: 10 });
     case 'laptop': return pth(`M${x - 70} ${y - 50} L${x + 70} ${y - 50} L${x + 62} ${y + 30} L${x - 62} ${y + 30} Z`, { fill: '#5b6b7a' }) + pth(`M${x - 56} ${y - 40} L${x + 56} ${y - 40} L${x + 50} ${y + 20} L${x - 50} ${y + 20} Z`, { fill: '#dcebf7', strokeWidth: 3 }) + pth(`M${x - 84} ${y + 30} L${x + 84} ${y + 30} L${x + 92} ${y + 46} L${x - 92} ${y + 46} Z`, { fill: '#8696a6' }) + ell(x, y - 12, 26, 26, { fill: K.leaf, strokeWidth: 3 });
+    case 'box': return pth(`M${x - 50} ${y - 20} L${x + 50} ${y - 20} L${x + 50} ${y + 46} L${x - 50} ${y + 46} Z`, { fill: '#d9a86c' }) + pth(`M${x - 50} ${y - 20} L${x - 30} ${y - 46} L${x + 30} ${y - 46} L${x + 50} ${y - 20}`, { fill: '#e8bf87', strokeWidth: 4 }) + line(x, y - 20, x, y + 46, { strokeWidth: 4, stroke: '#8a5a2b' });
+    case 'gift': return pth(`M${x - 44} ${y - 14} L${x + 44} ${y - 14} L${x + 44} ${y + 44} L${x - 44} ${y + 44} Z`, { fill: K.sky }) + pth(`M${x - 50} ${y - 30} L${x + 50} ${y - 30} L${x + 50} ${y - 14} L${x - 50} ${y - 14} Z`, { fill: '#7fb0e0', strokeWidth: 4 }) + line(x, y - 30, x, y + 44, { strokeWidth: 8, stroke: K.berry }) + pth(`M${x} ${y - 30} q-30 -30 -30 -6 q0 10 30 6 q30 4 30 -6 q0 -24 -30 6`, { fill: K.berry, strokeWidth: 3 });
+    case 'cart': return pth(`M${x - 56} ${y - 34} L${x - 40} ${y - 34} L${x - 26} ${y + 22} L${x + 44} ${y + 22} L${x + 54} ${y - 16} L${x - 34} ${y - 16}`, { strokeWidth: 6, fill: 'none' }) + ell(x - 20, y + 38, 18, 18, { fill: K.ink, strokeWidth: 2 }) + ell(x + 36, y + 38, 18, 18, { fill: K.ink, strokeWidth: 2 }) + ell(x + 8, y - 22, 40, 30, { fill: K.sun, strokeWidth: 3 });
+    case 'thumb': return ell(x, y, 46, 56, { fill: '#a8683f' }) + rot(ell(x + 4, y - 40, 22, 44, { fill: '#a8683f' }), 10, x + 4, y - 40);
     case 'sign': return '';
     default: return '';
   }
@@ -149,10 +154,10 @@ function squirrel(st, cx, by) {
 function caption(text, sub, color, y0) {
   const lines = String(text).split('\n');
   const n = Math.max(...lines.map((l) => [...l].length));
-  const fs1 = Math.min(lines.length > 1 ? 104 : 126, Math.floor(680 / Math.max(1, n * 0.92)));
+  const fs1 = Math.round(Math.min(lines.length > 1 ? 104 : 126, Math.floor(680 / Math.max(1, n * 0.92))) * CAP.scale);
   const c = TXT[color] || TXT.ink;
-  const t = lines.map((l, i) => `<text x="370" y="${y0 + i * fs1 * 0.95}" text-anchor="middle" font-family="Gaegu" font-weight="700" font-size="${fs1}" fill="${c}" stroke="#fff" stroke-width="16" paint-order="stroke" stroke-linejoin="round">${l.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</text>`).join('');
-  const s = sub ? `<text x="370" y="${y0 + lines.length * fs1 * 0.95 - fs1 * 0.25}" text-anchor="middle" font-family="Gaegu" font-weight="700" font-size="46" fill="${K.ink}" stroke="#fff" stroke-width="12" paint-order="stroke">${sub}</text>` : '';
+  const t = lines.map((l, i) => `<text x="370" y="${y0 + i * fs1 * 0.95}" text-anchor="middle" font-family="${CAP.font}" font-weight="${CAP.weight}" font-size="${fs1}" fill="${c}" stroke="#fff" stroke-width="16" paint-order="stroke" stroke-linejoin="round">${l.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</text>`).join('');
+  const s = sub ? `<text x="370" y="${y0 + lines.length * fs1 * 0.95 - fs1 * 0.25}" text-anchor="middle" font-family="${CAP.font}" font-weight="${CAP.weight}" font-size="${Math.round(46 * CAP.scale)}" fill="${K.ink}" stroke="#fff" stroke-width="12" paint-order="stroke">${sub}</text>` : '';
   return t + s;
 }
 
@@ -168,14 +173,20 @@ function stickerSvg(st, i) {
 <g filter="url(#cut)">${body}</g></svg>`;
 }
 
-const FONT = '<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@700&display=block" rel="stylesheet">';
+// 세트별 글씨체 (모두 Google Fonts OFL — 상업 이용 가능). spec.font 로 고른다. scale = 글자 폭 보정
+const FONTS = { Gaegu: { css: 'Gaegu:wght@700', weight: 700, scale: 1 }, Jua: { css: 'Jua', weight: 400, scale: 0.92 }, 'Do Hyeon': { css: 'Do+Hyeon', weight: 400, scale: 0.95 },
+  'Gamja Flower': { css: 'Gamja+Flower', weight: 400, scale: 1.18 }, 'Hi Melody': { css: 'Hi+Melody', weight: 400, scale: 1.05 }, 'Yeon Sung': { css: 'Yeon+Sung', weight: 400, scale: 1 },
+  'Nanum Pen Script': { css: 'Nanum+Pen+Script', weight: 400, scale: 1.15 }, 'Poor Story': { css: 'Poor+Story', weight: 400, scale: 1 }, 'Gowun Dodum': { css: 'Gowun+Dodum', weight: 400, scale: 0.9 }, Dongle: { css: 'Dongle:wght@700', weight: 700, scale: 1.3 } };
+let CAP = { font: 'Gaegu', ...FONTS.Gaegu };
+const FONT = `<link href="https://fonts.googleapis.com/css2?${Object.values(FONTS).map((f) => 'family=' + f.css).join('&')}&display=block" rel="stylesheet">`;
 (async () => {
   const spec = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
   const out = path.resolve(spec.outDir); fs.mkdirSync(out, { recursive: true });
   if (spec.stickers.length !== 24) throw new Error('스티커는 24개여야 함 (현재 ' + spec.stickers.length + ')');
   const b = await chromium.launch(); const pg = await b.newPage({ viewport: { width: W, height: H } });
   await pg.setContent(`<!doctype html><meta charset="utf-8">${FONT}<style>*{margin:0}body{background:transparent}</style><div id="s"></div>`, { waitUntil: 'networkidle' });
-  await pg.evaluate(async () => { await document.fonts.load('700 40px Gaegu', '가나다'); await document.fonts.ready; });
+  if (spec.font) CAP = { font: spec.font, ...FONTS[spec.font] };
+  await pg.evaluate(async (f) => { await document.fonts.load('700 40px Gaegu', '가나다'); await document.fonts.load(`${f.weight} 40px "${f.font}"`, '가나다라마바사'); await document.fonts.ready; }, CAP);
   const files = [];
   for (const [i, st] of spec.stickers.entries()) {
     await pg.evaluate((svg) => { document.getElementById('s').innerHTML = svg; }, stickerSvg(st, i));

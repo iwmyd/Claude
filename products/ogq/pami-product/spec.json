@@ -1,0 +1,199 @@
+{
+ "outDir": "products/ogq/pami-product/png",
+ "font": "Do Hyeon",
+ "main": 2,
+ "tab": 2,
+ "stickers": [
+  {
+   "char": "monkey",
+   "text": "언박싱",
+   "face": "wow",
+   "pose": "hold",
+   "color": "acorn",
+   "prop": "box"
+  },
+  {
+   "char": "monkey",
+   "text": "택배 왔다!",
+   "face": "happy",
+   "pose": "cheer",
+   "color": "berry",
+   "prop": "box"
+  },
+  {
+   "char": "monkey",
+   "text": "선물 받았어요",
+   "face": "love",
+   "pose": "hold",
+   "color": "berry",
+   "prop": "gift"
+  },
+  {
+   "char": "monkey",
+   "text": "장바구니\n담기",
+   "face": "smile",
+   "pose": "hold",
+   "color": "sky",
+   "prop": "cart"
+  },
+  {
+   "char": "monkey",
+   "text": "사용 전",
+   "face": "smile",
+   "pose": "point",
+   "color": "sky"
+  },
+  {
+   "char": "monkey",
+   "text": "사용 후",
+   "face": "wow",
+   "pose": "point",
+   "color": "leaf",
+   "prop": "sparkle"
+  },
+  {
+   "char": "monkey",
+   "text": "한 달 사용기",
+   "face": "smile",
+   "pose": "hold",
+   "color": "acorn",
+   "prop": "note"
+  },
+  {
+   "char": "monkey",
+   "text": "첫인상",
+   "face": "wow",
+   "pose": "think",
+   "color": "berry",
+   "prop": "exclaim"
+  },
+  {
+   "char": "monkey",
+   "text": "장점",
+   "face": "happy",
+   "pose": "up",
+   "color": "leaf",
+   "prop": "sparkle"
+  },
+  {
+   "char": "monkey",
+   "text": "단점",
+   "face": "sad",
+   "pose": "think",
+   "color": "sky",
+   "prop": "sweat"
+  },
+  {
+   "char": "monkey",
+   "text": "가격 정보",
+   "face": "smile",
+   "pose": "hold",
+   "color": "acorn",
+   "prop": "note"
+  },
+  {
+   "char": "monkey",
+   "text": "스펙 정리",
+   "face": "smug",
+   "pose": "hold",
+   "color": "sky",
+   "prop": "laptop"
+  },
+  {
+   "char": "monkey",
+   "text": "재구매 의사",
+   "face": "love",
+   "pose": "hug",
+   "color": "berry",
+   "prop": "heart"
+  },
+  {
+   "char": "monkey",
+   "text": "강력 추천",
+   "face": "wink",
+   "pose": "hold",
+   "color": "leaf",
+   "prop": "star"
+  },
+  {
+   "char": "monkey",
+   "text": "가성비 최고",
+   "face": "smug",
+   "pose": "hold",
+   "color": "acorn",
+   "prop": "star"
+  },
+  {
+   "char": "monkey",
+   "text": "품절 주의",
+   "face": "wow",
+   "pose": "run",
+   "color": "berry",
+   "prop": "exclaim"
+  },
+  {
+   "char": "monkey",
+   "text": "할인 중",
+   "face": "happy",
+   "pose": "point",
+   "color": "berry",
+   "prop": "bag"
+  },
+  {
+   "char": "monkey",
+   "text": "찐 후기",
+   "face": "smug",
+   "pose": "hold",
+   "color": "leaf",
+   "prop": "phone"
+  },
+  {
+   "char": "monkey",
+   "text": "비교해 봤어요",
+   "face": "smile",
+   "pose": "think",
+   "color": "sky",
+   "prop": "magnifier"
+  },
+  {
+   "char": "monkey",
+   "text": "총평",
+   "face": "smile",
+   "pose": "hold",
+   "color": "acorn",
+   "prop": "note"
+  },
+  {
+   "char": "monkey",
+   "text": "내돈내산",
+   "face": "smug",
+   "pose": "hold",
+   "color": "berry",
+   "prop": "acorn"
+  },
+  {
+   "char": "monkey",
+   "text": "협찬 제품",
+   "face": "shy",
+   "pose": "hold",
+   "color": "sky",
+   "prop": "gift"
+  },
+  {
+   "char": "monkey",
+   "text": "만족해요",
+   "face": "happy",
+   "pose": "hug",
+   "color": "leaf",
+   "prop": "hearts"
+  },
+  {
+   "char": "monkey",
+   "text": "추천해요",
+   "face": "wink",
+   "pose": "wave",
+   "color": "acorn",
+   "prop": "star"
+  }
+ ]
+}

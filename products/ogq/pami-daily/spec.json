@@ -1,0 +1,200 @@
+{
+ "outDir": "products/ogq/pami-daily/png",
+ "font": "Gaegu",
+ "main": 0,
+ "tab": 0,
+ "stickers": [
+  {
+   "char": "monkey",
+   "text": "안녕하세요",
+   "face": "smile",
+   "pose": "wave",
+   "color": "leaf"
+  },
+  {
+   "char": "monkey",
+   "text": "반가워요",
+   "face": "happy",
+   "pose": "cheer",
+   "color": "berry",
+   "prop": "sparkle"
+  },
+  {
+   "char": "monkey",
+   "text": "이웃추가\n환영해요",
+   "face": "smile",
+   "pose": "hold",
+   "color": "leaf",
+   "prop": "heart"
+  },
+  {
+   "char": "monkey",
+   "text": "공감 꾹!",
+   "face": "wink",
+   "pose": "point",
+   "color": "berry",
+   "prop": "heart"
+  },
+  {
+   "char": "monkey",
+   "text": "포스팅 중",
+   "face": "smile",
+   "pose": "hold",
+   "color": "sky",
+   "prop": "laptop"
+  },
+  {
+   "char": "monkey",
+   "text": "오늘의 기록",
+   "face": "smile",
+   "pose": "hold",
+   "color": "acorn",
+   "prop": "note"
+  },
+  {
+   "char": "monkey",
+   "text": "꿀팁 대방출",
+   "face": "wow",
+   "pose": "wave",
+   "color": "acorn",
+   "prop": "star",
+   "fx": "sparkle"
+  },
+  {
+   "char": "monkey",
+   "text": "정리 끝!",
+   "face": "smug",
+   "pose": "hold",
+   "color": "leaf",
+   "prop": "note"
+  },
+  {
+   "char": "monkey",
+   "text": "출근 완료",
+   "face": "smile",
+   "pose": "run",
+   "color": "sky",
+   "prop": "bag"
+  },
+  {
+   "char": "monkey",
+   "text": "퇴근!",
+   "face": "happy",
+   "pose": "cheer",
+   "color": "leaf",
+   "prop": "sparkle"
+  },
+  {
+   "char": "monkey",
+   "text": "커피 수혈",
+   "face": "sleepy",
+   "pose": "hold",
+   "color": "acorn",
+   "prop": "cup"
+  },
+  {
+   "char": "monkey",
+   "text": "바빠요",
+   "face": "sad",
+   "pose": "run",
+   "color": "berry",
+   "prop": "sweat"
+  },
+  {
+   "char": "monkey",
+   "text": "쉬는 중",
+   "face": "sleepy",
+   "pose": "sit",
+   "color": "leaf",
+   "prop": "zzz"
+  },
+  {
+   "char": "monkey",
+   "text": "도토리\n모으는 중",
+   "face": "happy",
+   "pose": "hold",
+   "color": "acorn",
+   "prop": "acorn"
+  },
+  {
+   "char": "monkey",
+   "text": "오늘도\n화이팅",
+   "face": "wink",
+   "pose": "cheer",
+   "color": "acorn",
+   "prop": "sparkle"
+  },
+  {
+   "char": "monkey",
+   "text": "잘 자요",
+   "face": "sleepy",
+   "pose": "hug",
+   "color": "sky",
+   "prop": "zzz"
+  },
+  {
+   "char": "monkey",
+   "text": "굿모닝",
+   "face": "happy",
+   "pose": "wave",
+   "color": "acorn",
+   "prop": "sparkle"
+  },
+  {
+   "char": "monkey",
+   "text": "점심 뭐 먹지",
+   "face": "smile",
+   "pose": "think",
+   "color": "acorn",
+   "prop": "question"
+  },
+  {
+   "char": "monkey",
+   "text": "주말이다!",
+   "face": "happy",
+   "pose": "cheer",
+   "color": "berry",
+   "prop": "hearts"
+  },
+  {
+   "char": "monkey",
+   "text": "월요병",
+   "face": "cry",
+   "pose": "sit",
+   "color": "sky",
+   "prop": "sweat"
+  },
+  {
+   "char": "monkey",
+   "text": "비밀 댓글",
+   "face": "shy",
+   "pose": "hold",
+   "color": "sky",
+   "prop": "phone"
+  },
+  {
+   "char": "monkey",
+   "text": "또 만나요",
+   "face": "smile",
+   "pose": "wave",
+   "color": "leaf",
+   "prop": "hearts"
+  },
+  {
+   "char": "monkey",
+   "text": "감사합니다",
+   "face": "happy",
+   "pose": "bow",
+   "color": "berry",
+   "prop": "heart"
+  },
+  {
+   "char": "monkey",
+   "text": "읽어주셔서\n감사해요",
+   "face": "shy",
+   "pose": "bow",
+   "color": "berry",
+   "prop": "heart"
+  }
+ ]
+}

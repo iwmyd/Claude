@@ -1,0 +1,195 @@
+{
+ "outDir": "products/ogq/pami-react/png",
+ "font": "Gamja Flower",
+ "main": 0,
+ "tab": 0,
+ "stickers": [
+  {
+   "char": "monkey",
+   "text": "최고!",
+   "face": "love",
+   "pose": "cheer",
+   "color": "acorn",
+   "prop": "star"
+  },
+  {
+   "char": "monkey",
+   "text": "좋아요",
+   "face": "happy",
+   "pose": "hug",
+   "color": "berry",
+   "prop": "heart"
+  },
+  {
+   "char": "monkey",
+   "text": "대박",
+   "face": "wow",
+   "pose": "up",
+   "color": "berry",
+   "prop": "exclaim"
+  },
+  {
+   "char": "monkey",
+   "text": "헐",
+   "face": "wow",
+   "pose": "sit",
+   "color": "sky",
+   "prop": "sweat"
+  },
+  {
+   "char": "monkey",
+   "text": "감동",
+   "face": "cry",
+   "pose": "hug",
+   "color": "sky",
+   "fx": "hearts"
+  },
+  {
+   "char": "monkey",
+   "text": "부럽다",
+   "face": "shy",
+   "pose": "think",
+   "color": "acorn",
+   "prop": "sparkle"
+  },
+  {
+   "char": "monkey",
+   "text": "축하해요",
+   "face": "happy",
+   "pose": "cheer",
+   "color": "berry",
+   "prop": "sparkle"
+  },
+  {
+   "char": "monkey",
+   "text": "힘내요",
+   "face": "wink",
+   "pose": "up",
+   "color": "leaf",
+   "prop": "heart"
+  },
+  {
+   "char": "monkey",
+   "text": "고마워요",
+   "face": "shy",
+   "pose": "bow",
+   "color": "berry",
+   "prop": "heart"
+  },
+  {
+   "char": "monkey",
+   "text": "미안해요",
+   "face": "sad",
+   "pose": "bow",
+   "color": "sky",
+   "prop": "sweat"
+  },
+  {
+   "char": "monkey",
+   "text": "괜찮아요",
+   "face": "smile",
+   "pose": "wave",
+   "color": "leaf"
+  },
+  {
+   "char": "monkey",
+   "text": "화났어요",
+   "face": "angry",
+   "pose": "sit",
+   "color": "berry"
+  },
+  {
+   "char": "monkey",
+   "text": "궁금해요",
+   "face": "smile",
+   "pose": "think",
+   "color": "sky",
+   "prop": "question"
+  },
+  {
+   "char": "monkey",
+   "text": "알겠어요",
+   "face": "happy",
+   "pose": "point",
+   "color": "leaf"
+  },
+  {
+   "char": "monkey",
+   "text": "그렇군요",
+   "face": "smile",
+   "pose": "think",
+   "color": "acorn"
+  },
+  {
+   "char": "monkey",
+   "text": "웃겨요",
+   "face": "happy",
+   "pose": "sit",
+   "color": "acorn",
+   "prop": "sparkle"
+  },
+  {
+   "char": "monkey",
+   "text": "슬퍼요",
+   "face": "cry",
+   "pose": "sit",
+   "color": "sky"
+  },
+  {
+   "char": "monkey",
+   "text": "졸려요",
+   "face": "sleepy",
+   "pose": "hug",
+   "color": "sky",
+   "prop": "zzz"
+  },
+  {
+   "char": "monkey",
+   "text": "배고파요",
+   "face": "sad",
+   "pose": "hold",
+   "color": "acorn",
+   "prop": "bowl"
+  },
+  {
+   "char": "monkey",
+   "text": "신나요",
+   "face": "happy",
+   "pose": "run",
+   "color": "berry",
+   "prop": "sparkle"
+  },
+  {
+   "char": "monkey",
+   "text": "사랑해요",
+   "face": "love",
+   "pose": "hug",
+   "color": "berry",
+   "prop": "heart"
+  },
+  {
+   "char": "monkey",
+   "text": "오케이",
+   "face": "wink",
+   "pose": "hold",
+   "color": "leaf",
+   "prop": "star"
+  },
+  {
+   "char": "monkey",
+   "text": "기다릴게요",
+   "face": "smile",
+   "pose": "sit",
+   "color": "acorn",
+   "prop": "heart"
+  },
+  {
+   "char": "monkey",
+   "text": "응원해요",
+   "face": "happy",
+   "pose": "cheer",
+   "color": "leaf",
+   "prop": "star"
+  }
+ ]
+}

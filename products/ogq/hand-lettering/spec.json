@@ -1,0 +1,199 @@
+{
+ "outDir": "products/ogq/hand-lettering/png",
+ "main": 0,
+ "tab": 0,
+ "stickers": [
+  {
+   "text": "오늘의 맛집",
+   "font": "Nanum Pen Script",
+   "ink": "brown",
+   "deco": "underline",
+   "deco2": "leaf",
+   "hl": "yellow"
+  },
+  {
+   "text": "여기 진짜\n맛있어요",
+   "font": "Yeon Sung",
+   "ink": "plum",
+   "deco": "highlight",
+   "deco2": "star",
+   "hl": "pink"
+  },
+  {
+   "text": "분위기 최고",
+   "font": "Hi Melody",
+   "ink": "teal",
+   "deco": "wave",
+   "deco2": "none",
+   "hl": "sky"
+  },
+  {
+   "text": "또 가고 싶은 곳",
+   "font": "Poor Story",
+   "ink": "navy",
+   "deco": "circle",
+   "deco2": "heart",
+   "hl": "yellow"
+  },
+  {
+   "text": "오늘의 기록",
+   "font": "Gaegu",
+   "ink": "berry",
+   "deco": "box",
+   "deco2": "sparkle",
+   "hl": "pink"
+  },
+  {
+   "text": "소소한 행복",
+   "font": "Gamja Flower",
+   "ink": "green",
+   "deco": "highlight",
+   "deco2": "heart",
+   "hl": "sky"
+  },
+  {
+   "text": "날씨 맑음",
+   "font": "Nanum Pen Script",
+   "ink": "brown",
+   "deco": "underline",
+   "deco2": "leaf",
+   "hl": "yellow"
+  },
+  {
+   "text": "커피 한 잔의\n여유",
+   "font": "Yeon Sung",
+   "ink": "plum",
+   "deco": "highlight",
+   "deco2": "star",
+   "hl": "pink"
+  },
+  {
+   "text": "기분 좋은 하루",
+   "font": "Hi Melody",
+   "ink": "teal",
+   "deco": "wave",
+   "deco2": "none",
+   "hl": "sky"
+  },
+  {
+   "text": "힐링 타임",
+   "font": "Poor Story",
+   "ink": "navy",
+   "deco": "circle",
+   "deco2": "heart",
+   "hl": "yellow"
+  },
+  {
+   "text": "추천 메뉴",
+   "font": "Gaegu",
+   "ink": "berry",
+   "deco": "box",
+   "deco2": "sparkle",
+   "hl": "pink"
+  },
+  {
+   "text": "인생 맛집",
+   "font": "Gamja Flower",
+   "ink": "green",
+   "deco": "highlight",
+   "deco2": "heart",
+   "hl": "sky"
+  },
+  {
+   "text": "이건 꼭\n드세요",
+   "font": "Nanum Pen Script",
+   "ink": "brown",
+   "deco": "underline",
+   "deco2": "leaf",
+   "hl": "yellow"
+  },
+  {
+   "text": "사진 맛집",
+   "font": "Yeon Sung",
+   "ink": "plum",
+   "deco": "highlight",
+   "deco2": "star",
+   "hl": "pink"
+  },
+  {
+   "text": "웨이팅 필수",
+   "font": "Hi Melody",
+   "ink": "teal",
+   "deco": "wave",
+   "deco2": "none",
+   "hl": "sky"
+  },
+  {
+   "text": "재방문 각",
+   "font": "Poor Story",
+   "ink": "navy",
+   "deco": "circle",
+   "deco2": "heart",
+   "hl": "yellow"
+  },
+  {
+   "text": "솔직 후기",
+   "font": "Gaegu",
+   "ink": "berry",
+   "deco": "box",
+   "deco2": "sparkle",
+   "hl": "pink"
+  },
+  {
+   "text": "가격 대비 굿",
+   "font": "Gamja Flower",
+   "ink": "green",
+   "deco": "highlight",
+   "deco2": "heart",
+   "hl": "sky"
+  },
+  {
+   "text": "주차 꿀팁",
+   "font": "Nanum Pen Script",
+   "ink": "brown",
+   "deco": "underline",
+   "deco2": "leaf",
+   "hl": "yellow"
+  },
+  {
+   "text": "위치는 여기",
+   "font": "Yeon Sung",
+   "ink": "plum",
+   "deco": "highlight",
+   "deco2": "star",
+   "hl": "pink"
+  },
+  {
+   "text": "영업시간\n확인하세요",
+   "font": "Hi Melody",
+   "ink": "teal",
+   "deco": "wave",
+   "deco2": "none",
+   "hl": "sky"
+  },
+  {
+   "text": "오늘도\n수고했어",
+   "font": "Poor Story",
+   "ink": "navy",
+   "deco": "circle",
+   "deco2": "heart",
+   "hl": "yellow"
+  },
+  {
+   "text": "내일도 화이팅",
+   "font": "Gaegu",
+   "ink": "berry",
+   "deco": "box",
+   "deco2": "sparkle",
+   "hl": "pink"
+  },
+  {
+   "text": "또 만나요",
+   "font": "Gamja Flower",
+   "ink": "green",
+   "deco": "highlight",
+   "deco2": "heart",
+   "hl": "sky"
+  }
+ ]
+}
