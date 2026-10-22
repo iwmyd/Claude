@@ -274,9 +274,6 @@ check('FC 쿠폰 최대 할인 500만 → 6,500만', fc(1e8, 0, 0, 30, 5e6) === 
 check('FC 수량 2, 한도 1,000만×2', fc(85e6, 0, 0, 30, 1e7, 2) === 122000000n);
 check('FC 버림: 12,345 TOP → 12,345 − (4,938 − 987)', fc(12345, 0, 1) === 12345n - (4938n - 987n));
 check('FC 여러 선수 합산 = 각자 합', C.fcFee([{ price: 3e8 }, { price: 85e6, coupon: 30, cap: 1e7, qty: 2 }], 0, 0).receive === 302000000n);
-let fcOk = true; for (const t of [1n, 999n, 60000000n, 123456789n, 10n ** 12n]) for (const [p, q] of [[0, 0], [1, 0], [1, 1]]) { const x = C.fcPriceFor(t, p, q, 0, 0); if (!(C.fcFee([{ price: x }], p, q).receive >= t && C.fcFee([{ price: x - 1n }], p, q).receive < t)) fcOk = false; }
-check('FC 목표 BP 역산: 최소 판매가 (그보다 1 BP 낮으면 모자람)', fcOk);
-check('FC 역산 10억 PC+TOP → 12억 5,000만', C.fcPriceFor(1000000000n, 1, 1, 0, 0) === 1250000000n);
 check('BP 읽기: 1억 2,000만 / 12.5억 / 3억 2.000만 / 3,500,000', C.parseBP('1억 2,000만') === 120000000n && C.parseBP('12.5억') === 1250000000n && C.parseBP('3억 2.000만') === 320000000n && C.parseBP('3,500,000') === 3500000n);
 check('BP 표기: 12억 3,456만 7,890', C.korBP(1234567890n) === '12억 3,456만 7,890');
 

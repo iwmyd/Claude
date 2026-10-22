@@ -149,8 +149,9 @@ const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment'
       ok(`[${tag}] 모든 계산기: FAQ 3개+ · 전용 썸네일 · 설명 · 탐색경로 · 관련 링크`, bad.length === 0, bad.join(', '));
     }
 
-    // FC 이적시장: 체크박스·선수 추가/빼기·쿠폰 한도·역산
+    // FC 이적시장: 체크박스·선수 추가/빼기·쿠폰 한도·기본 화면
     await page.goto(U('fc-transfer'), { waitUntil: 'networkidle' });
+    ok(`[${tag}] FC 기본: 선수 1 칸 비어 있음·선수 줄 1개·역산 없음`, (await page.inputValue('#fcp1')) === '' && (await page.locator('.fc-row:not([hidden])').count()) === 1 && !(await page.locator('#fmode, #ftg').count()));
     ok(`[${tag}] FC 1억 → 6,000만 BP`, (await main()).startsWith('6,000만'), await main());
     await page.check('#fpc'); await page.check('#ftop');
     ok(`[${tag}] FC PC방+TOP → 8,000만`, (await main()).startsWith('8,000만'), await main());
@@ -165,8 +166,6 @@ const SLUGS = ['', 'basic', 'scientific', 'loan', 'dsr', 'prepay', 'installment'
     ok(`[${tag}] FC 선수 빼기: 아래 줄이 당겨짐`, (await page.inputValue('#fcp2')) === '2억' && (await page.locator('.fc-row:not([hidden])').count()) === 2);
     await page.reload({ waitUntil: 'networkidle' });
     ok(`[${tag}] FC 체크박스·선수 수 저장·복원`, (await page.isChecked('#fpc')) && (await page.inputValue('#fcn')) === '2');
-    await page.selectOption('#fmode', 'target');
-    ok(`[${tag}] FC 역산 10억(PC+TOP) → 12억 5,000만`, (await main()).startsWith('12억 5,000만'), await main());
     await page.click('[data-reset]');
     // 이미지 계산기: 길이·면적 (글자 인식 없이 — 네트워크 불필요). 300×200px 방, 문 90px = 0.9m → 6㎡
     const pic = await ctx.newPage(); await pic.setViewportSize({ width: 500, height: 360 });
